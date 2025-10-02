@@ -1,0 +1,31 @@
+{
+  "name": "mwg-hostel-finder",
+  "version": "1.0.0",
+  "description": "MWG Hostel Finder - Find accommodation near campus gates. Built by Sama for Futarians.",
+  "main": "demo.html",
+  "scripts": {
+    "start": "http-server -p 3000",
+    "build": "echo 'Static site - no build needed'",
+    "dev": "http-server -p 3000 -o"
+  },
+  "keywords": [
+    "hostel",
+    "accommodation",
+    "student",
+    "housing",
+    "futarian",
+    "mwg",
+    "sama"
+  ],
+  "author": "Sama",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/mwg-hostel-finder"
+  },
+  "homepage": "https://mwg-hostel-finder.vercel.app"
+}

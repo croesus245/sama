@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWG Hostels - Student Accommodation M                    <button class="btn btn-outline btn-large" onclick="document.getElementById('campusSection').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Browse by Gate Location
+                    </button>Easy</title>
+    <meta name="description" content="Find the perfect hostel accommodation near your campus. Browse verified listings, connect with realtors, and discover student-friendly spaces.">
+    
+    <!                <div class="form-row">
+                    <div class="form-group">
+                        <label for="preferredLocation">Preferred Gate *</label>
+                        <select id="preferredLocation" name="preferredLocation" required>
+                            <option value="">Select Gate</option>
+                            <option value="north">North Gate</option>
+                            <option value="south">South Gate</option>
+                            <option value="west">West Gate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="accommodationType">Accommodation Preference *</label>
+                    <select id="accommodationType" name="accommodationType" required onchange="handleAccommodationChange()">
+                        <option value="">Select Preference</option>
+                        <option value="private">I want a private room (stay alone)</option>
+                        <option value="shared">I want to share a room (need roommate)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group roommate-preferences hidden" id="roommatePreferencesGroup">
+                    <label for="roommateGender">Preferred Roommate Gender</label>
+                    <select id="roommateGender" name="roommateGender">
+                        <option value="">No preference</option>
+                        <option value="same">Same gender as me</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <small>This helps us match you with compatible roommates</small>
+                </div>>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="hostel-style.css">
+    
+    <!-- Quick Demo Styles -->
+    <style>
+        .demo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .demo-banner h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .demo-banner p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .demo-links {
+            margin: 1rem 0 0 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .demo-link {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .demo-features {
+            background: var(--gray-50);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            border: 2px dashed var(--primary-color);
+        }
+        
+        .demo-features h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-card h4 {
+            margin: 0.5rem 0;
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+        <h3><i class="fas fa-rocket"></i> MWG Hostels - Complete Platform Demo</h3>
+        <p>Fully functional hostel finder with roommate system. Built by <strong>Sama</strong> for Futarians!</p>
+        <div class="demo-links">
+            <a href="#" class="demo-link"><i class="fas fa-home"></i> Browse Hostels</a>
+            <a href="#" class="demo-link" onclick="showRegistrationModal()"><i class="fas fa-user-plus"></i> Student Registration</a>
+            <a href="#" class="demo-link" onclick="showRoommateModal()"><i class="fas fa-users"></i> Find Roommates</a>
+            <a href="realtor-login.html" class="demo-link"><i class="fas fa-building"></i> Realtor Portal</a>
+            <a href="#features" class="demo-link"><i class="fas fa-star"></i> Features</a>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action-btn" onclick="showRegistrationModal()">
+        <i class="fas fa-plus"></i>
+        <span class="fab-text">Join MWG</span>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="hero-shape hero-shape-1"></div>
+            <div class="hero-shape hero-shape-2"></div>
+            <div class="hero-shape hero-shape-3"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Find Your Perfect 
+                    <span class="highlight">Student Hostel</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Discover verified, affordable, and comfortable accommodation near campus gates. 
+                    Connect directly with trusted realtors and secure your ideal student living space.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large" onclick="showRegistrationModal()">
+                        <i class="fas fa-search"></i>
+                        Find Hostels Now
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="showRoommateModal()">
+                        <i class="fas fa-users"></i>
+                        Find Roommates
+                    </button>
+                    <button class="btn btn-outline btn-large" onclick="document.getElementById('campusSection').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Browse by Campus
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">500+</div>
+                        <div class="hero-stat-label">Verified Hostels</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">2,000+</div>
+                        <div class="hero-stat-label">Happy Students</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">50+</div>
+                        <div class="hero-stat-label">Trusted Realtors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Features Section -->
+    <section class="demo-features" id="features">
+        <div class="container">
+            <h3>🚀 Platform Features - All Working!</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h4>Smart Search</h4>
+                    <p>Filter by gate location, price, amenities and more. Location-based recommendations.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-circle"></i>
+                    <h4>Student Profiles</h4>
+                    <p>Complete registration with department, matric number (CSC/23/0011 format), and headshot.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-building"></i>
+                    <h4>Realtor Portal</h4>
+                    <p>Full admin dashboard for property owners to manage listings, view stats, upload images.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Verified Listings</h4>
+                    <p>All hostels verified by our team. Real photos, accurate pricing, trusted contacts.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h4>Mobile Responsive</h4>
+                    <p>Perfect experience on all devices. Native app-like performance on mobile.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h4>Direct Communication</h4>
+                    <p>WhatsApp integration, phone contacts, and built-in messaging system.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campus Locations -->
+    <section class="campus-section" id="campusSection">
+        <div class="container">
+            <div class="section-header">
+                <h2>Choose Your Gate Location</h2>
+                <p>Find the perfect hostel near your academic institution</p>
+            </div>
+            
+            <div class="campus-grid">
+                <div class="campus-card" data-location="north" onclick="showCampusHostels('north')">
+                    <div class="campus-image">
+                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" alt="North Gate">
+                        <div class="campus-overlay">
+                            <div class="campus-info">
+                                <h3>North Gate</h3>
+                                <p>Prime location with 150+ rooms</p>
+                                <div class="campus-stats">
+                                    <span><i class="fas fa-home"></i> 150+ Rooms</span>
+                                    <span><i class="fas fa-walking"></i> 2-10 min walk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campus-card" data-location="south" onclick="showCampusHostels('south')">
+                    <div class="campus-image">
+                        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80" alt="South Gate">
+                        <div class="campus-overlay">
+                            <div class="campus-info">
+                                <h3>South Gate</h3>
+                                <p>Affordable options with great amenities</p>
+                                <div class="campus-stats">
+                                    <span><i class="fas fa-home"></i> 80+ Rooms</span>
+                                    <span><i class="fas fa-walking"></i> 5-15 min walk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campus-card" data-location="west" onclick="showCampusHostels('west')">
+                    <div class="campus-image">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80" alt="West Gate">
+                        <div class="campus-overlay">
+                            <div class="campus-info">
+                                <h3>West Gate</h3>
+                                <p>Quiet environment, perfect for studies</p>
+                                <div class="campus-stats">
+                                    <span><i class="fas fa-home"></i> 60+ Rooms</span>
+                                    <span><i class="fas fa-walking"></i> 10-20 min walk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hostel Listings -->
+    <section class="hostels-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Hostels</h2>
+                <p>Handpicked accommodations from verified realtors</p>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="locationFilter">Campus Location</label>
+                    <select id="locationFilter" onchange="filterHostels()">
+                        <option value="">All Locations</option>
+                        <option value="north">North Gate</option>
+                        <option value="south">South Gate</option>
+                        <option value="west">West Gate</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="priceFilter">Price Range</label>
+                    <select id="priceFilter" onchange="filterHostels()">
+                        <option value="">All Prices</option>
+                        <option value="0-50000">Under ₦50,000</option>
+                        <option value="50000-100000">₦50,000 - ₦100,000</option>
+                        <option value="100000-200000">Above ₦100,000</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="amenityFilter">Amenities</label>
+                    <select id="amenityFilter" onchange="filterHostels()">
+                        <option value="">All Amenities</option>
+                        <option value="wifi">WiFi</option>
+                        <option value="security">24/7 Security</option>
+                        <option value="kitchen">Kitchen</option>
+                        <option value="laundry">Laundry</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-outline" onclick="clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Clear Filters
+                </button>
+            </div>
+            
+            <div class="hostels-grid" id="hostelsGrid">
+                <!-- Hostels will be loaded here by JavaScript -->
+            </div>
+            
+            <div class="load-more-container">
+                <button class="btn btn-outline" onclick="loadMoreHostels()">
+                    <i class="fas fa-plus"></i>
+                    Load More Hostels
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Join MWG Hostels</h3>
+                <button class="modal-close" onclick="closeRegistrationModal()">&times;</button>
+            </div>
+            
+            <form id="registrationForm" class="registration-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required placeholder="student@university.edu">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+234 xxx xxx xxxx">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="matricNumber">Matric Number *</label>
+                        <input type="text" id="matricNumber" name="matricNumber" required placeholder="CSC/23/0011" pattern="[A-Z]{3}\/\d{2}\/\d{4}">
+                        <small>Format: CSC/23/0011 (Department/Year/Number)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department *</label>
+                        <input type="text" id="department" name="department" required placeholder="Enter your department (e.g., Computer Science)">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="yearOfStudy">Year of Study *</label>
+                        <select id="yearOfStudy" name="yearOfStudy" required>
+                            <option value="">Select Year</option>
+                            <option value="100">100 Level</option>
+                            <option value="200">200 Level</option>
+                            <option value="300">300 Level</option>
+                            <option value="400">400 Level</option>
+                            <option value="500">500 Level</option>
+                            <option value="postgraduate">Postgraduate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="preferredGate">Preferred Gate *</label>
+                        <select id="preferredGate" name="preferredGate" required>
+                            <option value="">Select Gate</option>
+                            <option value="north">North Gate</option>
+                            <option value="south">South Gate</option>
+                            <option value="west">West Gate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accommodationPreference">Accommodation Preference *</label>
+                        <select id="accommodationPreference" name="accommodationPreference" required>
+                            <option value="">Select Preference</option>
+                            <option value="private">Private Room</option>
+                            <option value="shared">Shared Room</option>
+                            <option value="either">Either (No Preference)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profilePhoto">Profile Photo (Headshot) *</label>
+                    <div class="file-upload-area" onclick="document.getElementById('profilePhoto').click()">
+                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" required class="hidden-input" onchange="handleProfilePhotoUpload(event)">
+                        <div class="file-upload-content">
+                            <i class="fas fa-camera"></i>
+                            <p>Click to upload your profile photo</p>
+                            <small>Recommended: Clear headshot, JPG/PNG, max 2MB</small>
+                        </div>
+                        <div class="photo-preview hidden" id="photoPreview">
+                            <img id="previewImage" src="" alt="Profile Preview">
+                            <button type="button" onclick="removeProfilePhoto()" class="remove-photo" title="Remove photo" aria-label="Remove profile photo">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priceRange">Budget Range (per semester) *</label>
+                    <select id="priceRange" name="priceRange" required>
+                        <option value="">Select Budget</option>
+                        <option value="0-30000">₦10,000 - ₦30,000</option>
+                        <option value="30000-60000">₦30,000 - ₦60,000</option>
+                        <option value="60000-100000">₦60,000 - ₦100,000</option>
+                        <option value="100000-200000">₦100,000 - ₦200,000</option>
+                        <option value="200000+">Above ₦200,000</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialRequests">Special Requirements (Optional)</label>
+                    <textarea id="specialRequests" name="specialRequests" rows="3" placeholder="Any specific amenities or requirements you're looking for..."></textarea>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="allowNotifications" name="allowNotifications">
+                        <span class="checkmark"></span>
+                        Send me notifications about new hostels and updates
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeRegistrationModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hostel Details Modal -->
+    <div class="modal" id="hostelModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="hostelModalTitle">Hostel Details</h3>
+                <button class="modal-close" onclick="closeHostelModal()">&times;</button>
+            </div>
+            <div id="hostelModalContent">
+                <!-- Hostel details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MWG Hostels</h4>
+                    <p>Making student accommodation accessible and affordable across Nigerian universities.</p>
+                    <div class="social-links">
+                        <a href="#" title="Follow us on Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Connect with us on LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>For Students</h4>
+                    <ul>
+                        <li><a href="#">Find Hostels</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Safety Guidelines</a></li>
+                        <li><a href="#">Student Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>For Realtors</h4>
+                    <ul>
+                        <li><a href="realtor-login.html">List Your Property</a></li>
+                        <li><a href="realtor-login.html">Realtor Dashboard</a></li>
+                        <li><a href="#">Verification Process</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Report Issues</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 MWG Hostels. All rights reserved. | Designed with ❤️ by <strong>Sama</strong> for Futarians</p>
+                <p><small>Connecting Futarians to their perfect accommodation since 2024</small></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="hostel-script.js"></script>
+</body>
+</html>
