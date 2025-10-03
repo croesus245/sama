@@ -288,9 +288,8 @@ function loadHostels() {
             name: "Royal Chambers",
             location: "north",
             price: "₦80,000",
-            period: "per semester",
+            period: "per session",
             image: "https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "AC", "Security", "Kitchen"],
             realtor: "Mr. Adebayo",
             rating: 4.9,
             available: true,
@@ -304,9 +303,8 @@ function loadHostels() {
             name: "Twin Paradise (Need Male Roommate)",
             location: "north",
             price: "₦45,000",
-            period: "per semester (shared)",
+            period: "per session (shared)",
             image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "Security", "Kitchen", "Laundry"],
             realtor: "Mrs. Fatima",
             rating: 4.7,
             available: true,
@@ -322,9 +320,8 @@ function loadHostels() {
             name: "Executive Suite",
             location: "south",
             price: "₦120,000",
-            period: "per semester",
+            period: "per session",
             image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "AC", "Security", "Kitchen", "Parking", "Generator"],
             realtor: "Dr. Ibrahim",
             rating: 4.9,
             available: true,
@@ -338,9 +335,8 @@ function loadHostels() {
             name: "Friendship Lodge (Female Only)",
             location: "south",
             price: "₦35,000",
-            period: "per semester (shared)",
+            period: "per session (shared)",
             image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "Security", "Kitchen"],
             realtor: "Sister Mary",
             rating: 4.6,
             available: true,
@@ -356,9 +352,8 @@ function loadHostels() {
             name: "Scholar's Den",
             location: "west",
             price: "₦65,000",
-            period: "per semester",
+            period: "per session",
             image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "Security", "Study Room", "Kitchen"],
             realtor: "Prof. Johnson",
             rating: 4.8,
             available: true,
@@ -372,9 +367,8 @@ function loadHostels() {
             name: "Study Buddies Haven",
             location: "west",
             price: "₦40,000",
-            period: "per semester (shared)",
+            period: "per session (shared)",
             image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "Security", "Study Room", "Kitchen"],
             realtor: "Mr. Kola",
             rating: 4.7,
             available: true,
@@ -389,9 +383,8 @@ function loadHostels() {
             name: "Luxury Palace [RENTED OUT]",
             location: "north",
             price: "₦150,000",
-            period: "per semester",
+            period: "per session",
             image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "AC", "Security", "Kitchen", "Parking", "Generator", "Swimming Pool"],
             realtor: "Chief Williams",
             rating: 5.0,
             available: false,
@@ -406,9 +399,8 @@ function loadHostels() {
             name: "Roommate Central (Need Male Student)",
             location: "south",
             price: "₦30,000",
-            period: "per semester (shared)",
+            period: "per session (shared)",
             image: "https://images.unsplash.com/photo-1549294413-26f195200c16?auto=format&fit=crop&w=800&q=80",
-            features: ["WiFi", "Security", "Kitchen", "Laundry"],
             realtor: "Mama Kemi",
             rating: 4.5,
             available: true,
@@ -476,10 +468,6 @@ function renderHostels(hostels) {
                 <div class="hostel-price">
                     <span class="price">${hostel.price}</span>
                     <span class="period">${hostel.period}</span>
-                </div>
-                
-                <div class="hostel-features">
-                    ${hostel.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                 </div>
                 
                 <div class="hostel-realtor">
@@ -561,10 +549,9 @@ function viewHostelDetails(hostelId) {
         <div class="hostel-details">
             <img src="${hostel.image}" alt="${hostel.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
             <h3>${hostel.name}</h3>
-            <p><i class="fas fa-map-marker-alt"></i> ${hostel.location.charAt(0).toUpperCase() + hostel.location.slice(1)} Campus</p>
+            <p><i class="fas fa-map-marker-alt"></i> ${hostel.location.charAt(0).toUpperCase() + hostel.location.slice(1)} Gate</p>
             <p><strong>Price:</strong> ${hostel.price} ${hostel.period}</p>
             <p><strong>Rating:</strong> <i class="fas fa-star" style="color: gold;"></i> ${hostel.rating}/5</p>
-            <p><strong>Features:</strong> ${hostel.features.join(', ')}</p>
             <p><strong>Managed by:</strong> ${hostel.realtor}</p>
             <div style="margin-top: 1rem;">
                 <button class="btn btn-primary" onclick="contactRealtor(${hostel.id}); closeModal();">
@@ -977,7 +964,7 @@ function clearFilters() {
     console.log('🧹 Clearing all filters...');
     
     // Reset all filter dropdowns
-    const filters = ['locationFilter', 'priceFilter', 'amenityFilter'];
+    const filters = ['locationFilter', 'priceFilter'];
     filters.forEach(filterId => {
         const filter = document.getElementById(filterId);
         if (filter) filter.value = '';
@@ -1091,7 +1078,6 @@ function filterHostels() {
     
     const locationFilter = document.getElementById('locationFilter')?.value || '';
     const priceFilter = document.getElementById('priceFilter')?.value || '';
-    const amenityFilter = document.getElementById('amenityFilter')?.value || '';
     
     let filtered = [...state.hostels];
     
@@ -1113,15 +1099,6 @@ function filterHostels() {
         });
     }
     
-    // Filter by amenities
-    if (amenityFilter) {
-        filtered = filtered.filter(hostel => 
-            hostel.features.some(feature => 
-                feature.toLowerCase().includes(amenityFilter.toLowerCase())
-            )
-        );
-    }
-    
     state.filteredHostels = filtered;
     renderHostels(filtered);
     
@@ -1134,9 +1111,9 @@ function handleAccommodationChange() {
     const roommatePreferencesGroup = document.getElementById('roommatePreferencesGroup');
     
     if (accommodationType === 'shared' && roommatePreferencesGroup) {
-        roommatePreferencesGroup.style.display = 'block';
+        roommatePreferencesGroup.classList.remove('hidden');
     } else if (roommatePreferencesGroup) {
-        roommatePreferencesGroup.style.display = 'none';
+        roommatePreferencesGroup.classList.add('hidden');
     }
 }
 
@@ -1202,12 +1179,12 @@ function showRoommateSearch() {
                     <div class="search-filters">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Campus Location</label>
+                                <label>Gate Location</label>
                                 <select id="roommateLocationFilter">
                                     <option value="">All Locations</option>
-                                    <option value="main">Main Campus</option>
-                                    <option value="south">South Campus</option>
-                                    <option value="north">North Campus</option>
+                                    <option value="north">North Gate</option>
+                                    <option value="south">South Gate</option>
+                                    <option value="west">West Gate</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1262,10 +1239,10 @@ function showRoommatePost() {
                         <div class="form-group">
                             <label for="roomLocation">Room Location *</label>
                             <select id="roomLocation" name="location" required>
-                                <option value="">Select Campus</option>
-                                <option value="main">Main Campus</option>
-                                <option value="south">South Campus</option>
-                                <option value="north">North Campus</option>
+                                <option value="">Select Gate</option>
+                                <option value="north">North Gate</option>
+                                <option value="south">South Gate</option>
+                                <option value="west">West Gate</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1426,7 +1403,7 @@ function renderRoommateResults(requests) {
                     <h4>${request.address}</h4>
                     <p class="roommate-location">
                         <i class="fas fa-map-marker-alt"></i>
-                        ${request.location.charAt(0).toUpperCase() + request.location.slice(1)} Campus
+                        ${request.location.charAt(0).toUpperCase() + request.location.slice(1)} Gate
                     </p>
                 </div>
                 <div class="roommate-price">₦${request.price.toLocaleString()}/month</div>

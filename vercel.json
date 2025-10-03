@@ -6,14 +6,18 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/demo.html"
+      "source": "/",
+      "destination": "/demo.html"
     },
     {
-      "src": "/realtor",
-      "dest": "/realtor-login.html"
+      "source": "/admin",
+      "destination": "/realtor-login.html"
+    },
+    {
+      "source": "/realtor",
+      "destination": "/realtor-login.html"
     }
   ],
   "headers": [
@@ -27,6 +31,10 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
       ]
     }

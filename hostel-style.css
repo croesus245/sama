@@ -1087,6 +1087,14 @@ body {
     display: block !important;
 }
 
+.sama-tagline {
+    display: block;
+    font-size: 0.4em;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .registration-container {

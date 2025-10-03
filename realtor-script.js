@@ -103,8 +103,8 @@ function showDashboard() {
     const dashboardSection = document.getElementById('dashboardSection');
     
     if (loginSection && dashboardSection) {
-        loginSection.style.display = 'none';
-        dashboardSection.style.display = 'block';
+        loginSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
         
         // Load realtor data
         const savedRealtor = localStorage.getItem('realtorData');
