@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roommate Finder - MWG Hostels</title>
+    <link rel="icon" type="image/png" href="MWG logo@300x.png">
+    <link rel="stylesheet" href="hostel-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .roommate-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: var(--space-4xl) 0;
+            text-align: center;
+        }
+
+        .roommate-actions {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            margin-top: var(--space-xl);
+            flex-wrap: wrap;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            text-align: center;
+            min-width: 280px;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .action-card h3 {
+            margin: var(--space-md) 0;
+            font-size: var(--font-size-xl);
+        }
+
+        .action-card p {
+            opacity: 0.9;
+            margin-bottom: var(--space-lg);
+        }
+
+        .roommate-listings {
+            padding: var(--space-4xl) 0;
+        }
+
+        .roommate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        .roommate-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            border: 2px solid transparent;
+        }
+
+        .roommate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-blue);
+        }
+
+        .roommate-header {
+            background: var(--gradient-blue);
+            color: white;
+            padding: var(--space-lg);
+            position: relative;
+        }
+
+        .roommate-status {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: var(--green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .roommate-status.found {
+            background: var(--red);
+        }
+
+        .roommate-content {
+            padding: var(--space-lg);
+        }
+
+        .roommate-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin: var(--space-md) 0;
+            font-size: var(--font-size-sm);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--gray-600);
+        }
+
+        .detail-item i {
+            color: var(--primary-blue);
+            width: 16px;
+        }
+
+        .roommate-actions {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+
+        .contact-btn {
+            flex: 1;
+            background: var(--gradient-blue);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-weight: 600;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .found-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-base);
+        }
+
+        .found-btn:hover {
+            background: var(--dark-green);
+        }
+
+        .media-gallery {
+            display: flex;
+            gap: var(--space-sm);
+            margin: var(--space-md) 0;
+            overflow-x: auto;
+        }
+
+        .media-item {
+            min-width: 100px;
+            height: 80px;
+            border-radius: var(--radius-base);
+            overflow: hidden;
+        }
+
+        .media-item img,
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="MWG logo@300x.png" alt="MWG Logo" class="logo">
+                <span class="brand-text">MWG Roommate Finder</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="demo.html" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Browse Rooms</a>
+                <a href="#" class="nav-link">My Posts</a>
+                <a href="demo.html#hostels" class="nav-link">Hostels</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="roommate-hero">
+        <div class="container">
+            <h1>Find Your Perfect Roommate</h1>
+            <p>Connect with fellow students looking for shared accommodation</p>
+            <small>Powered by MWG by SAMA d'GREAT platform</small>
+            
+            <div class="roommate-actions">
+                <div class="action-card" onclick="showPostRoomModal()">
+                    <i class="fas fa-home" style="font-size: 2rem; color: #fff;"></i>
+                    <h3>Post Your Room</h3>
+                    <p>Looking for a roommate to share your space? Post your room details here.</p>
+                    <button class="btn btn-outline" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        Post Room
+                    </button>
+                </div>
+                
+                <div class="action-card" onclick="showFindRoommateModal()">
+                    <i class="fas fa-search" style="font-size: 2rem; color: #fff;"></i>
+                    <h3>Find Roommate</h3>
+                    <p>Looking for someone to share a room with? Browse available roommate requests.</p>
+                    <button class="btn btn-outline" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        Find Roommate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roommate Listings -->
+    <section class="roommate-listings">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Available Rooms & Roommate Requests</h2>
+                <p>Find your perfect match from verified student posts</p>
+            </div>
+            
+            <div class="roommate-grid" id="roommateGrid">
+                <!-- Sample Roommate Post -->
+                <div class="roommate-card">
+                    <div class="roommate-header">
+                        <div class="roommate-status">Looking</div>
+                        <h3>Room 14, Embassy Street</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> FUTA South Gate</p>
+                    </div>
+                    
+                    <div class="roommate-content">
+                        <div class="media-gallery">
+                            <div class="media-item">
+                                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&h=150&fit=crop" alt="Room photo">
+                            </div>
+                            <div class="media-item">
+                                <video controls>
+                                    <source src="#" type="video/mp4">
+                                    Video tour
+                                </video>
+                            </div>
+                        </div>
+                        
+                        <p><strong>Posted by:</strong> Oluwaseun Great Sama</p>
+                        <p>Spacious room with AC, WiFi, and solar power backup. Looking for a neat and studious roommate.</p>
+                        
+                        <div class="roommate-details">
+                            <div class="detail-item">
+                                <i class="fas fa-naira-sign"></i>
+                                <span>₦85,000/year</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                <span>2 per room</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-wifi"></i>
+                                <span>WiFi included</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-solar-panel"></i>
+                                <span>Solar inverter</span>
+                            </div>
+                        </div>
+                        
+                        <div class="roommate-actions">
+                            <button class="contact-btn" onclick="contactRoommate('room14')">
+                                <i class="fas fa-comment"></i> Send Message
+                            </button>
+                            <button class="found-btn" onclick="markAsFound('room14')" style="display: none;">
+                                <i class="fas fa-check"></i> Roommate Found
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Another sample post -->
+                <div class="roommate-card">
+                    <div class="roommate-header">
+                        <div class="roommate-status found">Found</div>
+                        <h3>Paradise Lodge, Room 8</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> FUTA North Gate</p>
+                    </div>
+                    
+                    <div class="roommate-content">
+                        <p><strong>Posted by:</strong> Sarah Johnson</p>
+                        <p>Modern room with all amenities. <em>Roommate found - post closed.</em></p>
+                        
+                        <div class="roommate-details">
+                            <div class="detail-item">
+                                <i class="fas fa-naira-sign"></i>
+                                <span>₦120,000/year</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                <span>1 per room</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Deal completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Post Room Modal -->
+    <div class="modal" id="postRoomModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-home"></i> Post Your Room for Roommate</h3>
+                <button class="modal-close" onclick="closePostRoomModal()">&times;</button>
+            </div>
+            
+            <form class="registration-form" id="postRoomForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roomTitle">Room Title *</label>
+                        <input type="text" id="roomTitle" name="roomTitle" required placeholder="e.g., Room 14, Embassy Street">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <select id="location" name="location" required>
+                            <option value="">Select Gate</option>
+                            <option value="north">North Gate</option>
+                            <option value="south">South Gate</option>
+                            <option value="west">West Gate</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rent">Rent Amount (₦) *</label>
+                        <input type="number" id="rent" name="rent" required placeholder="85000">
+                    </div>
+                    <div class="form-group">
+                        <label for="rentPeriod">Rent Period *</label>
+                        <select id="rentPeriod" name="rentPeriod" required>
+                            <option value="">Select Period</option>
+                            <option value="month">Per Month</option>
+                            <option value="semester">Per Semester</option>
+                            <option value="year">Per Year</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullAddress">Full Address *</label>
+                    <input type="text" id="fullAddress" name="fullAddress" required placeholder="Embassy Street, FUTA South Gate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Room Description *</label>
+                    <textarea id="description" name="description" rows="4" required placeholder="Describe the room, amenities, and what you're looking for in a roommate"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Available Amenities</label>
+                    <div class="amenities-grid">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="WiFi">
+                            <span>WiFi Internet</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="AC">
+                            <span>Air Conditioning</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="Solar Inverter">
+                            <span>Solar Inverter</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="Solar Water System">
+                            <span>Solar Water System</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="Kitchen">
+                            <span>Kitchen Access</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="amenities" value="Security">
+                            <span>24/7 Security</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="roomPhotos">Room Photos (Upload 2-6 photos)</label>
+                    <div class="file-upload-area">
+                        <input type="file" id="roomPhotos" name="photos" multiple accept="image/*">
+                        <label for="roomPhotos" class="file-upload-label">
+                            <i class="fas fa-camera"></i>
+                            <span>Click to upload photos</span>
+                            <small>Show potential roommates what the room looks like</small>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="roomVideos">Room Videos (Optional - Upload 1-2 videos)</label>
+                    <div class="file-upload-area">
+                        <input type="file" id="roomVideos" name="videos" multiple accept="video/*">
+                        <label for="roomVideos" class="file-upload-label">
+                            <i class="fas fa-video"></i>
+                            <span>Click to upload videos</span>
+                            <small>Give a virtual tour of your room (Max 25MB per video)</small>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closePostRoomModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Post Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-comment"></i> Send Message</h3>
+                <button class="modal-close" onclick="closeContactModal()">&times;</button>
+            </div>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="senderName">Your Name *</label>
+                    <input type="text" id="senderName" name="senderName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="senderPhone">Your Phone Number *</label>
+                    <input type="tel" id="senderPhone" name="senderPhone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" rows="4" required placeholder="Hi! I saw your roommate post for [Room Title] on the MWG by SAMA d'GREAT platform. I'm interested in sharing the room. Can we discuss?"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeContactModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        function showPostRoomModal() {
+            document.getElementById('postRoomModal').style.display = 'flex';
+        }
+
+        function closePostRoomModal() {
+            document.getElementById('postRoomModal').style.display = 'none';
+        }
+
+        function showFindRoommateModal() {
+            alert('Find Roommate feature - browse through available posts above!');
+        }
+
+        function contactRoommate(roomId) {
+            // Pre-fill the message with platform attribution
+            const messageField = document.getElementById('message');
+            messageField.value = "Hi! I saw your roommate post on the MWG by SAMA d'GREAT platform. I'm interested in sharing the room. Can we discuss?";
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        function markAsFound(roomId) {
+            if (confirm('Mark this room as "Roommate Found"? This will close the post and notify interested parties.')) {
+                // Update the UI
+                const card = event.target.closest('.roommate-card');
+                const status = card.querySelector('.roommate-status');
+                status.textContent = 'Found';
+                status.classList.add('found');
+                
+                // Hide the "Found" button
+                event.target.style.display = 'none';
+                
+                // Add completion message
+                const content = card.querySelector('.roommate-content p:last-of-type');
+                content.innerHTML += ' <em>Roommate found - post closed.</em>';
+                
+                alert('Room marked as "Roommate Found"! The post has been closed and interested parties will be notified.');
+            }
+        }
+
+        // Form submissions
+        document.getElementById('postRoomForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Room posted successfully! Your listing will appear after verification.');
+            closePostRoomModal();
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Message sent successfully! The room owner will contact you soon.');
+            closeContactModal();
+        });
+
+        // File upload previews
+        document.getElementById('roomPhotos').addEventListener('change', function(e) {
+            const files = e.target.files;
+            console.log(`${files.length} photos selected for upload`);
+        });
+
+        document.getElementById('roomVideos').addEventListener('change', function(e) {
+            const files = e.target.files;
+            console.log(`${files.length} videos selected for upload`);
+        });
+    </script>
+</body>
+</html>

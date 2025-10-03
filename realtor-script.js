@@ -99,9 +99,11 @@ function handleLogin(form) {
 
 // Show Dashboard
 function showDashboard() {
+    // Check if we're on the login page
     const loginSection = document.getElementById('loginSection');
     const dashboardSection = document.getElementById('dashboardSection');
     
+    // If we have the login/dashboard sections (old format), use them
     if (loginSection && dashboardSection) {
         loginSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
@@ -115,6 +117,9 @@ function showDashboard() {
         // Update dashboard
         updateDashboardData();
         loadRealtorListings();
+    } else {
+        // Redirect to the new dashboard page
+        window.location.href = 'realtor-dashboard.html';
     }
 }
 

@@ -20,7 +20,7 @@
             </div>
             
             <div class="nav-menu">
-                <a href="index-new.html" class="nav-link">
+                <a href="demo.html" class="nav-link">
                     <i class="fas fa-home"></i> Back to Main Site
                 </a>
             </div>
@@ -157,10 +157,22 @@
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="hostelPrice">Price per Semester (₦) *</label>
-                                <input type="number" id="hostelPrice" name="price" min="10000" max="200000" required>
+                                <label for="hostelPrice">Price (₦) *</label>
+                                <input type="number" id="hostelPrice" name="price" min="10000" max="500000" required>
                             </div>
                             
+                            <div class="form-group">
+                                <label for="pricePeriod">Price Period *</label>
+                                <select id="pricePeriod" name="pricePeriod" required>
+                                    <option value="">Select Period</option>
+                                    <option value="semester">Per Semester</option>
+                                    <option value="year">Per Year</option>
+                                    <option value="month">Per Month</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
                             <div class="form-group">
                                 <label for="hostelCapacity">Room Capacity *</label>
                                 <select id="hostelCapacity" name="capacity" required>
@@ -211,6 +223,14 @@
                                     <span>Generator/Power Backup</span>
                                 </label>
                                 <label class="checkbox-item">
+                                    <input type="checkbox" name="amenities" value="Solar Inverter">
+                                    <span>Solar Inverter</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="amenities" value="Solar Water System">
+                                    <span>Solar Powered Water System</span>
+                                </label>
+                                <label class="checkbox-item">
                                     <input type="checkbox" name="amenities" value="Parking">
                                     <span>Parking Space</span>
                                 </label>
@@ -222,7 +242,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="hostelImages">Hostel Images * (Upload 3-8 photos)</label>
+                            <label for="hostelImages">Hostel Photos * (Upload 3-8 photos)</label>
                             <div class="file-upload-area">
                                 <input type="file" id="hostelImages" name="images" multiple accept="image/*" required>
                                 <label for="hostelImages" class="file-upload-label">
@@ -231,6 +251,19 @@
                                     <small>Select multiple high-quality images of your hostel</small>
                                 </label>
                                 <div class="image-previews" id="imagePreviews"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hostelVideos">Hostel Videos (Optional - Upload 1-3 videos)</label>
+                            <div class="file-upload-area">
+                                <input type="file" id="hostelVideos" name="videos" multiple accept="video/*">
+                                <label for="hostelVideos" class="file-upload-label">
+                                    <i class="fas fa-video"></i>
+                                    <span>Click to upload videos</span>
+                                    <small>Upload videos to showcase your hostel (Max 50MB per video)</small>
+                                </label>
+                                <div class="video-previews" id="videoPreviews"></div>
                             </div>
                         </div>
                         

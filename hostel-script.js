@@ -568,6 +568,8 @@ function contactRealtor(hostelId) {
     
     console.log(`📞 Contacting realtor for: ${hostel.name}`);
     
+    const defaultMessage = `Hi! I saw your hostel listing for ${hostel.name} on the MWG by SAMA d'GREAT platform. I'm interested in learning more about the accommodation. Can we discuss?`;
+    
     showModal('Contact Realtor', `
         <div class="contact-realtor">
             <h3>Contact ${hostel.realtor}</h3>
@@ -578,7 +580,7 @@ function contactRealtor(hostelId) {
                 <p><i class="fas fa-whatsapp"></i> <strong>WhatsApp:</strong> +234 801 234 5678</p>
             </div>
             <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="window.open('https://wa.me/2348012345678?text=Hi, I\\'m interested in ${hostel.name}', '_blank'); closeModal();">
+                <button class="btn btn-primary" onclick="window.open('https://wa.me/2348012345678?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();">
                     <i class="fab fa-whatsapp"></i> Chat on WhatsApp
                 </button>
             </div>
