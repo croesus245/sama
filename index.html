@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMA - MWG Hostels Platform</title>
+    <meta name="description" content="SAMA - Structurally solving common student challenges with sustainable and innovative solutions">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="hostel-style.css">
+    
+    <style>
+        .landing-hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .landing-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
+                        linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%), 
+                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
+            background-size: 60px 60px;
+            background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .landing-container {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .sama-logo {
+            max-width: 400px;
+            width: 90%;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); }
+            to { box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.4); }
+        }
+        
+        .landing-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .landing-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .landing-description {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .landing-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+        
+        .cta-button {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+        
+        .landing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-text {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.7);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
+        @media (max-width: 768px) {
+            .landing-title {
+                font-size: 2.5rem;
+            }
+            
+            .landing-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .landing-description {
+                font-size: 1rem;
+            }
+            
+            .sama-logo {
+                max-width: 300px;
+            }
+            
+            .landing-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Hero Section -->
+    <section class="landing-hero">
+        <div class="landing-container">
+            <!-- SAMA Logo -->
+            <img src="sama.png" alt="SAMA - Sustainable and Innovative Solutions" class="sama-logo">
+            
+            <!-- Main Content -->
+            <h1 class="landing-title">SAMA GREAT</h1>
+            <p class="landing-subtitle">Sustainable and Innovative Solutions</p>
+            <p class="landing-description">
+                Move With Great: Structurally solving common student challenges with sustainable and innovative solutions.
+                Connecting Futarians to their perfect accommodation since 2024.
+            </p>
+            
+            <!-- Call to Action Buttons -->
+            <div class="landing-cta">
+                <a href="demo.html" class="cta-button">
+                    <i class="fas fa-rocket"></i>
+                    Enter MWG Hostels Platform
+                </a>
+                <a href="roommate-finder.html" class="cta-button secondary">
+                    <i class="fas fa-users"></i>
+                    Find Roommates
+                </a>
+                <a href="realtor-login.html" class="cta-button secondary">
+                    <i class="fas fa-building"></i>
+                    Realtor Portal
+                </a>
+            </div>
+            
+            <!-- Feature Cards -->
+            <div class="landing-features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="feature-title">Student Hostels</h3>
+                    <p class="feature-text">Find verified, affordable accommodation near FUTA campus gates</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Roommate Matching</h3>
+                    <p class="feature-text">Connect with compatible roommates for shared living spaces</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Safe & Verified</h3>
+                    <p class="feature-text">All listings verified for safety and authenticity</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down fa-2x"></i>
+        </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section style="background: white; padding: 4rem 0;">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Quick Access</h2>
+                <p>Jump straight to what you need</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-search fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 1rem;">Browse Hostels</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">Explore verified hostels near campus gates</p>
+                    <a href="demo.html#hostels" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Browse Now
+                    </a>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-user-plus fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 1rem;">Join Platform</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">Create your student profile and start searching</p>
+                    <a href="demo.html" class="btn btn-primary" onclick="setTimeout(() => showRegistrationModal(), 500)">
+                        <i class="fas fa-arrow-right"></i> Register Now
+                    </a>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-building fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 1rem;">List Property</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">Property owners and realtors - list your hostels</p>
+                    <a href="realtor-login.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <img src="MWG logo@300x.png" alt="MWG Logo" class="footer-logo" onerror="this.style.display='none'">
+                        <h4>MWG Hostels by SAMA</h4>
+                    </div>
+                    <p>Making student accommodation accessible, stress and risk-free in FUTA.</p>
+                    <div class="social-links">
+                        <a href="#" title="Follow us on Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Connect with us on LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="demo.html">Browse Hostels</a></li>
+                        <li><a href="roommate-finder.html">Find Roommates</a></li>
+                        <li><a href="realtor-login.html">Realtor Portal</a></li>
+                        <li><a href="demo.html#about">About SAMA</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Safety Guidelines</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> hello@mwghostels.com</li>
+                        <li><i class="fas fa-phone"></i> +234 xxx xxx xxxx</li>
+                        <li><i class="fas fa-map-marker-alt"></i> FUTA, Akure</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 MWG Hostels. All rights reserved. | A Sustainable Product for Futarians, Driven by <strong>SAMA GREAT</strong>.</p>
+                <p><small>Move With Great: Structurally solving common student challenges with sustainable and innovative solutions.</small></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="hostel-script.js"></script>
+    <script>
+        // Smooth scrolling for scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Add some entrance animations
+        window.addEventListener('load', function() {
+            const logo = document.querySelector('.sama-logo');
+            const title = document.querySelector('.landing-title');
+            const subtitle = document.querySelector('.landing-subtitle');
+            const description = document.querySelector('.landing-description');
+            const buttons = document.querySelectorAll('.cta-button');
+            const features = document.querySelectorAll('.feature-card');
+            
+            // Animate logo
+            logo.style.opacity = '0';
+            logo.style.transform = 'scale(0.8) translateY(-20px)';
+            
+            setTimeout(() => {
+                logo.style.transition = 'all 0.8s ease';
+                logo.style.opacity = '1';
+                logo.style.transform = 'scale(1) translateY(0)';
+            }, 200);
+            
+            // Animate text elements
+            [title, subtitle, description].forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 500 + (index * 200));
+            });
+            
+            // Animate buttons
+            buttons.forEach((btn, index) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    btn.style.transition = 'all 0.6s ease';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, 1200 + (index * 150));
+            });
+            
+            // Animate feature cards
+            features.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 1800 + (index * 200));
+            });
+        });
+    </script>
+</body>
+</html>

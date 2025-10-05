@@ -48,7 +48,6 @@
                             <div class="form-group">
                                 <label for="realtorPassword">Password</label>
                                 <input type="password" id="realtorPassword" name="password" required>
-                                <small class="password-hint">💡 Demo passwords: sama2024, futarian, or mwgrealtor</small>
                             </div>
                             
                             <button type="submit" class="btn btn-primary btn-full">
@@ -146,12 +145,8 @@
                             
                             <div class="form-group">
                                 <label for="hostelLocation">Campus Location *</label>
-                                <select id="hostelLocation" name="location" required>
-                                    <option value="">Select Location</option>
-                                    <option value="northgate">Northgate</option>
-                                    <option value="southgate">Southgate</option>
-                                    <option value="westgate">Westgate</option>
-                                </select>
+                                <input type="text" id="hostelLocation" name="location" required placeholder="e.g., North Gate, South Gate, West Gate, or specify custom location">
+                                <small>Enter the specific gate location or area name near campus</small>
                             </div>
                         </div>
                         

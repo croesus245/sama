@@ -73,8 +73,20 @@ function handleLogin(form) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         
-        // Check for specific realtor password
-        if (password === 'sama2024' || password === 'futarian' || password === 'mwgrealtor') {
+        // Define valid realtor credentials
+        const validCredentials = [
+            { email: 'admin@mwghostels.com', password: 'sama2024' },
+            { email: 'realtor@mwghostels.com', password: 'futarian' },
+            { email: 'manager@mwghostels.com', password: 'mwgrealtor' },
+            { email: 'sama@mwghostels.com', password: 'sama2024' }
+        ];
+        
+        // Check if credentials match any valid combination
+        const isValidLogin = validCredentials.some(cred => 
+            cred.email === email && cred.password === password
+        );
+        
+        if (isValidLogin) {
             realtorState.isLoggedIn = true;
             realtorState.currentRealtor = {
                 name: email.split('@')[0].replace(/[^a-zA-Z ]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -92,7 +104,7 @@ function handleLogin(form) {
             
             console.log('✅ Login successful');
         } else {
-            showNotification('Invalid credentials. Use password: sama2024, futarian, or mwgrealtor', 'error');
+            showNotification('Invalid email or password. Please contact admin for access.', 'error');
         }
     }, 1500);
 }
@@ -477,26 +489,123 @@ function logout() {
 // Registration Form (placeholder)
 function showRegistrationForm() {
     showModal('Realtor Registration', `
-        <div class="registration-info">
-            <h3>Register as a Verified Realtor</h3>
-            <p>To become a verified realtor on MWG Hostels, please contact our admin team:</p>
-            <div style="text-align: left; margin: 1rem 0;">
-                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> admin@mwghostels.com</p>
-                <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +234 800 MWG HOSTELS</p>
-                <p><i class="fas fa-whatsapp"></i> <strong>WhatsApp:</strong> +234 800 694 4678</p>
+        <form id="realtorRegistrationForm" class="registration-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="realtorFullName">Full Name *</label>
+                    <input type="text" id="realtorFullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="realtorBusinessName">Business/Company Name *</label>
+                    <input type="text" id="realtorBusinessName" name="businessName" required>
+                </div>
             </div>
-            <p><strong>Requirements:</strong></p>
-            <ul style="text-align: left; margin: 1rem 0;">
-                <li>Valid business registration</li>
-                <li>Property ownership/management documents</li>
-                <li>Identity verification</li>
-                <li>Safety compliance certificates</li>
-            </ul>
-            <button class="btn btn-primary" onclick="window.open('https://wa.me/2348006944678?text=Hi, I want to register as a verified realtor on MWG Hostels', '_blank'); closeModal();">
-                <i class="fab fa-whatsapp"></i> Contact on WhatsApp
-            </button>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="realtorRegEmail">Email Address *</label>
+                    <input type="email" id="realtorRegEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="realtorPhone">Phone Number *</label>
+                    <input type="tel" id="realtorPhone" name="phone" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="realtorAddress">Business Address *</label>
+                <textarea id="realtorAddress" name="address" rows="2" required placeholder="Complete business address"></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="realtorRegPassword">Create Password *</label>
+                    <input type="password" id="realtorRegPassword" name="password" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="realtorConfirmPassword">Confirm Password *</label>
+                    <input type="password" id="realtorConfirmPassword" name="confirmPassword" required minlength="8">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="experienceYears">Years of Experience *</label>
+                <select id="experienceYears" name="experience" required>
+                    <option value="">Select Experience</option>
+                    <option value="0-1">Less than 1 year</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="5-10">5-10 years</option>
+                    <option value="10+">10+ years</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Property Types You Manage *</label>
+                <div class="checkbox-grid">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="propertyTypes" value="hostels">
+                        <span>Student Hostels</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="propertyTypes" value="apartments">
+                        <span>Apartments</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="propertyTypes" value="rooms">
+                        <span>Single Rooms</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="propertyTypes" value="houses">
+                        <span>Houses</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="businessLicense">Business Registration Number</label>
+                <input type="text" id="businessLicense" name="businessLicense" placeholder="RC Number or Business Registration">
+            </div>
+            
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="agreeTerms" required>
+                    <span class="checkmark"></span>
+                    I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Realtor Guidelines</a>
+                </label>
+            </div>
+            
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="verifyInfo" required>
+                    <span class="checkmark"></span>
+                    I confirm that all information provided is accurate and I have the right to list the properties
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Submit Registration
+                </button>
+            </div>
+        </form>
+        
+        <div class="registration-note">
+            <p><strong>Note:</strong> All realtor accounts are subject to verification. You will receive login credentials via email once approved.</p>
         </div>
     `);
+    
+    // Handle registration form submission
+    setTimeout(() => {
+        const regForm = document.getElementById('realtorRegistrationForm');
+        if (regForm) {
+            regForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRealtorRegistration(this);
+            });
+        }
+    }, 100);
 }
 
 // Utility Functions
@@ -566,6 +675,47 @@ function showModal(title, content) {
 
 function closeModal() {
     document.querySelectorAll('.custom-modal').forEach(m => m.remove());
+}
+
+// Handle Realtor Registration
+function handleRealtorRegistration(form) {
+    const formData = new FormData(form);
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirmPassword');
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match!', 'error');
+        return;
+    }
+    
+    // Validate at least one property type is selected
+    const propertyTypes = formData.getAll('propertyTypes');
+    if (propertyTypes.length === 0) {
+        showNotification('Please select at least one property type you manage.', 'error');
+        return;
+    }
+    
+    // Simulate registration process
+    showNotification('Processing registration...', 'info');
+    
+    setTimeout(() => {
+        showNotification('Registration submitted successfully! You will receive login credentials via email once your account is verified.', 'success');
+        closeModal();
+        
+        // Clear form
+        form.reset();
+    }, 2000);
+    
+    console.log('📝 Realtor registration submitted:', {
+        fullName: formData.get('fullName'),
+        businessName: formData.get('businessName'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        experience: formData.get('experience'),
+        propertyTypes: propertyTypes,
+        businessLicense: formData.get('businessLicense')
+    });
 }
 
 console.log('✅ MWG Realtor Portal JavaScript loaded successfully');
