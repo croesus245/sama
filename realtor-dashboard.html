@@ -392,10 +392,10 @@
                                     <span class="hostel-status active">Active</span>
                                 </div>
                                 <div class="hostel-actions">
-                                    <button title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button title="Edit" onclick="editHostel(this)"><i class="fas fa-edit"></i></button>
                                     <button title="View Analytics"><i class="fas fa-chart-bar"></i></button>
                                     <button title="Toggle Status"><i class="fas fa-toggle-on"></i></button>
-                                    <button title="Delete"><i class="fas fa-trash"></i></button>
+                                    <button title="Delete" onclick="deleteHostel(this)"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
 
@@ -413,10 +413,10 @@
                                     <span class="hostel-status pending">Pending Review</span>
                                 </div>
                                 <div class="hostel-actions">
-                                    <button title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button title="Edit" onclick="editHostel(this)"><i class="fas fa-edit"></i></button>
                                     <button title="View Analytics"><i class="fas fa-chart-bar"></i></button>
                                     <button title="Toggle Status"><i class="fas fa-toggle-off"></i></button>
-                                    <button title="Delete"><i class="fas fa-trash"></i></button>
+                                    <button title="Delete" onclick="deleteHostel(this)"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -554,6 +554,119 @@
         </div>
     </div>
 
+    <!-- Edit Hostel Modal -->
+    <div class="modal" id="editHostelModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Edit Hostel Details</h3>
+                <button class="modal-close" onclick="closeEditHostelModal()">&times;</button>
+            </div>
+            
+            <form id="editHostelForm" style="padding: var(--space-lg);">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                    <div class="form-group">
+                        <label for="editHostelName">Hostel Name *</label>
+                        <input type="text" id="editHostelName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHostelLocation">Location *</label>
+                        <select id="editHostelLocation" name="location" required>
+                            <option value="">Select Campus Area</option>
+                            <option value="north">North Gate</option>
+                            <option value="south">South Gate</option>
+                            <option value="west">West Gate</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                    <div class="form-group">
+                        <label for="editHostelPrice">Price per Semester (₦) *</label>
+                        <input type="number" id="editHostelPrice" name="price" min="10000" max="200000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHostelCapacity">Students per Room *</label>
+                        <select id="editHostelCapacity" name="capacity" required>
+                            <option value="">Select Capacity</option>
+                            <option value="1">1 per room</option>
+                            <option value="2">2 per room</option>
+                            <option value="3">3 per room</option>
+                            <option value="4">4 per room</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                    <label for="editHostelAddress">Address *</label>
+                    <input type="text" id="editHostelAddress" name="address" required placeholder="Full address of the hostel">
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                    <label for="editHostelDescription">Description *</label>
+                    <textarea id="editHostelDescription" name="description" rows="3" required placeholder="Describe the hostel facilities and environment"></textarea>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                    <div class="form-group">
+                        <label for="editHostelPhone">Phone Number *</label>
+                        <input type="tel" id="editHostelPhone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHostelWhatsapp">WhatsApp (Optional)</label>
+                        <input type="tel" id="editHostelWhatsapp" name="whatsapp">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                    <label>Available Amenities *</label>
+                    <div class="amenities-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm);">
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="wifi">
+                            <span>WiFi</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="power">
+                            <span>24/7 Power</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="water">
+                            <span>Running Water</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="security">
+                            <span>Security</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="parking">
+                            <span>Parking</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="kitchen">
+                            <span>Kitchen</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="laundry">
+                            <span>Laundry</span>
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="study">
+                            <span>Study Area</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="display: flex; gap: var(--space-md); justify-content: flex-end; padding-top: var(--space-lg); border-top: 1px solid var(--gray-200);">
+                    <button type="button" class="btn btn-outline" onclick="closeEditHostelModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Simple dashboard navigation
         function showSection(sectionName) {
@@ -643,6 +756,181 @@
         // Simple notification for demo
         function showNotification(message) {
             alert(message); // In production, use a proper notification system
+        }
+
+        // Edit Hostel Functionality
+        let currentEditingHostel = null;
+
+        function editHostel(button) {
+            // Get hostel data from the card
+            const hostelItem = button.closest('.hostel-item');
+            const hostelName = hostelItem.querySelector('h3').textContent;
+            const hostelMeta = hostelItem.querySelector('.hostel-meta');
+            const metaSpans = hostelMeta.querySelectorAll('span');
+            
+            // Extract data (this is a simplified version - in real app would come from database)
+            const location = metaSpans[0].textContent.replace('North Gate', 'north').replace('South Gate', 'south').replace('West Gate', 'west');
+            const price = metaSpans[1].textContent.replace(/[₦,\/semester]/g, '').trim();
+            const capacity = metaSpans[2].textContent.replace(' per room', '').trim();
+            
+            // Set current editing hostel
+            currentEditingHostel = {
+                name: hostelName,
+                location: location.toLowerCase(),
+                price: price,
+                capacity: capacity,
+                address: 'Sample Address, Campus Road', // Would come from database
+                description: 'A comfortable and affordable hostel for students', // Would come from database
+                phone: '08012345678', // Would come from database
+                whatsapp: '08012345678', // Would come from database
+                amenities: ['wifi', 'power', 'water', 'security'] // Would come from database
+            };
+            
+            // Populate form with current data
+            document.getElementById('editHostelName').value = currentEditingHostel.name;
+            document.getElementById('editHostelLocation').value = currentEditingHostel.location;
+            document.getElementById('editHostelPrice').value = currentEditingHostel.price;
+            document.getElementById('editHostelCapacity').value = currentEditingHostel.capacity;
+            document.getElementById('editHostelAddress').value = currentEditingHostel.address;
+            document.getElementById('editHostelDescription').value = currentEditingHostel.description;
+            document.getElementById('editHostelPhone').value = currentEditingHostel.phone;
+            document.getElementById('editHostelWhatsapp').value = currentEditingHostel.whatsapp || '';
+            
+            // Set amenities checkboxes
+            const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
+            amenityCheckboxes.forEach(checkbox => {
+                checkbox.checked = currentEditingHostel.amenities.includes(checkbox.value);
+            });
+            
+            // Show modal
+            document.getElementById('editHostelModal').style.display = 'flex';
+        }
+
+        function closeEditHostelModal() {
+            document.getElementById('editHostelModal').style.display = 'none';
+            currentEditingHostel = null;
+        }
+
+        function deleteHostel(button) {
+            const hostelItem = button.closest('.hostel-item');
+            const hostelName = hostelItem.querySelector('h3').textContent;
+            
+            if (confirm(`Are you sure you want to delete "${hostelName}"? This action cannot be undone.`)) {
+                // Animate removal
+                hostelItem.style.transition = 'all 0.3s ease';
+                hostelItem.style.transform = 'translateX(-100%)';
+                hostelItem.style.opacity = '0';
+                
+                setTimeout(() => {
+                    hostelItem.remove();
+                    showNotification(`"${hostelName}" has been deleted successfully.`);
+                }, 300);
+            }
+        }
+
+        // Handle edit form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const editForm = document.getElementById('editHostelForm');
+            if (editForm) {
+                editForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleHostelEdit(this);
+                });
+            }
+        });
+
+        function handleHostelEdit(form) {
+            const formData = new FormData(form);
+            
+            // Get updated data
+            const updatedData = {
+                name: formData.get('name'),
+                location: formData.get('location'),
+                price: formData.get('price'),
+                capacity: formData.get('capacity'),
+                address: formData.get('address'),
+                description: formData.get('description'),
+                phone: formData.get('phone'),
+                whatsapp: formData.get('whatsapp'),
+                amenities: formData.getAll('amenities')
+            };
+            
+            // Validate required fields
+            const requiredFields = ['name', 'location', 'price', 'capacity', 'address', 'description', 'phone'];
+            const missingFields = requiredFields.filter(field => !updatedData[field]);
+            
+            if (missingFields.length > 0) {
+                showNotification(`Please fill in all required fields: ${missingFields.join(', ')}`);
+                return;
+            }
+            
+            if (updatedData.amenities.length === 0) {
+                showNotification('Please select at least one amenity');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Changes...';
+            submitBtn.disabled = true;
+            
+            // Simulate save process
+            setTimeout(() => {
+                // Update the hostel card in the UI
+                updateHostelCard(updatedData);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Close modal
+                closeEditHostelModal();
+                
+                // Show success message
+                showNotification(`"${updatedData.name}" has been updated successfully!`);
+                
+                // In a real application, this would also update the database
+                console.log('Updated hostel data:', updatedData);
+            }, 1500);
+        }
+
+        function updateHostelCard(updatedData) {
+            // Find the hostel card that was being edited
+            const allHostelItems = document.querySelectorAll('.hostel-item');
+            let targetCard = null;
+            
+            // Find the card with the original name
+            allHostelItems.forEach(item => {
+                const nameElement = item.querySelector('h3');
+                if (nameElement && currentEditingHostel && nameElement.textContent === currentEditingHostel.name) {
+                    targetCard = item;
+                }
+            });
+            
+            if (targetCard) {
+                // Update name
+                const nameElement = targetCard.querySelector('h3');
+                nameElement.textContent = updatedData.name;
+                
+                // Update meta information
+                const metaElement = targetCard.querySelector('.hostel-meta');
+                const locationText = updatedData.location.charAt(0).toUpperCase() + updatedData.location.slice(1) + ' Gate';
+                const priceText = '₦' + parseInt(updatedData.price).toLocaleString() + '/semester';
+                const capacityText = updatedData.capacity + ' per room';
+                
+                metaElement.innerHTML = `
+                    <span><i class="fas fa-map-marker-alt"></i> ${locationText}</span>
+                    <span><i class="fas fa-naira-sign"></i> ${priceText}</span>
+                    <span><i class="fas fa-users"></i> ${capacityText}</span>
+                `;
+                
+                // Add visual feedback
+                targetCard.style.background = '#e8f5e8';
+                setTimeout(() => {
+                    targetCard.style.background = '';
+                }, 2000);
+            }
         }
 
         // Initialize dashboard

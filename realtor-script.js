@@ -285,6 +285,10 @@ function loadRealtorListings() {
                         <i class="fas fa-share-alt"></i>
                         Share
                     </button>
+                    <button class="btn btn-danger" onclick="deleteListing('${listing.id}')" title="Delete this listing">
+                        <i class="fas fa-trash"></i>
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -554,7 +558,256 @@ function validateHostelData(data) {
 // Listing Actions
 function editListing(listingId) {
     console.log(`✏️ Editing listing: ${listingId}`);
-    showNotification('Edit functionality coming soon!', 'info');
+    
+    const listing = realtorState.listings.find(l => l.id === listingId);
+    if (!listing) {
+        showNotification('Listing not found!', 'error');
+        return;
+    }
+    
+    // Create edit modal with current listing data
+    showModal('Edit Hostel Listing', `
+        <form id="editListingForm" class="edit-listing-form">
+            <input type="hidden" id="editListingId" value="${listing.id}">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editListingName">Hostel Name *</label>
+                    <input type="text" id="editListingName" name="name" value="${listing.name}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editListingLocation">Location *</label>
+                    <select id="editListingLocation" name="location" required>
+                        <option value="">Select Campus Area</option>
+                        <option value="north" ${listing.location === 'north' ? 'selected' : ''}>North Gate</option>
+                        <option value="south" ${listing.location === 'south' ? 'selected' : ''}>South Gate</option>
+                        <option value="west" ${listing.location === 'west' ? 'selected' : ''}>West Gate</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editListingPrice">Price per Semester (₦) *</label>
+                    <input type="number" id="editListingPrice" name="price" value="${listing.price}" min="10000" max="200000" required>
+                </div>
+                <div class="form-group">
+                    <label for="editListingCapacity">Students per Room *</label>
+                    <select id="editListingCapacity" name="capacity" required>
+                        <option value="">Select Capacity</option>
+                        <option value="1" ${listing.capacity == 1 ? 'selected' : ''}>1 per room</option>
+                        <option value="2" ${listing.capacity == 2 ? 'selected' : ''}>2 per room</option>
+                        <option value="3" ${listing.capacity == 3 ? 'selected' : ''}>3 per room</option>
+                        <option value="4" ${listing.capacity == 4 ? 'selected' : ''}>4 per room</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="editListingAddress">Address *</label>
+                <input type="text" id="editListingAddress" name="address" value="${listing.address}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editListingDescription">Description *</label>
+                <textarea id="editListingDescription" name="description" rows="3" required>${listing.description}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editListingPhone">Phone Number *</label>
+                    <input type="tel" id="editListingPhone" name="phone" value="${listing.phone}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editListingWhatsapp">WhatsApp (Optional)</label>
+                    <input type="tel" id="editListingWhatsapp" name="whatsapp" value="${listing.whatsapp || ''}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Available Amenities *</label>
+                <div class="amenities-grid">
+                    ${['wifi', 'power', 'water', 'security', 'parking', 'kitchen', 'laundry', 'study'].map(amenity => `
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="${amenity}" ${listing.amenities.includes(amenity) ? 'checked' : ''}>
+                            <span>${amenity.charAt(0).toUpperCase() + amenity.slice(1)}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    `);
+    
+    // Handle form submission
+    setTimeout(() => {
+        const editForm = document.getElementById('editListingForm');
+        if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleEditListing(this);
+            });
+        }
+    }, 100);
+}
+
+function handleEditListing(form) {
+    const formData = new FormData(form);
+    const listingId = formData.get('editListingId') || document.getElementById('editListingId').value;
+    
+    const updatedData = {
+        name: formData.get('name'),
+        location: formData.get('location'),
+        price: parseInt(formData.get('price')),
+        capacity: parseInt(formData.get('capacity')),
+        address: formData.get('address'),
+        description: formData.get('description'),
+        phone: formData.get('phone'),
+        whatsapp: formData.get('whatsapp'),
+        amenities: formData.getAll('amenities')
+    };
+    
+    // Validation
+    const requiredFields = ['name', 'location', 'price', 'capacity', 'address', 'description', 'phone'];
+    const missingFields = requiredFields.filter(field => !updatedData[field]);
+    
+    if (missingFields.length > 0) {
+        showNotification(`Please fill in all required fields: ${missingFields.join(', ')}`, 'error');
+        return;
+    }
+    
+    if (updatedData.amenities.length === 0) {
+        showNotification('Please select at least one amenity', 'error');
+        return;
+    }
+    
+    if (updatedData.price < 10000 || updatedData.price > 200000) {
+        showNotification('Price must be between ₦10,000 and ₦200,000', 'error');
+        return;
+    }
+    
+    // Show loading
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Changes...';
+    submitBtn.disabled = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+        // Find and update the listing
+        const listingIndex = realtorState.listings.findIndex(l => l.id === listingId);
+        if (listingIndex !== -1) {
+            // Keep original data that shouldn't change
+            const originalListing = realtorState.listings[listingIndex];
+            realtorState.listings[listingIndex] = {
+                ...originalListing,
+                ...updatedData,
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('realtorListings', JSON.stringify(realtorState.listings));
+            
+            // Update dashboard
+            updateDashboardData();
+            loadRealtorListings();
+            
+            // Show success
+            showNotification(`"${updatedData.name}" updated successfully!`, 'success');
+            
+            // Close modal
+            closeModal();
+            
+            console.log('✅ Listing updated successfully:', updatedData);
+        } else {
+            showNotification('Error: Listing not found!', 'error');
+        }
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 1500);
+}
+
+function deleteListing(listingId) {
+    const listing = realtorState.listings.find(l => l.id === listingId);
+    if (!listing) {
+        showNotification('Listing not found!', 'error');
+        return;
+    }
+    
+    // Show confirmation modal
+    showModal('Delete Hostel Listing', `
+        <div class="delete-confirmation">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                <h3>Are you sure you want to delete this listing?</h3>
+                <p><strong>"${listing.name}"</strong></p>
+                <p style="color: var(--gray-600);">This action cannot be undone. All data associated with this listing will be permanently removed.</p>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteListing('${listingId}')">
+                    <i class="fas fa-trash"></i> Delete Permanently
+                </button>
+            </div>
+        </div>
+    `);
+}
+
+function confirmDeleteListing(listingId) {
+    const listing = realtorState.listings.find(l => l.id === listingId);
+    if (!listing) {
+        showNotification('Listing not found!', 'error');
+        return;
+    }
+    
+    // Show loading state in modal
+    const modal = document.querySelector('.custom-modal .modal-content');
+    if (modal) {
+        modal.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                <h3>Deleting "${listing.name}"...</h3>
+                <p>Please wait while we remove the listing.</p>
+            </div>
+        `;
+    }
+    
+    // Simulate deletion process
+    setTimeout(() => {
+        // Remove from listings array
+        const listingIndex = realtorState.listings.findIndex(l => l.id === listingId);
+        if (listingIndex !== -1) {
+            realtorState.listings.splice(listingIndex, 1);
+            
+            // Save to localStorage
+            localStorage.setItem('realtorListings', JSON.stringify(realtorState.listings));
+            
+            // Update dashboard
+            updateDashboardData();
+            loadRealtorListings();
+            
+            // Close modal
+            closeModal();
+            
+            // Show success
+            showNotification(`"${listing.name}" has been deleted successfully`, 'success');
+            
+            console.log('✅ Listing deleted successfully:', listing.name);
+        } else {
+            showNotification('Error: Could not delete listing', 'error');
+        }
+    }, 2000);
 }
 
 function viewListingDetails(listingId) {
