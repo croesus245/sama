@@ -388,9 +388,9 @@ body {
     /* Fallback gradient if image doesn't load */
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     /* Main background with image and overlay */
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%), 
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%), 
                 url('background.jpg') center center;
-    background-size: cover;
+    background-size: 100% 100%;
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: white;
@@ -402,6 +402,7 @@ body {
     .hero {
         background-attachment: scroll;
         background-position: center center;
+        background-size: 100% 100%;
     }
 }
 
