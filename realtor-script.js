@@ -87,12 +87,25 @@ function handleLogin(form) {
         );
         
         if (isValidLogin) {
+            // Get brand info based on email for demo
+            let brandInfo = {};
+            if (email === 'admin@mwghostels.com') {
+                brandInfo = { brandName: 'MWG Premium Properties', fullName: 'Administrator' };
+            } else if (email === 'realtor@mwghostels.com') {
+                brandInfo = { brandName: 'FUTA Student Housing Co.', fullName: 'John Smith' };
+            } else if (email === 'manager@mwghostels.com') {
+                brandInfo = { brandName: 'Campus Living Solutions', fullName: 'Sarah Johnson' };
+            } else if (email === 'sama@mwghostels.com') {
+                brandInfo = { brandName: 'SAMA Properties', fullName: 'Oluwaseun Great Sama' };
+            }
+            
             realtorState.isLoggedIn = true;
             realtorState.currentRealtor = {
                 name: email.split('@')[0].replace(/[^a-zA-Z ]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
                 email: email,
                 id: 'realtor_' + Date.now(),
-                verified: true
+                verified: true,
+                ...brandInfo
             };
             
             // Save login state
@@ -141,6 +154,30 @@ function updateDashboardData() {
     const nameElement = document.getElementById('realtorName');
     if (nameElement && realtorState.currentRealtor) {
         nameElement.textContent = realtorState.currentRealtor.name;
+    }
+    
+    // Update brand information if available
+    const brandNameElement = document.getElementById('brandName');
+    const realNameElement = document.getElementById('realtorRealName');
+    const bannerSection = document.getElementById('realtorBanner');
+    const bannerImage = document.getElementById('bannerImage');
+    
+    if (realtorState.currentRealtor) {
+        // Show brand name if available
+        if (brandNameElement && realtorState.currentRealtor.brandName) {
+            brandNameElement.textContent = realtorState.currentRealtor.brandName;
+        }
+        
+        // Show real name if available
+        if (realNameElement && realtorState.currentRealtor.fullName) {
+            realNameElement.textContent = realtorState.currentRealtor.fullName;
+        }
+        
+        // Show banner if available
+        if (bannerSection && realtorState.currentRealtor.bannerUrl) {
+            bannerImage.src = realtorState.currentRealtor.bannerUrl;
+            bannerSection.style.display = 'block';
+        }
     }
     
     // Load saved listings and update stats
@@ -224,6 +261,10 @@ function loadRealtorListings() {
                     <button class="btn btn-primary" onclick="viewListingDetails('${listing.id}')">
                         <i class="fas fa-eye"></i>
                         View
+                    </button>
+                    <button class="listing-share-btn" onclick="shareListingLink('${listing.id}')" title="Share this listing">
+                        <i class="fas fa-share-alt"></i>
+                        Share
                     </button>
                 </div>
             </div>
@@ -330,7 +371,15 @@ function handleAddHostel(form) {
             createdAt: new Date().toISOString(),
             views: Math.floor(Math.random() * 50), // Mock data
             inquiries: Math.floor(Math.random() * 10), // Mock data
-            images: []
+            images: [],
+            // Add realtor brand information
+            realtorInfo: {
+                name: realtorState.currentRealtor?.name || 'Unknown',
+                fullName: realtorState.currentRealtor?.fullName || realtorState.currentRealtor?.name,
+                brandName: realtorState.currentRealtor?.brandName || realtorState.currentRealtor?.name,
+                email: realtorState.currentRealtor?.email,
+                bannerUrl: realtorState.currentRealtor?.bannerUrl
+            }
         };
         
         // Collect amenities
@@ -341,26 +390,82 @@ function handleAddHostel(form) {
         });
         hostelData.amenities = amenities;
         
-        // Handle images (for demo, use placeholder URLs)
+        // Get submit button for loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Handle images - convert uploaded files to displayable URLs
         const imageFiles = formData.getAll('images');
-        if (imageFiles.length > 0) {
-            // In a real app, you'd upload these to a server
-            // For demo, we'll use placeholder URLs
+        
+        if (imageFiles.length > 0 && imageFiles[0].name) {
+            // Show loading
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Images...';
+            submitBtn.disabled = true;
+            
+            // Process uploaded images
+            const imagePromises = Array.from(imageFiles).map(file => {
+                return new Promise((resolve) => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            resolve(e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            });
+            
+            // Wait for all images to be processed
+            Promise.all(imagePromises).then(imageUrls => {
+                hostelData.images = imageUrls.filter(url => url !== null);
+                
+                // If no valid images, use placeholders
+                if (hostelData.images.length === 0) {
+                    hostelData.images = [
+                        'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80',
+                        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+                    ];
+                }
+                
+                // Save the hostel with actual images
+                saveHostelData(hostelData, form, submitBtn, originalText);
+            }).catch(error => {
+                console.error('Error processing images:', error);
+                // Use placeholders if image processing fails
+                hostelData.images = [
+                    'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'
+                ];
+                saveHostelData(hostelData, form, submitBtn, originalText);
+            });
+        } else {
+            // No images uploaded, use placeholders
             hostelData.images = [
                 'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
             ];
+            saveHostelData(hostelData, form, submitBtn, originalText);
         }
         
+    } catch (error) {
+        console.error('❌ Error adding hostel:', error);
+        showNotification('Error adding hostel. Please try again.', 'error');
+    }
+}
+
+// Separate function to save hostel data
+function saveHostelData(hostelData, form, submitBtn, originalText) {
+    try {
         // Validation
         if (!validateHostelData(hostelData)) {
+            // Reset button on validation failure
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
             return;
         }
         
         // Show loading
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Hostel...';
         submitBtn.disabled = true;
         
@@ -384,14 +489,18 @@ function handleAddHostel(form) {
             submitBtn.disabled = false;
             
             // Show success
-            showNotification('Hostel listing added successfully!', 'success');
+            showNotification('Hostel listing added successfully! Images have been saved.', 'success');
             
-            console.log('✅ Hostel added successfully');
+            console.log('✅ Hostel added successfully with images:', hostelData.images.length);
         }, 2000);
         
     } catch (error) {
-        console.error('❌ Error adding hostel:', error);
+        console.error('❌ Error saving hostel:', error);
         showNotification('Failed to add hostel. Please try again.', 'error');
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
     }
 }
 
@@ -493,11 +602,31 @@ function showRegistrationForm() {
             <div class="form-row">
                 <div class="form-group">
                     <label for="realtorFullName">Full Name *</label>
-                    <input type="text" id="realtorFullName" name="fullName" required>
+                    <input type="text" id="realtorFullName" name="fullName" required placeholder="Your real name (will be displayed)">
+                    <small>Your real name will always be shown for transparency</small>
                 </div>
                 <div class="form-group">
-                    <label for="realtorBusinessName">Business/Company Name *</label>
-                    <input type="text" id="realtorBusinessName" name="businessName" required>
+                    <label for="realtorBusinessName">Business/Brand Name *</label>
+                    <input type="text" id="realtorBusinessName" name="businessName" required placeholder="Your business or brand name">
+                    <small>This will be prominently displayed on your listings</small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="businessBanner">Business Logo/Banner *</label>
+                <div class="file-upload-area">
+                    <input type="file" id="businessBanner" name="banner" accept="image/*" required>
+                    <label for="businessBanner" class="file-upload-label">
+                        <i class="fas fa-image"></i>
+                        <span>Upload Business Logo/Banner</span>
+                        <small>Recommended: 1200x300px, max 5MB. Will be displayed on your profile and listings.</small>
+                    </label>
+                    <div class="banner-preview" id="bannerPreview" style="display: none;">
+                        <img id="bannerPreviewImage" src="" alt="Banner Preview" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px;">
+                        <button type="button" onclick="removeBanner()" class="remove-banner" title="Remove banner">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -604,6 +733,12 @@ function showRegistrationForm() {
                 e.preventDefault();
                 handleRealtorRegistration(this);
             });
+            
+            // Add banner upload handler
+            const bannerInput = document.getElementById('businessBanner');
+            if (bannerInput) {
+                bannerInput.addEventListener('change', handleBannerUpload);
+            }
         }
     }, 100);
 }
@@ -716,6 +851,92 @@ function handleRealtorRegistration(form) {
         propertyTypes: propertyTypes,
         businessLicense: formData.get('businessLicense')
     });
+}
+
+// Banner handling functions
+function handleBannerUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('bannerPreview');
+            const img = document.getElementById('bannerPreviewImage');
+            
+            img.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeBanner() {
+    const input = document.getElementById('businessBanner');
+    const preview = document.getElementById('bannerPreview');
+    
+    input.value = '';
+    preview.style.display = 'none';
+}
+
+// Share listing functionality
+function shareListingLink(listingId) {
+    const baseUrl = window.location.origin + window.location.pathname.replace('realtor-login.html', '');
+    const shareUrl = `${baseUrl}demo.html#listing-${listingId}`;
+    
+    // Create share modal
+    showModal('Share Listing', `
+        <div class="share-options">
+            <h3>Share this listing</h3>
+            <div class="share-url-container">
+                <input type="text" id="shareUrl" value="${shareUrl}" readonly class="share-url-input">
+                <button class="btn btn-primary" onclick="copyToClipboard('shareUrl')">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+            </div>
+            
+            <div class="share-buttons">
+                <button class="btn btn-social whatsapp" onclick="shareToWhatsApp('${shareUrl}')">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn btn-social facebook" onclick="shareToFacebook('${shareUrl}')">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+                <button class="btn btn-social twitter" onclick="shareToTwitter('${shareUrl}')">
+                    <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="btn btn-social email" onclick="shareViaEmail('${shareUrl}')">
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+            </div>
+        </div>
+    `);
+}
+
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    showNotification('Link copied to clipboard!', 'success');
+}
+
+function shareToWhatsApp(url) {
+    const text = encodeURIComponent(`Check out this amazing hostel listing: ${url}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function shareToFacebook(url) {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+}
+
+function shareToTwitter(url) {
+    const text = encodeURIComponent('Check out this amazing hostel listing!');
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank');
+}
+
+function shareViaEmail(url) {
+    const subject = encodeURIComponent('Hostel Listing from MWG Hostels');
+    const body = encodeURIComponent(`Hi!\n\nI found this great hostel listing that might interest you:\n\n${url}\n\nBest regards`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
 console.log('✅ MWG Realtor Portal JavaScript loaded successfully');
