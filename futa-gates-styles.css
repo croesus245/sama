@@ -1,0 +1,76 @@
+/* FUTA Gate Images Enhancement */
+.campus-image img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(0.9) contrast(1.1);
+}
+
+.campus-card:hover .campus-image img {
+    transform: scale(1.05);
+    filter: brightness(1) contrast(1.2);
+}
+
+/* Gate-specific styles */
+.campus-card[data-location="north"] .campus-overlay {
+    background: linear-gradient(45deg, rgba(34, 139, 34, 0.8), rgba(34, 139, 34, 0.6));
+}
+
+.campus-card[data-location="south"] .campus-overlay {
+    background: linear-gradient(45deg, rgba(30, 144, 255, 0.8), rgba(30, 144, 255, 0.6));
+}
+
+.campus-card[data-location="west"] .campus-overlay {
+    background: linear-gradient(45deg, rgba(255, 140, 0, 0.8), rgba(255, 140, 0, 0.6));
+}
+
+/* FUTA Badge for authentic gate images */
+.futa-gate-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 100, 0, 0.9);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.futa-gate-badge i {
+    margin-right: 0.25rem;
+}
+
+/* Enhanced campus info styling */
+.campus-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.campus-info p {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile optimization for gate images */
+@media (max-width: 768px) {
+    .campus-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .campus-card {
+        height: 250px;
+    }
+    
+    .futa-gate-badge {
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+}

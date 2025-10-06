@@ -12,6 +12,7 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="hostel-style.css">
+    <link rel="stylesheet" href="futa-gates-styles.css">
     
     <!-- Quick Demo Styles -->
     <style>
@@ -253,18 +254,21 @@
     <section class="campus-section" id="campusSection">
         <div class="container">
             <div class="section-header">
-                <h2>Choose Your Gate Location</h2>
-                <p>Find the perfect hostel near your academic institution</p>
+                <h2>Choose Your FUTA Gate Location</h2>
+                <p>Find the perfect hostel near your preferred campus entrance</p>
             </div>
             
             <div class="campus-grid">
                 <div class="campus-card" data-location="north" onclick="showCampusHostels('north')">
                     <div class="campus-image">
-                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" alt="North Gate">
+                        <img src="images/North gate.jpg" alt="FUTA North Gate" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80'">
+                        <div class="futa-gate-badge">
+                            <i class="fas fa-camera"></i>Real Photo
+                        </div>
                         <div class="campus-overlay">
                             <div class="campus-info">
                                 <h3>North Gate</h3>
-                                <p>Prime location with 150+ rooms</p>
+                                <p>Main campus entrance - closest to key faculties</p>
                                 <div class="campus-stats">
                                     <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 2-10 min walk</span>
@@ -276,11 +280,14 @@
                 
                 <div class="campus-card" data-location="south" onclick="showCampusHostels('south')">
                     <div class="campus-image">
-                        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80" alt="South Gate">
+                        <img src="images/south gate.jpeg" alt="FUTA South Gate" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80'">
+                        <div class="futa-gate-badge">
+                            <i class="fas fa-camera"></i>Real Photo
+                        </div>
                         <div class="campus-overlay">
                             <div class="campus-info">
                                 <h3>South Gate</h3>
-                                <p>Affordable options with great amenities</p>
+                                <p>Alternative entrance with easy access to town</p>
                                 <div class="campus-stats">
                                     <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 5-15 min walk</span>
@@ -292,11 +299,11 @@
                 
                 <div class="campus-card" data-location="west" onclick="showCampusHostels('west')">
                     <div class="campus-image">
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80" alt="West Gate">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80" alt="West Gate" loading="lazy">
                         <div class="campus-overlay">
                             <div class="campus-info">
                                 <h3>West Gate</h3>
-                                <p>Quiet environment, perfect for studies</p>
+                                <p>Serene area - perfect for focused studies</p>
                                 <div class="campus-stats">
                                     <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 10-20 min walk</span>

@@ -1,0 +1,3 @@
+// In browser console:
+clearAllData()
+// Should show "No hostels available yet"

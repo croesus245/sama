@@ -331,6 +331,9 @@ function loadHostels() {
     updateLiveStats();
     
     console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
+    updateLiveStats();
+    
+    console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
 }
 
 // Update Live Statistics
@@ -1859,6 +1862,15 @@ window.addEventListener('storage', function(e) {
     }
 });
 
+// Also listen for focus events to refresh when switching tabs
+window.addEventListener('focus', function() {
+    // Only refresh if there were no hostels before
+    if (state.hostels.length === 0) {
+        console.log('🔄 Page focus detected, checking for new listings...');
+        loadHostels();
+    }
+});
+
 // Add a manual refresh function for the page
 function refreshHostelListings() {
     console.log('🔄 Manually refreshing hostel listings...');
@@ -1866,8 +1878,18 @@ function refreshHostelListings() {
     showNotification('Hostel listings refreshed!', 'success');
 }
 
-// Make refresh function available globally
+// Clear all data for testing (dev function)
+function clearAllData() {
+    localStorage.removeItem('realtorListings');
+    localStorage.removeItem('realtorData');
+    localStorage.removeItem('realtorLoggedIn');
+    loadHostels();
+    showNotification('All data cleared for testing!', 'info');
+}
+
+// Make functions available globally
 window.refreshHostelListings = refreshHostelListings;
+window.clearAllData = clearAllData;
 
 // Periodic check for new listings (every 30 seconds)
 setInterval(() => {
