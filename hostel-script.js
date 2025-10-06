@@ -606,16 +606,21 @@ function viewHostelDetails(hostelId) {
 
 function contactRealtor(hostelId) {
     const hostel = state.hostels.find(h => h.id === hostelId);
-    if (!hostel) return;
+    if (!hostel) {
+        showNotification('Hostel not found', 'error');
+        return;
+    }
     
     console.log(`📞 Contacting realtor for: ${hostel.name}`);
     
-    const defaultMessage = `Hi! I saw your hostel listing for "${hostel.name}" on the MWG Hostels platform powered by SAMA. I'm interested in learning more about the accommodation. Can we discuss the details?`;
+    const platformName = ENV.get('PLATFORM_NAME', 'MWG Hostels');
+    const platformTagline = ENV.get('PLATFORM_TAGLINE', 'Powered by SAMA');
+    const defaultMessage = `Hi! I saw your hostel listing for "${hostel.name}" on the ${platformName} platform ${platformTagline}. I'm interested in learning more about the accommodation. Can we discuss the details?`;
     
     // Generate realistic contact info based on realtor data
-    const phoneNumber = hostel.realtorContact || '+234 801 234 5678';
+    const phoneNumber = hostel.realtorContact || ENV.get('SUPPORT_PHONE', '+234 801 234 5678');
     const whatsappNumber = hostel.whatsapp || phoneNumber;
-    const email = `${(hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, '')}@mwghostels.com`;
+    const email = ENV.generateSecureEmail((hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, ''));
     
     showModal('Contact Realtor', `
         <div class="contact-realtor">
@@ -655,7 +660,7 @@ function contactRealtor(hostelId) {
                 <button class="btn btn-primary" onclick="window.open('https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </button>
-                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name)}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
+                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name + ' - ' + ENV.get('PLATFORM_NAME', 'MWG Hostels'))}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
                     <i class="fas fa-envelope"></i> Email
                 </button>
             </div>
@@ -663,7 +668,7 @@ function contactRealtor(hostelId) {
             <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
                 <p style="margin: 0; font-size: 0.9rem; color: var(--primary-blue);">
                     <i class="fas fa-shield-check"></i> 
-                    This is a verified realtor on the MWG Hostels platform
+                    This is a verified realtor on the ${ENV.get('PLATFORM_NAME', 'MWG Hostels')} platform
                 </p>
             </div>
         </div>

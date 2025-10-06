@@ -73,39 +73,18 @@ function handleLogin(form) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         
-        // Define valid realtor credentials
-        const validCredentials = [
-            { email: 'admin@mwghostels.com', password: 'sama2024' },
-            { email: 'realtor@mwghostels.com', password: 'futarian' },
-            { email: 'manager@mwghostels.com', password: 'mwgrealtor' },
-            { email: 'sama@mwghostels.com', password: 'sama2024' }
-        ];
+        // Use secure environment configuration for credential validation
+        const validCredential = ENV.validateRealtorLogin(email, password);
         
-        // Check if credentials match any valid combination
-        const isValidLogin = validCredentials.some(cred => 
-            cred.email === email && cred.password === password
-        );
-        
-        if (isValidLogin) {
-            // Get brand info based on email for demo
-            let brandInfo = {};
-            if (email === 'admin@mwghostels.com') {
-                brandInfo = { brandName: 'MWG Premium Properties', fullName: 'Administrator' };
-            } else if (email === 'realtor@mwghostels.com') {
-                brandInfo = { brandName: 'FUTA Student Housing Co.', fullName: 'John Smith' };
-            } else if (email === 'manager@mwghostels.com') {
-                brandInfo = { brandName: 'Campus Living Solutions', fullName: 'Sarah Johnson' };
-            } else if (email === 'sama@mwghostels.com') {
-                brandInfo = { brandName: 'SAMA Properties', fullName: 'Oluwaseun Great Sama' };
-            }
-            
+        if (validCredential) {
             realtorState.isLoggedIn = true;
             realtorState.currentRealtor = {
                 name: email.split('@')[0].replace(/[^a-zA-Z ]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
                 email: email,
                 id: 'realtor_' + Date.now(),
                 verified: true,
-                ...brandInfo
+                brandName: validCredential.brandName,
+                fullName: validCredential.fullName
             };
             
             // Save login state
@@ -113,11 +92,12 @@ function handleLogin(form) {
             localStorage.setItem('realtorData', JSON.stringify(realtorState.currentRealtor));
             
             showDashboard();
-            showNotification('Welcome to MWG Realtor Portal! Built by Sama for Futarians.', 'success');
+            showNotification(`Welcome to ${ENV.get('PLATFORM_NAME')}! ${ENV.get('PLATFORM_TAGLINE')}`, 'success');
             
             console.log('✅ Login successful');
         } else {
             showNotification('Invalid email or password. Please contact admin for access.', 'error');
+            console.log('❌ Login failed - invalid credentials');
         }
     }, 1500);
 }
@@ -1206,7 +1186,7 @@ function shareToTwitter(url) {
 }
 
 function shareViaEmail(url) {
-    const subject = encodeURIComponent('Hostel Listing from MWG Hostels');
+    const subject = encodeURIComponent(`Hostel Listing from ${ENV.get('PLATFORM_NAME', 'MWG Hostels')}`);
     const body = encodeURIComponent(`Hi!\n\nI found this great hostel listing that might interest you:\n\n${url}\n\nBest regards`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
