@@ -304,7 +304,7 @@
                         <p>Welcome back! Here's what's happening with your hostel listings.</p>
                     </div>
 
-                    <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);">
+                    <div class="dashboard-stats">
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-home"></i>
@@ -360,7 +360,7 @@
                 </div>
 
                 <!-- Hostels Section -->
-                <div id="hostels-section" class="content-section" style="display: none;">
+                <div id="hostels-section" class="content-section">
                     <div class="content-header">
                         <h1>My Hostels</h1>
                         <p>Manage your hostel listings and track their performance.</p>
@@ -424,7 +424,7 @@
                 </div>
 
                 <!-- Roommate Posts Section -->
-                <div id="roommate-posts-section" class="content-section" style="display: none;">
+                <div id="roommate-posts-section" class="content-section">
                     <div class="content-header">
                         <h1>My Roommate Posts</h1>
                         <p>Manage your roommate finding posts and track responses.</p>
@@ -478,7 +478,7 @@
                                         <span><i class="fas fa-check-circle"></i> Roommate found</span>
                                         <span><i class="fas fa-calendar"></i> Closed 2 days ago</span>
                                     </div>
-                                    <span class="hostel-status pending" style="background: var(--green); color: white;">Found</span>
+                                    <span class="hostel-status found">Found</span>
                                 </div>
                                 <div class="hostel-actions">
                                     <button title="View Details"><i class="fas fa-eye"></i></button>
@@ -491,7 +491,7 @@
                 </div>
 
                 <!-- Inquiries Section -->
-                <div id="inquiries-section" class="content-section" style="display: none;">
+                <div id="inquiries-section" class="content-section">
                     <div class="content-header">
                         <h1>Student Inquiries</h1>
                         <p>Respond to student questions and booking requests.</p>
@@ -505,7 +505,7 @@
                 </div>
 
                 <!-- Analytics Section -->
-                <div id="analytics-section" class="content-section" style="display: none;">
+                <div id="analytics-section" class="content-section">
                     <div class="content-header">
                         <h1>Analytics & Reports</h1>
                         <p>Track the performance of your hostel listings.</p>
@@ -519,7 +519,7 @@
                 </div>
 
                 <!-- Settings Section -->
-                <div id="settings-section" class="content-section" style="display: none;">
+                <div id="settings-section" class="content-section">
                     <div class="content-header">
                         <h1>Account Settings</h1>
                         <p>Manage your account information and preferences.</p>
@@ -536,15 +536,15 @@
     </div>
 
     <!-- Add Hostel Modal (Simplified) -->
-    <div class="modal" id="addHostelModal" style="display: none;">
+    <div class="modal" id="addHostelModal">
         <div class="modal-content modal-large">
             <div class="modal-header">
                 <h3>Add New Hostel</h3>
                 <button class="modal-close" onclick="closeAddHostelModal()">&times;</button>
             </div>
             
-            <div style="padding: var(--space-lg); text-align: center;">
-                <i class="fas fa-plus-circle" style="font-size: 3rem; color: var(--primary-blue); margin-bottom: var(--space-lg);"></i>
+            <div class="modal-large-content">
+                <i class="fas fa-plus-circle modal-icon"></i>
                 <h3>Quick Add Feature</h3>
                 <p>This is a simplified demo. In the full version, this would open a comprehensive form to add new hostel listings with images, amenities, and detailed information.</p>
                 <button class="btn btn-primary" onclick="closeAddHostelModal()">
@@ -555,15 +555,15 @@
     </div>
 
     <!-- Edit Hostel Modal -->
-    <div class="modal" id="editHostelModal" style="display: none;">
+    <div class="modal" id="editHostelModal">
         <div class="modal-content modal-large">
             <div class="modal-header">
                 <h3>Edit Hostel Details</h3>
                 <button class="modal-close" onclick="closeEditHostelModal()">&times;</button>
             </div>
             
-            <form id="editHostelForm" style="padding: var(--space-lg);">
-                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+            <form id="editHostelForm" class="edit-form">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="editHostelName">Hostel Name *</label>
                         <input type="text" id="editHostelName" name="name" required>
@@ -579,7 +579,7 @@
                     </div>
                 </div>
 
-                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="editHostelPrice">Price per Semester (₦) *</label>
                         <input type="number" id="editHostelPrice" name="price" min="10000" max="200000" required>
@@ -596,17 +596,17 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                <div class="form-group">
                     <label for="editHostelAddress">Address *</label>
                     <input type="text" id="editHostelAddress" name="address" required placeholder="Full address of the hostel">
                 </div>
 
-                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                <div class="form-group">
                     <label for="editHostelDescription">Description *</label>
                     <textarea id="editHostelDescription" name="description" rows="3" required placeholder="Describe the hostel facilities and environment"></textarea>
                 </div>
 
-                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="editHostelPhone">Phone Number *</label>
                         <input type="tel" id="editHostelPhone" name="phone" required>
@@ -617,9 +617,9 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: var(--space-lg);">
+                <div class="form-group">
                     <label>Available Amenities *</label>
-                    <div class="amenities-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm);">
+                    <div class="amenities-grid">
                         <label class="amenity-checkbox">
                             <input type="checkbox" name="amenities" value="wifi">
                             <span>WiFi</span>
@@ -655,7 +655,7 @@
                     </div>
                 </div>
 
-                <div class="form-actions" style="display: flex; gap: var(--space-md); justify-content: flex-end; padding-top: var(--space-lg); border-top: 1px solid var(--gray-200);">
+                <div class="form-actions">
                     <button type="button" class="btn btn-outline" onclick="closeEditHostelModal()">
                         <i class="fas fa-times"></i> Cancel
                     </button>
@@ -672,23 +672,33 @@
         function showSection(sectionName) {
             // Hide all sections
             const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => section.style.display = 'none');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
 
             // Show selected section
-            document.getElementById(sectionName + '-section').style.display = 'block';
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
 
             // Update active menu item
             const menuItems = document.querySelectorAll('.sidebar-menu a');
             menuItems.forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            // Find the clicked menu item and make it active
+            const clickedItem = event.target.closest('a');
+            if (clickedItem) {
+                clickedItem.classList.add('active');
+            }
         }
 
         function showAddHostelModal() {
-            document.getElementById('addHostelModal').style.display = 'flex';
+            document.getElementById('addHostelModal').classList.add('active');
         }
 
         function closeAddHostelModal() {
-            document.getElementById('addHostelModal').style.display = 'none';
+            document.getElementById('addHostelModal').classList.remove('active');
         }
 
         function logout() {
@@ -803,11 +813,11 @@
             });
             
             // Show modal
-            document.getElementById('editHostelModal').style.display = 'flex';
+            document.getElementById('editHostelModal').classList.add('active');
         }
 
         function closeEditHostelModal() {
-            document.getElementById('editHostelModal').style.display = 'none';
+            document.getElementById('editHostelModal').classList.remove('active');
             currentEditingHostel = null;
         }
 

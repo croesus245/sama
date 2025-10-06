@@ -15,6 +15,50 @@
     min-height: calc(100vh - 5rem);
 }
 
+/* Dashboard Specific Styles */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.hostel-status.found {
+    background: var(--green);
+    color: white;
+}
+
+.modal {
+    display: none;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-large-content {
+    padding: var(--space-lg);
+    text-align: center;
+}
+
+.modal-icon {
+    font-size: 3rem;
+    color: var(--primary-blue);
+    margin-bottom: var(--space-lg);
+}
+
+.edit-form {
+    padding: var(--space-lg);
+}
+
 /* Form Styles for Edit Modal */
 .form-row {
     display: grid;
