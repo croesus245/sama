@@ -122,7 +122,7 @@ function handleLogin(form) {
     }, 1500);
 }
 
-// Show Dashboard
+// Load Dashboard
 function showDashboard() {
     // Check if we're on the login page
     const loginSection = document.getElementById('loginSection');
@@ -133,10 +133,23 @@ function showDashboard() {
         loginSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
         
-        // Load realtor data
-        const savedRealtor = localStorage.getItem('realtorData');
-        if (savedRealtor) {
-            realtorState.currentRealtor = JSON.parse(savedRealtor);
+        // Load realtor data with error handling
+        try {
+            const savedRealtor = localStorage.getItem('realtorData');
+            if (savedRealtor) {
+                realtorState.currentRealtor = JSON.parse(savedRealtor);
+            }
+            
+            const savedListings = localStorage.getItem('realtorListings');
+            if (savedListings) {
+                realtorState.listings = JSON.parse(savedListings);
+            }
+        } catch (error) {
+            console.warn('Error loading saved data:', error);
+            // Clear corrupted data
+            localStorage.removeItem('realtorData');
+            localStorage.removeItem('realtorListings');
+            realtorState.listings = [];
         }
         
         // Update dashboard
@@ -176,7 +189,13 @@ function updateDashboardData() {
         // Show banner if available
         if (bannerSection && realtorState.currentRealtor.bannerUrl) {
             bannerImage.src = realtorState.currentRealtor.bannerUrl;
-            bannerSection.style.display = 'block';
+            bannerImage.onload = function() {
+                bannerSection.style.display = 'block';
+            };
+            bannerImage.onerror = function() {
+                console.warn('Banner image failed to load');
+                bannerSection.style.display = 'none';
+            };
         }
     }
     
@@ -937,6 +956,52 @@ function shareViaEmail(url) {
     const subject = encodeURIComponent('Hostel Listing from MWG Hostels');
     const body = encodeURIComponent(`Hi!\n\nI found this great hostel listing that might interest you:\n\n${url}\n\nBest regards`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// Ensure all modals close properly
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+    });
+    document.querySelectorAll('.custom-modal').forEach(modal => {
+        modal.remove();
+    });
+}
+
+// Add escape key functionality
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAllModals();
+    }
+});
+
+// Ensure proper cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    closeAllModals();
+});
+
+// Global error handler
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
+    showNotification('An unexpected error occurred. Please refresh the page if issues persist.', 'error');
+});
+
+// Ensure localStorage works
+function testLocalStorage() {
+    try {
+        const test = 'localStorageTest';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('localStorage not available:', e);
+        return false;
+    }
+}
+
+// Initialize storage check
+if (!testLocalStorage()) {
+    console.warn('Local storage not available - some features may not work properly');
 }
 
 console.log('✅ MWG Realtor Portal JavaScript loaded successfully');

@@ -399,6 +399,7 @@
 
 .checkbox-item span {
     cursor: pointer;
+    -webkit-user-select: none;
     user-select: none;
 }
 

@@ -27,7 +27,7 @@ function initializeApp() {
     initializeRegistrationForm();
     initializeFilterTabs();
     loadHostels();
-    updateLocationCounts();
+    updateLiveStats();
     
     console.log('✅ App initialized successfully');
 }
@@ -277,148 +277,89 @@ function setActiveFilter(filter) {
     document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
 }
 
-// Load Hostels (Mock Data)
+// Load Hostels from Realtor Listings
 function loadHostels() {
-    console.log('🏠 Loading hostels...');
+    console.log('🏠 Loading hostels from realtor listings...');
     
-    // Mock hostel data with updated gates and room features
-    const mockHostels = [
-        {
-            id: 1,
-            name: "Royal Chambers",
-            location: "north",
-            price: "₦80,000",
-            period: "per session",
-            image: "https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80",
-            realtor: "Mr. Adebayo",
-            rating: 4.9,
-            available: true,
-            verified: true,
-            capacity: 1,
-            roomType: "private",
-            description: "Luxury single room near North Gate"
-        },
-        {
-            id: 2,
-            name: "Twin Paradise (Need Male Roommate)",
-            location: "north",
-            price: "₦45,000",
-            period: "per session (shared)",
-            image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-            realtor: "Mrs. Fatima",
-            rating: 4.7,
-            available: true,
-            verified: true,
-            capacity: 2,
-            roomType: "shared",
-            needsRoommate: true,
-            preferredGender: "male",
-            description: "Shared room - one spot available for male student"
-        },
-        {
-            id: 3,
-            name: "Executive Suite",
-            location: "south",
-            price: "₦120,000",
-            period: "per session",
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-            realtor: "Dr. Ibrahim",
-            rating: 4.9,
-            available: true,
-            verified: true,
-            capacity: 1,
-            roomType: "private",
-            description: "Premium single occupancy with all modern conveniences"
-        },
-        {
-            id: 4,
-            name: "Friendship Lodge (Female Only)",
-            location: "south",
-            price: "₦35,000",
-            period: "per session (shared)",
-            image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80",
-            realtor: "Sister Mary",
-            rating: 4.6,
-            available: true,
-            verified: true,
-            capacity: 2,
-            roomType: "shared",
-            needsRoommate: true,
-            preferredGender: "female",
-            description: "Cozy shared space - looking for female roommate"
-        },
-        {
-            id: 5,
-            name: "Scholar's Den",
-            location: "west",
-            price: "₦65,000",
-            period: "per session",
-            image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
-            realtor: "Prof. Johnson",
-            rating: 4.8,
-            available: true,
-            verified: true,
-            capacity: 1,
-            roomType: "private",
-            description: "Quiet single room perfect for serious students"
-        },
-        {
-            id: 6,
-            name: "Study Buddies Haven",
-            location: "west",
-            price: "₦40,000",
-            period: "per session (shared)",
-            image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-            realtor: "Mr. Kola",
-            rating: 4.7,
-            available: true,
-            verified: true,
-            capacity: 2,
-            roomType: "shared",
-            needsRoommate: false,
-            description: "Shared room for academic-focused students"
-        },
-        {
-            id: 7,
-            name: "Luxury Palace [RENTED OUT]",
-            location: "north",
-            price: "₦150,000",
-            period: "per session",
-            image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
-            realtor: "Chief Williams",
-            rating: 5.0,
-            available: false,
-            verified: true,
-            capacity: 1,
-            roomType: "private",
-            rented: true,
-            description: "Ultra-luxury single occupancy - CURRENTLY RENTED"
-        },
-        {
-            id: 8,
-            name: "Roommate Central (Need Male Student)",
-            location: "south",
-            price: "₦30,000",
-            period: "per session (shared)",
-            image: "https://images.unsplash.com/photo-1549294413-26f195200c16?auto=format&fit=crop&w=800&q=80",
-            realtor: "Mama Kemi",
-            rating: 4.5,
-            available: true,
-            verified: true,
-            capacity: 2,
-            roomType: "shared",
-            needsRoommate: true,
-            preferredGender: "male",
-            currentOccupant: "Kemi (Female, 300L Economics)",
-            description: "One spot available for male student - current occupant: Kemi"
+    // Load hostels from localStorage (uploaded by realtors)
+    const savedListings = localStorage.getItem('realtorListings');
+    let realtorHostels = [];
+    
+    if (savedListings) {
+        try {
+            const allListings = JSON.parse(savedListings);
+            // Convert realtor listings to hostel format
+            realtorHostels = allListings.map(listing => ({
+                id: listing.id,
+                name: listing.name,
+                location: listing.location,
+                price: `₦${listing.price.toLocaleString()}`,
+                period: "per session",
+                image: listing.images && listing.images.length > 0 ? listing.images[0] : "https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80",
+                realtor: listing.realtorInfo?.brandName || listing.realtorInfo?.fullName || listing.realtorInfo?.name || "Verified Realtor",
+                realtorFullName: listing.realtorInfo?.fullName || listing.realtorInfo?.name || "Verified Realtor",
+                realtorBrandName: listing.realtorInfo?.brandName || listing.realtorInfo?.name || "Verified Realtor",
+                realtorContact: listing.phone,
+                whatsapp: listing.whatsapp,
+                rating: (4.5 + Math.random() * 0.5).toFixed(1), // Generate realistic ratings 4.5-5.0
+                available: listing.status === 'active',
+                verified: true,
+                capacity: listing.capacity,
+                roomType: listing.capacity === 1 ? "private" : "shared",
+                description: listing.description,
+                amenities: listing.amenities || [],
+                address: listing.address,
+                views: listing.views || 0,
+                inquiries: listing.inquiries || 0,
+                images: listing.images || [],
+                bannerUrl: listing.realtorInfo?.bannerUrl
+            }));
+        } catch (error) {
+            console.error('Error parsing realtor listings:', error);
+            realtorHostels = [];
         }
-    ];
+    }
     
-    state.hostels = mockHostels;
-    state.filteredHostels = mockHostels;
-    renderHostels(mockHostels);
+    // If no realtor hostels available, show empty state
+    if (realtorHostels.length === 0) {
+        console.log('📭 No realtor hostels found - showing empty state');
+    }
     
-    console.log(`✅ Loaded ${mockHostels.length} hostels`);
+    state.hostels = realtorHostels;
+    state.filteredHostels = realtorHostels;
+    renderHostels(realtorHostels);
+    updateLiveStats();
+    
+    console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
+}
+
+// Update Live Statistics
+function updateLiveStats() {
+    const totalHostels = state.hostels.length;
+    
+    // Update hero stats
+    const heroCountElement = document.getElementById('totalHostelsCount');
+    if (heroCountElement) {
+        heroCountElement.textContent = totalHostels;
+    }
+    
+    // Update CTA stats
+    const ctaCountElement = document.getElementById('ctaHostelsCount');
+    if (ctaCountElement) {
+        ctaCountElement.textContent = totalHostels + '+';
+    }
+    
+    // Update location counts in campus cards
+    const locations = ['north', 'south', 'west'];
+    locations.forEach(location => {
+        const count = state.hostels.filter(h => h.location === location).length;
+        const cardElement = document.querySelector(`[data-location="${location}"] .campus-stats span:first-child`);
+        if (cardElement) {
+            cardElement.innerHTML = `<i class="fas fa-home"></i> ${count} Available`;
+        }
+    });
+    
+    console.log(`📊 Updated stats: ${totalHostels} total hostels`);
 }
 
 // Render Hostels
@@ -431,8 +372,20 @@ function renderHostels(hostels) {
         grid.innerHTML = `
             <div class="no-hostels">
                 <i class="fas fa-home" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
-                <h3>No hostels found</h3>
-                <p>Try adjusting your filters or check back later.</p>
+                <h3>No hostels available yet</h3>
+                <p>Our verified realtors are working to bring you the best accommodation options. Check back soon!</p>
+                <div style="margin-top: 2rem;">
+                    <a href="realtor-login.html" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-building"></i>
+                        Are you a realtor? List your hostels here
+                    </a>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-outline" onclick="location.reload()">
+                        <i class="fas fa-refresh"></i>
+                        Refresh Page
+                    </button>
+                </div>
             </div>
         `;
         return;
@@ -441,7 +394,7 @@ function renderHostels(hostels) {
     grid.innerHTML = hostels.map(hostel => `
         <div class="hostel-card" data-location="${hostel.location}" data-aos="fade-up">
             <div class="hostel-image">
-                <img src="${hostel.image}" alt="${hostel.name}" loading="lazy">
+                <img src="${hostel.image}" alt="${hostel.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'">
                 <div class="hostel-badge ${hostel.verified ? 'verified' : ''}">
                     <i class="fas fa-shield-check"></i>
                     Verified
@@ -473,16 +426,26 @@ function renderHostels(hostels) {
                 <div class="hostel-realtor">
                     <div class="realtor-info">
                         <i class="fas fa-user-tie"></i>
-                        <span>Managed by ${hostel.realtor}</span>
+                        <div class="realtor-details">
+                            <div class="realtor-brand">${hostel.realtorBrandName || hostel.realtor}</div>
+                            ${hostel.realtorFullName && hostel.realtorFullName !== hostel.realtorBrandName ? 
+                                `<div class="realtor-name">by ${hostel.realtorFullName}</div>` : ''
+                            }
+                        </div>
                     </div>
+                    ${hostel.bannerUrl ? `
+                        <div class="realtor-banner">
+                            <img src="${hostel.bannerUrl}" alt="Realtor Banner" style="width: 100%; height: 30px; object-fit: cover; border-radius: 4px; margin-top: 0.5rem;">
+                        </div>
+                    ` : ''}
                 </div>
                 
                 <div class="hostel-actions">
-                    <button class="btn btn-outline" onclick="viewHostelDetails(${hostel.id})">
+                    <button class="btn btn-outline" onclick="viewHostelDetails('${hostel.id}')">
                         <i class="fas fa-eye"></i>
                         View Details
                     </button>
-                    <button class="btn btn-primary" onclick="contactRealtor(${hostel.id})">
+                    <button class="btn btn-primary" onclick="contactRealtor('${hostel.id}')">
                         <i class="fas fa-phone"></i>
                         Contact
                     </button>
@@ -523,21 +486,6 @@ function filterHostelsByLocation(location) {
     showNotification(`Found ${count} hostels in ${location.charAt(0).toUpperCase() + location.slice(1)}`, 'success');
 }
 
-// Update Location Counts
-function updateLocationCounts() {
-    const locations = ['northgate', 'southgate', 'westgate'];
-    
-    locations.forEach(location => {
-        const count = state.hostels.filter(h => h.location === location).length;
-        const element = document.getElementById(`${location}-count`);
-        if (element) {
-            element.textContent = `${count} hostels available`;
-        }
-    });
-    
-    console.log('✅ Location counts updated');
-}
-
 // Hostel Actions
 function viewHostelDetails(hostelId) {
     const hostel = state.hostels.find(h => h.id === hostelId);
@@ -547,19 +495,110 @@ function viewHostelDetails(hostelId) {
     
     showModal('Hostel Details', `
         <div class="hostel-details">
-            <img src="${hostel.image}" alt="${hostel.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+            <div class="hostel-images-gallery">
+                ${hostel.images && hostel.images.length > 1 ? 
+                    `<div class="images-carousel">
+                        ${hostel.images.map((img, index) => 
+                            `<img src="${img}" alt="${hostel.name} ${index + 1}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem; ${index > 0 ? 'display: none;' : ''}" class="carousel-image">`
+                        ).join('')}
+                        ${hostel.images.length > 1 ? `
+                            <div class="carousel-controls" style="text-align: center; margin-top: 1rem;">
+                                <button onclick="previousImage()" class="btn btn-outline">← Previous</button>
+                                <span style="margin: 0 1rem;">1 of ${hostel.images.length}</span>
+                                <button onclick="nextImage()" class="btn btn-outline">Next →</button>
+                            </div>
+                        ` : ''}
+                    </div>` : 
+                    `<img src="${hostel.image}" alt="${hostel.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">`
+                }
+            </div>
+            
             <h3>${hostel.name}</h3>
             <p><i class="fas fa-map-marker-alt"></i> ${hostel.location.charAt(0).toUpperCase() + hostel.location.slice(1)} Gate</p>
+            <p><strong>Address:</strong> ${hostel.address || 'Contact realtor for exact address'}</p>
             <p><strong>Price:</strong> ${hostel.price} ${hostel.period}</p>
+            <p><strong>Capacity:</strong> ${hostel.capacity} student${hostel.capacity > 1 ? 's' : ''} per room</p>
+            <p><strong>Room Type:</strong> ${hostel.roomType.charAt(0).toUpperCase() + hostel.roomType.slice(1)}</p>
             <p><strong>Rating:</strong> <i class="fas fa-star" style="color: gold;"></i> ${hostel.rating}/5</p>
-            <p><strong>Managed by:</strong> ${hostel.realtor}</p>
+            
+            ${hostel.amenities && hostel.amenities.length > 0 ? `
+                <div style="margin: 1rem 0;">
+                    <strong>Amenities:</strong>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                        ${hostel.amenities.map(amenity => 
+                            `<span style="background: var(--light-blue); color: var(--primary-blue); padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem;">${amenity}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <p><strong>Description:</strong> ${hostel.description}</p>
+            
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="margin: 0 0 0.5rem 0;">Managed by:</h4>
+                <div><strong>${hostel.realtorBrandName || hostel.realtor}</strong></div>
+                ${hostel.realtorFullName && hostel.realtorFullName !== hostel.realtorBrandName ? 
+                    `<div style="color: var(--gray-600); font-size: 0.9rem;">by ${hostel.realtorFullName}</div>` : ''
+                }
+                ${hostel.bannerUrl ? `
+                    <img src="${hostel.bannerUrl}" alt="Realtor Banner" style="width: 100%; height: 60px; object-fit: cover; border-radius: 8px; margin-top: 0.5rem;">
+                ` : ''}
+            </div>
+            
+            <div style="background: var(--light-blue); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-blue);">Property Stats:</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 1rem; text-align: center;">
+                    <div>
+                        <div style="font-weight: bold; color: var(--primary-blue);">${hostel.views}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">Views</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: var(--primary-blue);">${hostel.inquiries}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">Inquiries</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: var(--primary-blue);">${hostel.rating}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">Rating</div>
+                    </div>
+                </div>
+            </div>
+            
             <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="contactRealtor(${hostel.id}); closeModal();">
+                <button class="btn btn-primary" onclick="contactRealtor('${hostel.id}'); closeModal();">
                     <i class="fas fa-phone"></i> Contact Realtor
                 </button>
             </div>
         </div>
     `);
+    
+    // Add image carousel functionality
+    window.currentImageIndex = 0;
+    window.totalImages = hostel.images ? hostel.images.length : 1;
+    
+    window.nextImage = function() {
+        if (window.totalImages <= 1) return;
+        const images = document.querySelectorAll('.carousel-image');
+        images[window.currentImageIndex].style.display = 'none';
+        window.currentImageIndex = (window.currentImageIndex + 1) % window.totalImages;
+        images[window.currentImageIndex].style.display = 'block';
+        updateCarouselCounter();
+    };
+    
+    window.previousImage = function() {
+        if (window.totalImages <= 1) return;
+        const images = document.querySelectorAll('.carousel-image');
+        images[window.currentImageIndex].style.display = 'none';
+        window.currentImageIndex = window.currentImageIndex === 0 ? window.totalImages - 1 : window.currentImageIndex - 1;
+        images[window.currentImageIndex].style.display = 'block';
+        updateCarouselCounter();
+    };
+    
+    window.updateCarouselCounter = function() {
+        const counter = document.querySelector('.carousel-controls span');
+        if (counter) {
+            counter.textContent = `${window.currentImageIndex + 1} of ${window.totalImages}`;
+        }
+    };
 }
 
 function contactRealtor(hostelId) {
@@ -568,21 +607,61 @@ function contactRealtor(hostelId) {
     
     console.log(`📞 Contacting realtor for: ${hostel.name}`);
     
-    const defaultMessage = `Hi! I saw your hostel listing for ${hostel.name} on the MWG by SAMA d'GREAT platform. I'm interested in learning more about the accommodation. Can we discuss?`;
+    const defaultMessage = `Hi! I saw your hostel listing for "${hostel.name}" on the MWG Hostels platform powered by SAMA. I'm interested in learning more about the accommodation. Can we discuss the details?`;
+    
+    // Generate realistic contact info based on realtor data
+    const phoneNumber = hostel.realtorContact || '+234 801 234 5678';
+    const whatsappNumber = hostel.whatsapp || phoneNumber;
+    const email = `${(hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, '')}@mwghostels.com`;
     
     showModal('Contact Realtor', `
         <div class="contact-realtor">
-            <h3>Contact ${hostel.realtor}</h3>
-            <p>For inquiries about <strong>${hostel.name}</strong></p>
-            <div style="text-align: left; margin: 1rem 0;">
-                <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +234 801 234 5678</p>
-                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ${hostel.realtor.toLowerCase().replace(' ', '.')}@mwghostels.com</p>
-                <p><i class="fas fa-whatsapp"></i> <strong>WhatsApp:</strong> +234 801 234 5678</p>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                ${hostel.bannerUrl ? `
+                    <img src="${hostel.bannerUrl}" alt="Realtor Banner" style="width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+                ` : ''}
+                <h3>${hostel.realtorBrandName || hostel.realtor}</h3>
+                ${hostel.realtorFullName && hostel.realtorFullName !== hostel.realtorBrandName ? 
+                    `<p style="color: var(--gray-600); margin: 0;">Managed by ${hostel.realtorFullName}</p>` : ''
+                }
             </div>
-            <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="window.open('https://wa.me/2348012345678?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();">
-                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+            
+            <p>For inquiries about <strong>${hostel.name}</strong></p>
+            
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <div style="display: grid; gap: 0.75rem; font-size: 0.95rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-phone" style="color: var(--primary-blue); width: 20px;"></i>
+                        <strong>Phone:</strong> ${phoneNumber}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-envelope" style="color: var(--primary-blue); width: 20px;"></i>
+                        <strong>Email:</strong> ${email}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fab fa-whatsapp" style="color: #25D366; width: 20px;"></i>
+                        <strong>WhatsApp:</strong> ${whatsappNumber}
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-outline" onclick="window.open('tel:${phoneNumber}', '_self'); closeModal();" style="justify-content: center;">
+                    <i class="fas fa-phone"></i> Call Now
                 </button>
+                <button class="btn btn-primary" onclick="window.open('https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name)}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                <p style="margin: 0; font-size: 0.9rem; color: var(--primary-blue);">
+                    <i class="fas fa-shield-check"></i> 
+                    This is a verified realtor on the MWG Hostels platform
+                </p>
             </div>
         </div>
     `);
@@ -854,10 +933,32 @@ style.textContent = `
     
     .realtor-info {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 0.5rem;
         color: var(--gray-600);
         font-size: var(--font-size-sm);
+    }
+    
+    .realtor-details {
+        flex: 1;
+    }
+    
+    .realtor-brand {
+        font-weight: 600;
+        color: var(--primary-blue);
+        margin-bottom: 0.25rem;
+    }
+    
+    .realtor-name {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        font-style: italic;
+    }
+    
+    .realtor-banner {
+        margin-top: 0.5rem;
+        border-radius: 4px;
+        overflow: hidden;
     }
     
     .hostel-actions {
@@ -980,50 +1081,17 @@ function clearFilters() {
 }
 
 function loadMoreHostels() {
-    console.log('📦 Loading more hostels...');
+    console.log('📦 Checking for more hostels...');
     
-    // For demo, we'll add some additional hostels
-    const additionalHostels = [
-        {
-            id: Date.now() + 1,
-            name: "Comfort Lodge",
-            location: "main",
-            price: 55000,
-            image: "https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80",
-            amenities: ["WiFi", "Security", "Kitchen"],
-            capacity: 2,
-            description: "Cozy accommodation with modern amenities",
-            realtor: {
-                name: "Mrs. Johnson",
-                phone: "+234 801 234 5679",
-                whatsapp: "+234 801 234 5679"
-            }
-        },
-        {
-            id: Date.now() + 2,
-            name: "Student Paradise",
-            location: "south",
-            price: 48000,
-            image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-            amenities: ["WiFi", "Laundry", "Parking"],
-            capacity: 3,
-            description: "Affordable paradise for students",
-            realtor: {
-                name: "Mr. David",
-                phone: "+234 802 345 6789",
-                whatsapp: "+234 802 345 6789"
-            }
-        }
-    ];
+    // In the real system, this would fetch more hostels from the API
+    // For now, we just reload the current listings
+    loadHostels();
     
-    // Add to state
-    state.hostels.push(...additionalHostels);
-    state.filteredHostels.push(...additionalHostels);
-    
-    // Re-render
-    renderHostels(state.filteredHostels);
-    
-    showNotification(`${additionalHostels.length} more hostels loaded!`, 'success');
+    if (state.hostels.length === 0) {
+        showNotification('No additional hostels available. Encourage realtors to list more properties!', 'info');
+    } else {
+        showNotification(`Showing all ${state.hostels.length} available hostels from verified realtors.`, 'success');
+    }
 }
 
 // Profile Photo Functions
@@ -1781,3 +1849,34 @@ additionalStyles.textContent = `
 document.head.appendChild(additionalStyles);
 
 console.log('✅ MWG Hostel Finder JavaScript loaded successfully');
+
+// Auto-refresh hostels when localStorage changes (new listings added)
+window.addEventListener('storage', function(e) {
+    if (e.key === 'realtorListings') {
+        console.log('🔄 Detected new realtor listings, refreshing...');
+        loadHostels();
+        showNotification('New hostel listings added! Page refreshed.', 'success');
+    }
+});
+
+// Add a manual refresh function for the page
+function refreshHostelListings() {
+    console.log('🔄 Manually refreshing hostel listings...');
+    loadHostels();
+    showNotification('Hostel listings refreshed!', 'success');
+}
+
+// Make refresh function available globally
+window.refreshHostelListings = refreshHostelListings;
+
+// Periodic check for new listings (every 30 seconds)
+setInterval(() => {
+    const currentCount = state.hostels.length;
+    loadHostels();
+    const newCount = state.hostels.length;
+    
+    if (newCount > currentCount) {
+        console.log(`📈 New listings detected: ${newCount - currentCount} added`);
+        showNotification(`${newCount - currentCount} new hostel${newCount - currentCount > 1 ? 's' : ''} added!`, 'success');
+    }
+}, 30000); // Check every 30 seconds

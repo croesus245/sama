@@ -23,6 +23,21 @@
             margin-top: var(--space-xl);
             flex-wrap: wrap;
         }
+        
+        .hero-action-icon {
+            font-size: 2rem;
+            color: #fff;
+        }
+        
+        .hero-action-btn {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+            color: white;
+        }
+        
+        .hidden-found-btn {
+            display: none;
+        }
 
         .action-card {
             background: rgba(255, 255, 255, 0.1);
@@ -210,19 +225,19 @@
             
             <div class="roommate-actions">
                 <div class="action-card" onclick="showPostRoomModal()">
-                    <i class="fas fa-home" style="font-size: 2rem; color: #fff;"></i>
+                    <i class="fas fa-home hero-action-icon"></i>
                     <h3>Post Your Room</h3>
                     <p>Looking for a roommate to share your space? Post your room details here.</p>
-                    <button class="btn btn-outline" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                    <button class="btn btn-outline hero-action-btn">
                         Post Room
                     </button>
                 </div>
                 
                 <div class="action-card" onclick="showFindRoommateModal()">
-                    <i class="fas fa-search" style="font-size: 2rem; color: #fff;"></i>
+                    <i class="fas fa-search hero-action-icon"></i>
                     <h3>Find Roommate</h3>
                     <p>Looking for someone to share a room with? Browse available roommate requests.</p>
-                    <button class="btn btn-outline" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                    <button class="btn btn-outline hero-action-btn">
                         Find Roommate
                     </button>
                 </div>
@@ -290,7 +305,7 @@
                             <button class="contact-btn" onclick="contactRoommate('room14')">
                                 <i class="fas fa-comment"></i> Send Message
                             </button>
-                            <button class="found-btn" onclick="markAsFound('room14')" style="display: none;">
+                            <button class="found-btn hidden-found-btn" onclick="markAsFound('room14')">
                                 <i class="fas fa-check"></i> Roommate Found
                             </button>
                         </div>

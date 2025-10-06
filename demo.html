@@ -130,7 +130,7 @@
                 </a>
             </div>
             
-            <button class="mobile-toggle" id="mobileToggle">
+            <button class="mobile-toggle" id="mobileToggle" title="Toggle navigation menu" aria-label="Toggle navigation menu">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -194,8 +194,8 @@
                 </div>
                 <div class="hero-stats">
                     <div class="hero-stat">
-                        <div class="hero-stat-number">500+</div>
-                        <div class="hero-stat-label">Verified Hostels</div>
+                        <div class="hero-stat-number" id="totalHostelsCount">0</div>
+                        <div class="hero-stat-label">Listed Hostels</div>
                     </div>
                     <div class="hero-stat">
                         <div class="hero-stat-number">2,000+</div>
@@ -203,7 +203,7 @@
                     </div>
                     <div class="hero-stat">
                         <div class="hero-stat-number">50+</div>
-                        <div class="hero-stat-label">Trusted Realtors</div>
+                        <div class="hero-stat-label">Verified Realtors</div>
                     </div>
                 </div>
             </div>
@@ -228,12 +228,12 @@
                 <div class="feature-card">
                     <i class="fas fa-building"></i>
                     <h4>Realtor Portal</h4>
-                    <p>Full admin dashboard for property owners to manage listings, view stats, upload images.</p>
+                    <p>Verified realtors upload and manage all listings. Real-time updates when new hostels are added.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-shield-alt"></i>
                     <h4>Verified Listings</h4>
-                    <p>All hostels verified by our team. Real photos, accurate pricing, trusted contacts.</p>
+                    <p>All hostels uploaded by verified realtors only. Quality control and authentic property information.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-mobile-alt"></i>
@@ -266,7 +266,7 @@
                                 <h3>North Gate</h3>
                                 <p>Prime location with 150+ rooms</p>
                                 <div class="campus-stats">
-                                    <span><i class="fas fa-home"></i> 150+ Rooms</span>
+                                    <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 2-10 min walk</span>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@
                                 <h3>South Gate</h3>
                                 <p>Affordable options with great amenities</p>
                                 <div class="campus-stats">
-                                    <span><i class="fas fa-home"></i> 80+ Rooms</span>
+                                    <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 5-15 min walk</span>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@
                                 <h3>West Gate</h3>
                                 <p>Quiet environment, perfect for studies</p>
                                 <div class="campus-stats">
-                                    <span><i class="fas fa-home"></i> 60+ Rooms</span>
+                                    <span><i class="fas fa-home"></i> 0 Available</span>
                                     <span><i class="fas fa-walking"></i> 10-20 min walk</span>
                                 </div>
                             </div>
@@ -314,12 +314,12 @@
         <div class="container">
             <div class="section-header text-center">
                 <h2 class="section-title">
-                    <span class="highlight">Featured</span> Hostels
+                    <span class="highlight">Available</span> Hostels
                 </h2>
-                <p class="section-subtitle">Handpicked accommodations from verified realtors across campus</p>
+                <p class="section-subtitle">Quality accommodations from verified realtors across campus</p>
                 <div class="section-badge">
                     <i class="fas fa-shield-check"></i>
-                    All listings verified by our team
+                    All listings from verified realtors
                 </div>
             </div>
             
@@ -347,6 +347,10 @@
                 <button class="btn btn-outline" onclick="clearFilters()">
                     <i class="fas fa-times"></i>
                     Clear Filters
+                </button>
+                <button class="btn btn-outline" onclick="refreshHostelListings()">
+                    <i class="fas fa-refresh"></i>
+                    Refresh
                 </button>
             </div>
             
@@ -540,8 +544,8 @@
                             <span class="stat-label">Happy Students</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number">50+</span>
-                            <span class="stat-label">Verified Hostels</span>
+                            <span class="stat-number" id="ctaHostelsCount">0+</span>
+                            <span class="stat-label">Available Hostels</span>
                         </div>
                         <div class="stat">
                             <span class="stat-number">24/7</span>

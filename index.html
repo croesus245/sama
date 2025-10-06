@@ -16,7 +16,10 @@
     <style>
         .landing-hero {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(102,126,234,0.6)), url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -31,13 +34,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
-                        linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%), 
-                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
-            background-size: 60px 60px;
-            background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
-            animation: float 20s ease-in-out infinite;
+            background: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+                        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%), 
+                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%);
+            background-size: 80px 80px;
+            background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
+            animation: float 30s ease-in-out infinite;
+            z-index: 1;
         }
         
         @keyframes float {
@@ -54,6 +58,41 @@
             padding: 2rem;
         }
         
+        /* Quick Access Section Styles */
+        .quick-access-section {
+            background: white;
+            padding: 4rem 0;
+        }
+        
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .access-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .access-card-icon {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .access-card h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .access-card p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        
         .sama-logo {
             max-width: 400px;
             width: 90%;
@@ -62,6 +101,10 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             animation: glow 3s ease-in-out infinite alternate;
+            background: rgba(255,255,255,0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
         }
         
         @keyframes glow {
@@ -142,6 +185,7 @@
             background: rgba(255,255,255,0.1);
             padding: 1.5rem;
             border-radius: 15px;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
         }
@@ -267,36 +311,36 @@
     </section>
 
     <!-- Quick Access Section -->
-    <section style="background: white; padding: 4rem 0;">
+    <section class="quick-access-section">
         <div class="container">
             <div class="section-header text-center">
                 <h2>Quick Access</h2>
                 <p>Jump straight to what you need</p>
             </div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-search fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem;">Browse Hostels</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem;">Explore verified hostels near campus gates</p>
+            <div class="quick-access-grid">
+                <div class="access-card">
+                    <i class="fas fa-search fa-3x access-card-icon"></i>
+                    <h3>Browse Hostels</h3>
+                    <p>Explore verified hostels near campus gates</p>
                     <a href="demo.html#hostels" class="btn btn-primary">
                         <i class="fas fa-arrow-right"></i> Browse Now
                     </a>
                 </div>
                 
-                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-user-plus fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem;">Join Platform</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem;">Create your student profile and start searching</p>
+                <div class="access-card">
+                    <i class="fas fa-user-plus fa-3x access-card-icon"></i>
+                    <h3>Join Platform</h3>
+                    <p>Create your student profile and start searching</p>
                     <a href="demo.html" class="btn btn-primary" onclick="setTimeout(() => showRegistrationModal(), 500)">
                         <i class="fas fa-arrow-right"></i> Register Now
                     </a>
                 </div>
                 
-                <div style="background: #f8fafc; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-building fa-3x" style="color: #667eea; margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem;">List Property</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem;">Property owners and realtors - list your hostels</p>
+                <div class="access-card">
+                    <i class="fas fa-building fa-3x access-card-icon"></i>
+                    <h3>List Property</h3>
+                    <p>Property owners and realtors - list your hostels</p>
                     <a href="realtor-login.html" class="btn btn-primary">
                         <i class="fas fa-arrow-right"></i> Get Started
                     </a>
