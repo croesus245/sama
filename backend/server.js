@@ -66,16 +66,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mwg_hostels', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mwg_hostels')
 .then(() => {
     console.log('✅ Connected to MongoDB');
 })
 .catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.error('❌ MongoDB connection error:', error.message);
+    console.log('⚠️ Server will continue running without database connection');
+    console.log('📝 To fix: Install MongoDB locally or configure MongoDB Atlas');
 });
 
 // API Routes
