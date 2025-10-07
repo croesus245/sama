@@ -1,0 +1,440 @@
+/* ==============================================
+   THEME SYSTEM INTEGRATION & COLOR FIXES
+   ============================================== */
+
+/* Override any conflicting styles from existing CSS files */
+body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    transition: var(--transition-theme);
+}
+
+/* Navigation Bar */
+.navbar, .realtor-nav {
+    background: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.navbar .nav-brand, .nav-brand {
+    color: var(--text-primary) !important;
+}
+
+.navbar .nav-links a, .nav-links a {
+    color: var(--text-secondary) !important;
+}
+
+.navbar .nav-links a:hover, .nav-links a:hover {
+    color: var(--primary-500) !important;
+}
+
+/* Hero Sections */
+.hero-section, .realtor-hero, .roommate-hero {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+    color: var(--text-inverse) !important;
+}
+
+/* Cards and Components */
+.card, .hostel-card, .gate-card, .feature-card, .stat-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-light) !important;
+}
+
+.card:hover, .hostel-card:hover, .gate-card:hover, .feature-card:hover {
+    box-shadow: var(--shadow-medium) !important;
+}
+
+/* Text Elements */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+p, span, div {
+    color: var(--text-secondary);
+}
+
+.text-muted, .text-gray-600, .text-gray-500 {
+    color: var(--text-muted) !important;
+}
+
+/* Buttons */
+.btn-primary, .btn-register-main, .btn-register-cta {
+    background: var(--primary-500) !important;
+    color: var(--text-inverse) !important;
+    border: none !important;
+}
+
+.btn-primary:hover, .btn-register-main:hover, .btn-register-cta:hover {
+    background: var(--primary-600) !important;
+    transform: translateY(-1px);
+}
+
+.btn-secondary, .btn-outline {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.btn-secondary:hover, .btn-outline:hover {
+    background: var(--primary-500) !important;
+    color: var(--text-inverse) !important;
+    border-color: var(--primary-500) !important;
+}
+
+/* Form Elements */
+.form-input, .form-select, .form-textarea, input, select, textarea {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus, 
+input:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.form-label, label {
+    color: var(--text-primary) !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Modals */
+.modal {
+    background: rgba(0, 0, 0, 0.5) !important;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+    box-shadow: var(--shadow-heavy) !important;
+}
+
+.modal-header {
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.modal-title {
+    color: var(--text-primary) !important;
+}
+
+.modal-close {
+    color: var(--text-muted) !important;
+    background: none !important;
+    border: none !important;
+}
+
+.modal-close:hover {
+    color: var(--text-primary) !important;
+}
+
+/* Sections */
+.section {
+    background: var(--bg-primary) !important;
+}
+
+.section-alt, .bg-gray-50, .bg-gray-100 {
+    background: var(--bg-secondary) !important;
+}
+
+/* Feature Icons */
+.feature-icon {
+    background: var(--primary-100) !important;
+    color: var(--primary-500) !important;
+}
+
+[data-theme="dark"] .feature-icon {
+    background: var(--primary-700) !important;
+    color: var(--primary-100) !important;
+}
+
+/* Status Badges */
+.status-available {
+    background: var(--success-100) !important;
+    color: var(--success-500) !important;
+}
+
+.status-unavailable {
+    background: var(--error-100) !important;
+    color: var(--error-500) !important;
+}
+
+.status-pending {
+    background: var(--warning-100) !important;
+    color: var(--warning-500) !important;
+}
+
+/* Dashboard Components */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+    color: var(--text-inverse) !important;
+}
+
+.dashboard-stats .stat-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.hostel-management {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+/* Realtor Specific */
+.realtor-body {
+    background: var(--bg-primary) !important;
+}
+
+.login-container, .registration-container {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+    box-shadow: var(--shadow-medium) !important;
+}
+
+.form-container {
+    background: var(--bg-card) !important;
+}
+
+/* Gates Styling */
+.gates-grid .gate-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.gate-image {
+    border-radius: 8px;
+}
+
+.gate-info h3 {
+    color: var(--text-primary) !important;
+}
+
+.gate-info p {
+    color: var(--text-secondary) !important;
+}
+
+/* Hostels Grid */
+.hostels-grid .hostel-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.hostel-image {
+    border-radius: 8px 8px 0 0;
+}
+
+.hostel-info h3 {
+    color: var(--text-primary) !important;
+}
+
+.hostel-info p {
+    color: var(--text-secondary) !important;
+}
+
+.hostel-price {
+    color: var(--primary-500) !important;
+    font-weight: 600;
+}
+
+/* Roommate Cards */
+.roommate-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+/* Review System */
+.review-header {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+    color: var(--text-inverse) !important;
+}
+
+.hostel-reviews-container {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.review-item {
+    background: var(--bg-secondary) !important;
+    border-left: 4px solid transparent;
+}
+
+.review-item:hover {
+    border-left-color: var(--primary-500) !important;
+}
+
+.reviewer-avatar {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+    color: var(--text-inverse) !important;
+}
+
+/* Filter Buttons */
+.filter-btn, .filter-tab {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.filter-btn.active, .filter-tab.active {
+    background: var(--primary-500) !important;
+    color: var(--text-inverse) !important;
+    border-color: var(--primary-500) !important;
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Floating Action Button */
+.floating-action-btn, .fab {
+    background: var(--primary-500) !important;
+    color: var(--text-inverse) !important;
+    box-shadow: var(--shadow-medium) !important;
+}
+
+.floating-action-btn:hover, .fab:hover {
+    background: var(--primary-600) !important;
+    box-shadow: var(--shadow-heavy) !important;
+}
+
+/* Search and Filter Elements */
+.search-input, .search-filter input {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.search-filter {
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+/* Checkbox and Radio Styling */
+.checkbox-item, .amenity-checkbox {
+    color: var(--text-primary) !important;
+}
+
+.checkbox-item input[type="checkbox"], 
+.amenity-checkbox input[type="checkbox"] {
+    accent-color: var(--primary-500);
+}
+
+/* File Upload Areas */
+.file-upload-area {
+    background: var(--bg-secondary) !important;
+    border: 2px dashed var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary-500) !important;
+    background: var(--primary-50) !important;
+}
+
+[data-theme="dark"] .file-upload-area:hover {
+    background: var(--primary-700) !important;
+}
+
+/* Table Elements */
+table {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+th {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+td {
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+/* Links */
+a {
+    color: var(--primary-500) !important;
+}
+
+a:hover {
+    color: var(--primary-600) !important;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Dark Theme Specific Adjustments */
+[data-theme="dark"] .card,
+[data-theme="dark"] .hostel-card,
+[data-theme="dark"] .gate-card {
+    border-color: var(--border-primary) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .modal {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Animation Overrides */
+* {
+    transition: background-color 0.3s ease, 
+                color 0.3s ease, 
+                border-color 0.3s ease, 
+                box-shadow 0.3s ease !important;
+}
+
+/* Ensure theme toggle button is always visible */
+.theme-toggle {
+    z-index: 9999 !important;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --border-primary: #000000;
+        --border-secondary: #333333;
+    }
+    
+    [data-theme="dark"] {
+        --border-primary: #ffffff;
+        --border-secondary: #cccccc;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .theme-toggle {
+        transition: background-color 0.1s ease !important;
+    }
+}
