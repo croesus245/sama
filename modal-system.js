@@ -121,8 +121,8 @@ class ModalSystem {
                 firstName: formData.get('firstName'),
                 lastName: formData.get('lastName'),
                 email: formData.get('email'),
-                studentId: formData.get('studentId'),
                 faculty: formData.get('faculty'),
+                department: formData.get('department'),
                 yearOfStudy: formData.get('yearOfStudy'),
                 phone: formData.get('phone'),
                 password: formData.get('password')

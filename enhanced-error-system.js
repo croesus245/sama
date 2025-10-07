@@ -137,9 +137,13 @@ class ValidationSystem {
             pattern: /^[a-zA-Z\s]{2,50}$/,
             message: 'Name must be 2-50 characters and contain only letters'
         },
-        studentId: {
-            pattern: /^[A-Za-z0-9\/]{6,20}$/,
-            message: 'Student ID format is invalid'
+        faculty: {
+            pattern: /^[a-zA-Z\s&]{2,100}$/,
+            message: 'Faculty name must be 2-100 characters'
+        },
+        department: {
+            pattern: /^[a-zA-Z\s&]{2,100}$/,
+            message: 'Department name must be 2-100 characters'
         }
     };
 

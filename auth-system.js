@@ -78,8 +78,9 @@ class AuthSystem {
                 lastName: formData.get('lastName'),
                 email: formData.get('email'),
                 phone: formData.get('phone'),
-                university: formData.get('university'),
-                studentId: formData.get('studentId'),
+                faculty: formData.get('faculty'),
+                department: formData.get('department'),
+                yearOfStudy: formData.get('yearOfStudy'),
                 password: formData.get('password'),
                 userType: 'student'
             };
@@ -371,8 +372,14 @@ class AuthSystem {
         if (!data.phone || data.phone.length < 10) {
             throw new Error('Please enter a valid phone number');
         }
-        if (!data.university) {
-            throw new Error('University selection is required');
+        if (!data.faculty || data.faculty.trim().length < 2) {
+            throw new Error('Faculty is required and must be at least 2 characters');
+        }
+        if (!data.department || data.department.trim().length < 2) {
+            throw new Error('Department is required and must be at least 2 characters');
+        }
+        if (!data.yearOfStudy) {
+            throw new Error('Year of study is required');
         }
         if (!data.password || data.password.length < 8) {
             throw new Error('Password must be at least 8 characters long');
