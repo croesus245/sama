@@ -564,12 +564,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="businessRegNumber">Business Registration Number (CAC) *</label>
-                        <input type="text" id="businessRegNumber" name="businessRegistrationNumber" required placeholder="RC123456">
-                        <small class="form-help">Nigerian Corporate Affairs Commission (CAC) registration number</small>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="businessAddress">Business Address *</label>
                         <textarea id="businessAddress" name="businessAddress" required rows="2" placeholder="Complete business address including city and state"></textarea>
                     </div>
@@ -614,44 +608,10 @@
                         <input type="password" id="confirmPassword" name="confirmPassword" required>
                     </div>
                     
-                    <!-- Verification Documents Section -->
-                    <div class="verification-section">
-                        <h4><i class="fas fa-shield-alt"></i> Verification Documents</h4>
-                        <p class="verification-note">
-                            <i class="fas fa-info-circle"></i>
-                            Upload these documents for account verification. Your account will be reviewed within 24-48 hours.
-                        </p>
-                        
-                        <div class="form-group">
-                            <label for="cacDocument">CAC Registration Certificate *</label>
-                            <input type="file" id="cacDocument" name="cacDocument" accept=".pdf,.jpg,.jpeg,.png" required>
-                            <small class="form-help">Upload clear photo or PDF of your CAC certificate</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="businessId">Business Owner ID (Optional)</label>
-                            <input type="file" id="businessId" name="businessId" accept=".pdf,.jpg,.jpeg,.png">
-                            <small class="form-help">Valid ID of business owner (Driver's License, National ID, etc.)</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="businessProof">Proof of Business Address (Optional)</label>
-                            <input type="file" id="businessProof" name="businessProof" accept=".pdf,.jpg,.jpeg,.png">
-                            <small class="form-help">Utility bill, bank statement, or official document showing business address</small>
-                        </div>
-                    </div>
-                    
                     <div class="form-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="agreeRealtorTerms" name="agreeTerms" required>
                             I agree to the <a href="#" onclick="showRealtorTerms()" style="color: #007bff;">Realtor Terms & Conditions</a> and verify that my business is legally registered
-                        </label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="verifyDocuments" name="verifyDocuments" required>
-                            I certify that all information and documents provided are authentic and accurate
                         </label>
                     </div>
                     

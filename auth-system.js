@@ -147,7 +147,6 @@ class AuthSystem {
                 lastName: formData.get('contactLastName'),
                 email: formData.get('email'),
                 phone: formData.get('phone'),
-                businessRegistrationNumber: formData.get('businessRegistrationNumber'),
                 businessAddress: formData.get('businessAddress'),
                 businessType: formData.get('businessType'),
                 yearsInBusiness: formData.get('yearsInBusiness'),
@@ -156,12 +155,7 @@ class AuthSystem {
                 confirmPassword: formData.get('confirmPassword'),
                 userType: 'realtor',
                 verificationStatus: 'pending',
-                submittedAt: new Date().toISOString(),
-                documentsUploaded: {
-                    cacDocument: formData.get('cacDocument')?.name || null,
-                    businessId: formData.get('businessId')?.name || null,
-                    businessProof: formData.get('businessProof')?.name || null
-                }
+                submittedAt: new Date().toISOString()
             };
 
             // Validate required fields
@@ -457,9 +451,7 @@ class AuthSystem {
         if (!data.phone || data.phone.length < 10) {
             throw new Error('Please enter a valid phone number');
         }
-        if (!data.businessRegistrationNumber || data.businessRegistrationNumber.trim().length < 3) {
-            throw new Error('Valid business registration number (CAC) is required');
-        }
+
         if (!data.businessAddress || data.businessAddress.trim().length < 10) {
             throw new Error('Complete business address is required');
         }
