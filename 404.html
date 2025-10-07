@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWG Hostels - Page Not Found</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .error-container {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px;
+        }
+        .error-code {
+            font-size: 6em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            font-size: 1.5em;
+            color: #495057;
+            margin-bottom: 30px;
+        }
+        .error-description {
+            color: #6c757d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .back-btn {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
+        /* Secret admin access - only visible if you know the konami code */
+        .secret-access {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 12px;
+            color: #dee2e6;
+        }
+        .secret-access.visible {
+            opacity: 1;
+        }
+        .secret-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .secret-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <div class="error-message">Page Not Found</div>
+        <div class="error-description">
+            The page you're looking for doesn't exist or has been moved.
+            Please check the URL and try again.
+        </div>
+        <a href="index.html" class="back-btn">Back to Home</a>
+    </div>
+    
+    <!-- Secret admin access - requires konami code -->
+    <div class="secret-access" id="secretAccess">
+        🔑 <a href="secret-access-mwg.html" class="secret-link">Admin Access</a>
+    </div>
+
+    <script>
+        // Konami code for secret admin access
+        const konamiCode = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+        let userInput = [];
+
+        document.addEventListener('keydown', function(e) {
+            userInput.push(e.code);
+            
+            // Keep only the last 10 keys
+            if (userInput.length > konamiCode.length) {
+                userInput.shift();
+            }
+            
+            // Check if the last inputs match the konami code
+            if (userInput.length === konamiCode.length && 
+                userInput.every((key, index) => key === konamiCode[index])) {
+                
+                // Show secret admin access
+                document.getElementById('secretAccess').classList.add('visible');
+                
+                // Play a subtle notification
+                console.log('🔓 Secret admin access unlocked');
+                
+                // Hide after 30 seconds
+                setTimeout(() => {
+                    document.getElementById('secretAccess').classList.remove('visible');
+                }, 30000);
+            }
+        });
+
+        // Alternative secret access method - triple click on 404
+        let clickCount = 0;
+        document.querySelector('.error-code').addEventListener('click', function() {
+            clickCount++;
+            if (clickCount === 3) {
+                document.getElementById('secretAccess').classList.add('visible');
+                clickCount = 0; // Reset
+                
+                setTimeout(() => {
+                    document.getElementById('secretAccess').classList.remove('visible');
+                }, 15000);
+            }
+            
+            // Reset click count after 2 seconds
+            setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

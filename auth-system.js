@@ -8,7 +8,14 @@ class AuthSystem {
         this.users = JSON.parse(localStorage.getItem('mwg_users') || '[]');
         this.currentUser = JSON.parse(localStorage.getItem('mwg_current_user') || 'null');
         this.isOnline = navigator.onLine;
-        this.api = new MWGHostelsAPI();
+        
+        // Safely initialize API
+        try {
+            this.api = typeof MWGHostelsAPI !== 'undefined' ? new MWGHostelsAPI() : null;
+        } catch (error) {
+            console.warn('MWGHostelsAPI not available, running in offline mode:', error);
+            this.api = null;
+        }
         
         // Listen for online/offline events
         window.addEventListener('online', () => this.handleOnline());
@@ -90,7 +97,7 @@ class AuthSystem {
 
             // Try online registration first
             let registrationSuccess = false;
-            if (this.isOnline) {
+            if (this.isOnline && this.api) {
                 try {
                     const response = await this.api.registerStudent(studentData);
                     if (response.success) {
@@ -105,7 +112,7 @@ class AuthSystem {
                     registrationSuccess = this.registerUserLocally(studentData);
                 }
             } else {
-                // Offline registration
+                // Offline registration or API not available
                 registrationSuccess = this.registerUserLocally(studentData);
             }
 
@@ -141,8 +148,20 @@ class AuthSystem {
                 email: formData.get('email'),
                 phone: formData.get('phone'),
                 businessRegistrationNumber: formData.get('businessRegistrationNumber'),
+                businessAddress: formData.get('businessAddress'),
+                businessType: formData.get('businessType'),
+                yearsInBusiness: formData.get('yearsInBusiness'),
+                websiteUrl: formData.get('websiteUrl'),
                 password: formData.get('password'),
-                userType: 'realtor'
+                confirmPassword: formData.get('confirmPassword'),
+                userType: 'realtor',
+                verificationStatus: 'pending',
+                submittedAt: new Date().toISOString(),
+                documentsUploaded: {
+                    cacDocument: formData.get('cacDocument')?.name || null,
+                    businessId: formData.get('businessId')?.name || null,
+                    businessProof: formData.get('businessProof')?.name || null
+                }
             };
 
             // Validate required fields
@@ -150,12 +169,12 @@ class AuthSystem {
 
             // Try online registration first
             let registrationSuccess = false;
-            if (this.isOnline) {
+            if (this.isOnline && this.api) {
                 try {
                     const response = await this.api.registerRealtor(realtorData);
                     if (response.success) {
                         registrationSuccess = true;
-                        this.showSuccess(successDiv, 'Registration successful! Your account is pending verification.');
+                        this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
                     } else {
                         throw new Error(response.message || 'Registration failed');
                     }
@@ -164,7 +183,28 @@ class AuthSystem {
                     registrationSuccess = this.registerUserLocally(realtorData);
                 }
             } else {
-                registrationSuccess = this.registerUserLocally(realtorData);
+                // Offline registration - submit to verification system
+                try {
+                    if (typeof verificationManager !== 'undefined') {
+                        const result = verificationManager.submitVerificationApplication(realtorData);
+                        if (result.success) {
+                            registrationSuccess = true;
+                            this.showSuccess(successDiv, `Application submitted successfully! Application ID: ${result.applicationId}. You will receive an email notification within 24-48 hours once your account is verified.`);
+                        }
+                    } else {
+                        // Fallback to local storage
+                        registrationSuccess = this.registerUserLocally(realtorData);
+                        if (registrationSuccess) {
+                            this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Verification submission failed:', error);
+                    registrationSuccess = this.registerUserLocally(realtorData);
+                    if (registrationSuccess) {
+                        this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
+                    }
+                }
             }
 
             if (registrationSuccess) {
@@ -197,7 +237,7 @@ class AuthSystem {
 
             // Try online login first
             let loginSuccess = false;
-            if (this.isOnline) {
+            if (this.isOnline && this.api) {
                 try {
                     const response = await this.api.login(loginData);
                     if (response.success) {
@@ -256,6 +296,21 @@ class AuthSystem {
     loginUserLocally(loginData) {
         const user = this.users.find(u => u.email === loginData.email);
         if (user) {
+            // Check if user is a realtor and verify their status
+            if (user.userType === 'realtor' && typeof verificationManager !== 'undefined') {
+                const verificationStatus = verificationManager.getVerificationStatus(user.email);
+                
+                if (verificationStatus.status === 'pending') {
+                    throw new Error(`Your account is pending verification. Application ID: ${verificationStatus.applicationId}. Please wait for approval email.`);
+                } else if (verificationStatus.status === 'rejected') {
+                    const canReapply = verificationStatus.canReapply ? ' You can reapply after 30 days.' : '';
+                    throw new Error(`Your account verification was rejected. Reason: ${verificationStatus.reason}.${canReapply}`);
+                } else if (verificationStatus.status === 'not_found') {
+                    throw new Error('Account verification required. Please contact support.');
+                }
+                // If verified, proceed with login
+            }
+            
             this.currentUser = user;
             localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
             return true;
@@ -390,28 +445,55 @@ class AuthSystem {
     }
 
     validateRealtorData(data) {
-        if (!data.businessName) {
-            throw new Error('Business name is required');
+        if (!data.businessName || data.businessName.trim().length < 2) {
+            throw new Error('Business name is required and must be at least 2 characters');
         }
         if (!data.firstName || !data.lastName) {
             throw new Error('Contact person name is required');
         }
         if (!this.isValidEmail(data.email)) {
-            throw new Error('Please enter a valid email address');
+            throw new Error('Please enter a valid business email address');
         }
         if (!data.phone || data.phone.length < 10) {
             throw new Error('Please enter a valid phone number');
         }
-        if (!data.businessRegistrationNumber) {
-            throw new Error('Business registration number is required');
+        if (!data.businessRegistrationNumber || data.businessRegistrationNumber.trim().length < 3) {
+            throw new Error('Valid business registration number (CAC) is required');
+        }
+        if (!data.businessAddress || data.businessAddress.trim().length < 10) {
+            throw new Error('Complete business address is required');
+        }
+        if (!data.businessType) {
+            throw new Error('Business type selection is required');
+        }
+        if (!data.yearsInBusiness) {
+            throw new Error('Years in business is required');
         }
         if (!data.password || data.password.length < 8) {
             throw new Error('Password must be at least 8 characters long');
+        }
+        if (!this.isStrongPassword(data.password)) {
+            throw new Error('Password must contain uppercase, lowercase, number, and special character');
+        }
+        if (data.password !== data.confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
+        if (data.websiteUrl && !this.isValidUrl(data.websiteUrl)) {
+            throw new Error('Please enter a valid website URL');
         }
     }
 
     isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    isValidUrl(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     isStrongPassword(password) {
@@ -506,17 +588,19 @@ class AuthSystem {
 
     async syncLocalData() {
         // Sync local registrations with server when back online
-        const unsynced = this.users.filter(u => u.needsSync);
-        for (const user of unsynced) {
-            try {
-                if (user.userType === 'student') {
-                    await this.api.registerStudent(user);
-                } else if (user.userType === 'realtor') {
-                    await this.api.registerRealtor(user);
+        if (this.api) {
+            const unsynced = this.users.filter(u => u.needsSync);
+            for (const user of unsynced) {
+                try {
+                    if (user.userType === 'student') {
+                        await this.api.registerStudent(user);
+                    } else if (user.userType === 'realtor') {
+                        await this.api.registerRealtor(user);
+                    }
+                    user.needsSync = false;
+                } catch (error) {
+                    console.warn('Failed to sync user:', user.email, error);
                 }
-                user.needsSync = false;
-            } catch (error) {
-                console.warn('Failed to sync user:', user.email, error);
             }
         }
         localStorage.setItem('mwg_users', JSON.stringify(this.users));

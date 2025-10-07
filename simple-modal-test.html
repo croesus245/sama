@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Modal Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px;
+            font-size: 18px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Modal Test</h1>
+    <p>This is a basic test to see if modal opening works at all.</p>
+    
+    <button class="test-button" onclick="testModal()">Open Test Modal</button>
+    
+    <div id="testModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTestModal()">&times;</span>
+            <h2>Test Modal</h2>
+            <p>This modal opened successfully!</p>
+            <button onclick="closeTestModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function testModal() {
+            console.log('Opening test modal...');
+            const modal = document.getElementById('testModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeTestModal() {
+            console.log('Closing test modal...');
+            const modal = document.getElementById('testModal');
+            modal.style.display = 'none';
+        }
+
+        console.log('Simple modal test page loaded');
+    </script>
+</body>
+</html>

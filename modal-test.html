@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Test - MWG Hostels</title>
+    <link rel="stylesheet" href="modal-styles.css">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .debug-info {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modal System Diagnostic Test</h1>
+    
+    <div class="debug-info">
+        <h3>Debug Information:</h3>
+        <p id="debug-output">Loading...</p>
+    </div>
+    
+    <button class="test-button" onclick="testOpenModal()">Test Open Registration Modal</button>
+    <button class="test-button" onclick="testCloseModal()">Test Close Modal</button>
+    <button class="test-button" onclick="checkDOMElements()">Check DOM Elements</button>
+    <button class="test-button" onclick="testFormSubmission()">Test Form Submission</button>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Student Registration</h2>
+                <button class="close-btn" onclick="closeModal('registrationModal')">&times;</button>
+            </div>
+            <form id="studentRegistrationForm" class="modal-form">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="faculty">Faculty *</label>
+                    <input type="text" id="faculty" name="faculty" required placeholder="e.g., Engineering & Technology">
+                </div>
+                <div class="form-group">
+                    <label for="department">Department *</label>
+                    <input type="text" id="department" name="department" required placeholder="e.g., Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="yearOfStudy">Year of Study *</label>
+                    <select id="yearOfStudy" name="yearOfStudy" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> Register as Student
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Test modal functions
+        function testOpenModal() {
+            console.log('Testing openModal function...');
+            openModal('registrationModal');
+            updateDebug('Attempted to open modal');
+        }
+
+        function testCloseModal() {
+            console.log('Testing closeModal function...');
+            closeModal('registrationModal');
+            updateDebug('Attempted to close modal');
+        }
+
+        function checkDOMElements() {
+            const modal = document.getElementById('registrationModal');
+            const form = document.getElementById('studentRegistrationForm');
+            const info = `
+                Modal exists: ${modal ? 'YES' : 'NO'}
+                Form exists: ${form ? 'YES' : 'NO'}
+                Modal display: ${modal ? modal.style.display : 'N/A'}
+                Modal computed display: ${modal ? getComputedStyle(modal).display : 'N/A'}
+            `;
+            updateDebug(info);
+            console.log('DOM Check:', info);
+        }
+
+        function testFormSubmission() {
+            const form = document.getElementById('studentRegistrationForm');
+            if (form) {
+                // Fill out form with test data
+                form.firstName.value = 'Test';
+                form.lastName.value = 'User';
+                form.email.value = 'test@example.com';
+                form.phone.value = '1234567890';
+                form.faculty.value = 'Engineering';
+                form.department.value = 'Computer Science';
+                form.yearOfStudy.value = '2';
+                form.password.value = 'Test123!@#';
+                
+                updateDebug('Form filled with test data. Check form values.');
+            } else {
+                updateDebug('ERROR: Form not found!');
+            }
+        }
+
+        function updateDebug(message) {
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.innerHTML = message + '<br>' + debugOutput.innerHTML;
+        }
+
+        // Modal Functions (same as in main site)
+        function openModal(modalId) {
+            console.log('openModal called with:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                updateDebug(`Modal '${modalId}' opened successfully`);
+            } else {
+                updateDebug(`ERROR: Modal '${modalId}' not found!`);
+            }
+        }
+
+        function closeModal(modalId) {
+            console.log('closeModal called with:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                updateDebug(`Modal '${modalId}' closed successfully`);
+            } else {
+                updateDebug(`ERROR: Modal '${modalId}' not found!`);
+            }
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+                updateDebug(`Modal closed by clicking outside: ${event.target.id}`);
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('studentRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateDebug('Form submission prevented and handled');
+            console.log('Form submitted!');
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            updateDebug('Form data collected: ' + JSON.stringify(data, null, 2));
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDebug('Page loaded successfully. Modal system ready for testing.');
+            checkDOMElements();
+        });
+    </script>
+</body>
+</html>

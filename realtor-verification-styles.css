@@ -1,0 +1,288 @@
+/* ===============================================
+   REALTOR VERIFICATION SYSTEM STYLES
+   =============================================== */
+
+/* Verification Section */
+.verification-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #007bff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.verification-section::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #007bff, #0056b3, #007bff);
+    border-radius: 12px;
+    z-index: -1;
+    animation: borderGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+    from {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.6), 0 0 30px rgba(0, 123, 255, 0.4);
+    }
+}
+
+.verification-section h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.verification-note {
+    background: rgba(0, 123, 255, 0.1);
+    border: 1px solid rgba(0, 123, 255, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    color: #004085;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.verification-note i {
+    color: #007bff;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Verification Info Section */
+.verification-info {
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border: 1px solid #28a745;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.verification-info h5 {
+    color: #155724;
+    margin-bottom: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.verification-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.verification-info li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    color: #155724;
+    font-size: 14px;
+}
+
+.verification-info li i {
+    color: #28a745;
+    font-size: 12px;
+    width: 16px;
+}
+
+/* Enhanced Form Help Text */
+.form-help {
+    display: block;
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* File Input Styling */
+input[type="file"] {
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    padding: 12px;
+    background: rgba(0, 123, 255, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #0056b3;
+    background: rgba(0, 123, 255, 0.1);
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Textarea Styling */
+textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+/* Enhanced Checkbox Labels */
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Verification Status Badges */
+.verification-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.verification-status.pending {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.verification-status.approved {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #28a745;
+}
+
+.verification-status.rejected {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #dc3545;
+}
+
+/* Modal Enhancements for Realtor Registration */
+#realtorModal .modal-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#realtorModal .modal-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px;
+}
+
+#realtorModal .modal-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+#realtorModal .modal-body {
+    padding: 25px;
+}
+
+/* Responsive Design for Realtor Form */
+@media (max-width: 768px) {
+    .verification-section {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .verification-info {
+        padding: 15px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .verification-note {
+        padding: 10px;
+    }
+    
+    #realtorModal .modal-content {
+        margin: 10px;
+        max-height: 95vh;
+    }
+}
+
+/* Loading States for Verification */
+.verification-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.verification-loading .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages for Verification */
+.verification-message {
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.verification-message.success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #28a745;
+}
+
+.verification-message.error {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #dc3545;
+}
+
+.verification-message.warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffc107;
+}
