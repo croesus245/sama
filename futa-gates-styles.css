@@ -34,14 +34,14 @@
 
 .campus-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
     margin-top: 2rem;
 }
 
 .campus-card {
     position: relative;
-    height: 300px;
+    height: 200px;
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
@@ -60,6 +60,81 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+.campus-image img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(0.9) contrast(1.1);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.campus-card:hover .campus-image img {
+    transform: scale(1.05);
+    filter: brightness(1) contrast(1.2);
+}
+
+/* Full size modal for gates */
+.gate-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.gate-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.gate-modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.gate-modal-content img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gate-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 10001;
+}
+
+.gate-modal-close:hover {
+    background: rgba(0, 0, 0, 0.9);
 }
 
 .campus-overlay {
@@ -110,6 +185,33 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.gate-hostels-btn {
+    background: rgba(37, 99, 235, 0.9);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.gate-hostels-btn:hover {
+    background: rgba(37, 99, 235, 1);
+    transform: translateY(-2px);
+}
+
+.gate-hostels-btn i {
+    font-size: 0.9rem;
+}
+
 /* FUTA Badge for authentic gate images */
 .futa-gate-badge {
     position: absolute;
@@ -142,16 +244,16 @@
 /* Large Tablets & Small Desktops */
 @media (max-width: 1024px) {
     .campus-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
     }
     
     .campus-card {
-        height: 280px;
+        height: 180px;
     }
     
     .campus-info h3 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
     }
 }
 
@@ -162,62 +264,14 @@
     }
     
     .campus-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
         margin-top: 1.5rem;
     }
     
     .campus-card {
-        height: 250px;
+        height: 160px;
         border-radius: 12px;
-    }
-    
-    .futa-gate-badge {
-        top: 0.75rem;
-        right: 0.75rem;
-        font-size: 0.7rem;
-        padding: 0.4rem 0.8rem;
-    }
-    
-    .campus-overlay {
-        padding: 1.2rem;
-    }
-    
-    .campus-info h3 {
-        font-size: 1.2rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    .campus-info p {
-        font-size: 0.9rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .campus-stats {
-        gap: 0.75rem;
-    }
-    
-    .campus-stats span {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.6rem;
-    }
-}
-
-/* Large Mobile Phones */
-@media (max-width: 480px) {
-    .campus-section {
-        padding: 1rem 0;
-    }
-    
-    .campus-grid {
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-    
-    .campus-card {
-        height: 220px;
-        border-radius: 10px;
-        margin: 0 0.5rem;
     }
     
     .futa-gate-badge {
@@ -232,56 +286,66 @@
     }
     
     .campus-info h3 {
-        font-size: 1.1rem;
+        font-size: 1rem;
         margin-bottom: 0.3rem;
     }
     
     .campus-info p {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         margin-bottom: 0.6rem;
     }
     
     .campus-stats {
-        flex-direction: column;
         gap: 0.5rem;
     }
     
     .campus-stats span {
         font-size: 0.7rem;
-        padding: 0.15rem 0.5rem;
-        display: inline-block;
-        width: fit-content;
+        padding: 0.15rem 0.4rem;
+    }
+}
+
+/* Large Mobile Phones */
+@media (max-width: 480px) {
+    .campus-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .campus-card {
+        height: 140px;
+        border-radius: 10px;
+    }
+    
+    .futa-gate-badge {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .campus-info h3 {
+        font-size: 0.9rem;
+    }
+    
+    .campus-info p {
+        font-size: 0.75rem;
     }
 }
 
 /* Extra Small Mobile Phones */
 @media (max-width: 360px) {
+    .campus-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
     .campus-card {
-        height: 200px;
-        margin: 0 0.25rem;
+        height: 120px;
     }
     
     .futa-gate-badge {
-        top: 0.25rem;
-        right: 0.25rem;
-        font-size: 0.6rem;
-        padding: 0.25rem 0.5rem;
-    }
-    
-    .campus-overlay {
-        padding: 0.75rem;
-    }
-    
-    .campus-info h3 {
-        font-size: 1rem;
-    }
-    
-    .campus-info p {
-        font-size: 0.8rem;
-    }
-    
-    .campus-stats span {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
+        padding: 0.2rem 0.4rem;
     }
 }
 
