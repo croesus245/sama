@@ -421,7 +421,6 @@ function updateGateCounts() {
     if (southElement) southElement.textContent = southCount;
     if (westElement) westElement.textContent = westCount;
 }
-}
 
 // Filter Hostels
 function filterHostels(location) {

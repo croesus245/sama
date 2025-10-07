@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Realtor Dashboard - MWG Hostels</title>
+    <link rel="icon" type="image/png" href="sama.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="realtor-style.css">
+    <link rel="stylesheet" href="advanced-styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.2);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .hostel-management {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .hostel-card {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.3s ease;
+        }
+        
+        .hostel-card:hover {
+            background-color: #f9fafb;
+        }
+        
+        .hostel-image {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1.5rem;
+        }
+        
+        .hostel-info {
+            flex: 1;
+        }
+        
+        .hostel-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hostel-details {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .availability-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 1rem;
+        }
+        
+        .availability-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #dc2626;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #16a34a;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-available {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-unavailable {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .applications-count {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .search-filter {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-tab.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+        
+        .bulk-actions {
+            padding: 1rem 1.5rem;
+            background: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+            display: none;
+        }
+        
+        .bulk-actions.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .hostel-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hostel-image {
+                margin: 0 0 1rem 0;
+            }
+            
+            .action-buttons {
+                margin: 1rem 0 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Enhanced Realtor Dashboard</h1>
+                    <p class="opacity-90">Manage your hostel listings and applications efficiently</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-lg font-semibold">Welcome back, Realtor!</div>
+                    <div class="text-sm opacity-75" id="currentDate"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-home text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-gray-800" id="totalHostels">12</div>
+                        <div class="text-gray-600">Total Hostels</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-gray-800" id="availableHostels">8</div>
+                        <div class="text-gray-600">Available</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="bg-red-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-gray-800" id="unavailableHostels">4</div>
+                        <div class="text-gray-600">Unavailable</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-file-alt text-yellow-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-gray-800" id="totalApplications">24</div>
+                        <div class="text-gray-600">Applications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hostel Management -->
+        <div class="hostel-management">
+            <div class="search-filter">
+                <input type="text" id="hostelSearch" class="search-input" placeholder="Search hostels by name, location, or price...">
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-filter="all">All Hostels</div>
+                    <div class="filter-tab" data-filter="available">Available</div>
+                    <div class="filter-tab" data-filter="unavailable">Unavailable</div>
+                    <div class="filter-tab" data-filter="pending">Pending Applications</div>
+                </div>
+            </div>
+            
+            <div class="bulk-actions" id="bulkActions">
+                <div class="flex items-center gap-4">
+                    <span class="font-semibold">Bulk Actions:</span>
+                    <button class="btn-secondary" onclick="bulkSetAvailable()">Set Available</button>
+                    <button class="btn-secondary" onclick="bulkSetUnavailable()">Set Unavailable</button>
+                    <button class="btn-secondary" onclick="clearBulkSelection()">Clear Selection</button>
+                </div>
+            </div>
+            
+            <div id="hostelList">
+                <!-- Hostels will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="environment-config.js"></script>
+    <script src="advanced-features.js"></script>
+    <script>
+        // Sample hostel data - in a real app, this would come from a database
+        const hostels = [
+            {
+                id: 1,
+                name: "Peace Palace Hostel",
+                location: "Behind FUTA South Gate",
+                price: 45000,
+                image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80",
+                available: true,
+                applications: 5,
+                features: ["WiFi", "Security", "Water Supply"]
+            },
+            {
+                id: 2,
+                name: "Royal Court Hostel",
+                location: "Opposite FUTA Main Gate",
+                price: 55000,
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
+                available: false,
+                applications: 8,
+                features: ["24/7 Light", "WiFi", "Security", "Laundry"]
+            },
+            {
+                id: 3,
+                name: "Golden Gate Hostel",
+                location: "Near FUTA Teaching Hospital",
+                price: 40000,
+                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=400&q=80",
+                available: true,
+                applications: 3,
+                features: ["WiFi", "Security", "Water Supply", "Parking"]
+            },
+            {
+                id: 4,
+                name: "Student Haven",
+                location: "FUTA Road",
+                price: 38000,
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80",
+                available: true,
+                applications: 2,
+                features: ["WiFi", "Security"]
+            },
+            {
+                id: 5,
+                name: "Elite Residence",
+                location: "Behind FUTA North Gate",
+                price: 65000,
+                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80",
+                available: false,
+                applications: 12,
+                features: ["24/7 Light", "WiFi", "Security", "Gym", "Swimming Pool"]
+            },
+            {
+                id: 6,
+                name: "Comfort Lodge",
+                location: "Akure-Owo Road",
+                price: 42000,
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+                available: true,
+                applications: 4,
+                features: ["WiFi", "Security", "Water Supply"]
+            }
+        ];
+        
+        let currentFilter = 'all';
+        let selectedHostels = new Set();
+        
+        // Initialize dashboard
+        function initializeDashboard() {
+            updateCurrentDate();
+            updateStats();
+            renderHostels();
+            setupEventListeners();
+        }
+        
+        function updateCurrentDate() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = Utils.formatDate(now);
+        }
+        
+        function updateStats() {
+            const totalHostels = hostels.length;
+            const availableHostels = hostels.filter(h => h.available).length;
+            const unavailableHostels = totalHostels - availableHostels;
+            const totalApplications = hostels.reduce((sum, h) => sum + h.applications, 0);
+            
+            document.getElementById('totalHostels').textContent = totalHostels;
+            document.getElementById('availableHostels').textContent = availableHostels;
+            document.getElementById('unavailableHostels').textContent = unavailableHostels;
+            document.getElementById('totalApplications').textContent = totalApplications;
+        }
+        
+        function renderHostels(filteredHostels = null) {
+            const hostelList = document.getElementById('hostelList');
+            const hostelsToRender = filteredHostels || getFilteredHostels();
+            
+            if (hostelsToRender.length === 0) {
+                hostelList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-search text-4xl mb-4"></i>
+                        <p>No hostels found matching your criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            hostelList.innerHTML = hostelsToRender.map(hostel => `
+                <div class="hostel-card" data-hostel-id="${hostel.id}">
+                    <input type="checkbox" class="hostel-checkbox mr-4" 
+                           onchange="toggleHostelSelection(${hostel.id})">
+                    
+                    <img src="${hostel.image}" alt="${hostel.name}" class="hostel-image" loading="lazy">
+                    
+                    <div class="hostel-info">
+                        <div class="hostel-name">${hostel.name}</div>
+                        <div class="hostel-details">
+                            <i class="fas fa-map-marker-alt mr-1"></i> ${hostel.location}
+                        </div>
+                        <div class="hostel-details">
+                            <i class="fas fa-naira-sign mr-1"></i> ${Utils.formatCurrency(hostel.price)}
+                        </div>
+                        <div class="hostel-details">
+                            <i class="fas fa-star mr-1"></i> ${hostel.features.join(', ')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <span class="status-badge ${hostel.available ? 'status-available' : 'status-unavailable'}">
+                            ${hostel.available ? 'Available' : 'Unavailable'}
+                        </span>
+                        
+                        <label class="availability-toggle">
+                            <input type="checkbox" ${hostel.available ? 'checked' : ''} 
+                                   onchange="toggleAvailability(${hostel.id}, this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        
+                        <div class="applications-count">
+                            ${hostel.applications} Applications
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-secondary" onclick="viewApplications(${hostel.id})">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </button>
+                            <button class="btn-secondary" onclick="editHostel(${hostel.id})">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getFilteredHostels() {
+            const searchTerm = document.getElementById('hostelSearch').value.toLowerCase();
+            
+            let filtered = hostels.filter(hostel => {
+                const matchesSearch = hostel.name.toLowerCase().includes(searchTerm) ||
+                                    hostel.location.toLowerCase().includes(searchTerm) ||
+                                    hostel.price.toString().includes(searchTerm);
+                
+                switch (currentFilter) {
+                    case 'available':
+                        return matchesSearch && hostel.available;
+                    case 'unavailable':
+                        return matchesSearch && !hostel.available;
+                    case 'pending':
+                        return matchesSearch && hostel.applications > 0;
+                    default:
+                        return matchesSearch;
+                }
+            });
+            
+            return filtered;
+        }
+        
+        function toggleAvailability(hostelId, isAvailable) {
+            const hostel = hostels.find(h => h.id === hostelId);
+            if (hostel) {
+                hostel.available = isAvailable;
+                updateStats();
+                renderHostels();
+                
+                // Show notification
+                const message = `${hostel.name} marked as ${isAvailable ? 'Available' : 'Unavailable'}`;
+                notifications.show(message, isAvailable ? 'success' : 'warning');
+                
+                // Track the action
+                Analytics.track('hostel_availability_changed', {
+                    hostelId,
+                    hostelName: hostel.name,
+                    newStatus: isAvailable ? 'available' : 'unavailable'
+                });
+            }
+        }
+        
+        function toggleHostelSelection(hostelId) {
+            if (selectedHostels.has(hostelId)) {
+                selectedHostels.delete(hostelId);
+            } else {
+                selectedHostels.add(hostelId);
+            }
+            
+            const bulkActions = document.getElementById('bulkActions');
+            if (selectedHostels.size > 0) {
+                bulkActions.classList.add('show');
+            } else {
+                bulkActions.classList.remove('show');
+            }
+        }
+        
+        function bulkSetAvailable() {
+            selectedHostels.forEach(hostelId => {
+                const hostel = hostels.find(h => h.id === hostelId);
+                if (hostel) {
+                    hostel.available = true;
+                }
+            });
+            
+            updateStats();
+            renderHostels();
+            clearBulkSelection();
+            notifications.show(`${selectedHostels.size} hostels marked as available`, 'success');
+        }
+        
+        function bulkSetUnavailable() {
+            selectedHostels.forEach(hostelId => {
+                const hostel = hostels.find(h => h.id === hostelId);
+                if (hostel) {
+                    hostel.available = false;
+                }
+            });
+            
+            updateStats();
+            renderHostels();
+            clearBulkSelection();
+            notifications.show(`${selectedHostels.size} hostels marked as unavailable`, 'warning');
+        }
+        
+        function clearBulkSelection() {
+            selectedHostels.clear();
+            document.querySelectorAll('.hostel-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('bulkActions').classList.remove('show');
+        }
+        
+        function viewApplications(hostelId) {
+            const hostel = hostels.find(h => h.id === hostelId);
+            notifications.show(`Viewing ${hostel.applications} applications for ${hostel.name}`, 'info');
+            Analytics.track('view_applications', { hostelId, hostelName: hostel.name });
+        }
+        
+        function editHostel(hostelId) {
+            const hostel = hostels.find(h => h.id === hostelId);
+            notifications.show(`Opening editor for ${hostel.name}`, 'info');
+            Analytics.track('edit_hostel', { hostelId, hostelName: hostel.name });
+        }
+        
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('hostelSearch');
+            searchInput.addEventListener('input', Utils.debounce(() => {
+                renderHostels();
+            }, 300));
+            
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update filter
+                    currentFilter = tab.dataset.filter;
+                    renderHostels();
+                    
+                    Analytics.track('filter_changed', { filter: currentFilter });
+                });
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>
