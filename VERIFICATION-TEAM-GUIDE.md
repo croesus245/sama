@@ -212,13 +212,14 @@ You focus on policy and quality standards
 
 ### **Current Admin Accounts:**
 ```
-Username: admin     | Password: verify123    | Role: Main Admin
-Username: verifier  | Password: mwg2024      | Role: Verifier
-Username: supervisor| Password: hostels123   | Role: Supervisor
+🔒 SECURITY NOTICE: 
+Access credentials are managed securely and distributed separately.
+Contact system administrator for current authentication details.
+All default passwords have been changed for security compliance.
 ```
 
 ### **Security Recommendations:**
-- Change default passwords immediately
+- All passwords are now hashed and stored securely
 - Create individual accounts for each verifier
 - Implement role-based permissions
 - Regular password updates (monthly)

@@ -37,7 +37,7 @@
 4. Driver: **Node.js**, Version: **4.1 or later**
 5. Copy the connection string (looks like):
    ```
-   mongodb+srv://mwg_admin:<password>@mwg-hostels-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
+   mongodb+srv://mwg_admin:<YOUR_SECURE_PASSWORD>@mwg-hostels-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
    ```
 
 ### **Step 6: Update .env File**
@@ -48,7 +48,7 @@
    MONGODB_URI=mongodb://localhost:27017/mwg_hostels
    
    # With your Atlas connection string:
-   MONGODB_URI=mongodb+srv://mwg_admin:YOUR_PASSWORD@mwg-hostels-cluster.xxxxx.mongodb.net/mwg_hostels?retryWrites=true&w=majority
+   MONGODB_URI=mongodb+srv://mwg_admin:YOUR_SECURE_PASSWORD@mwg-hostels-cluster.xxxxx.mongodb.net/mwg_hostels?retryWrites=true&w=majority
    ```
 3. Replace `<password>` with your actual password
 4. Add database name `mwg_hostels` before the `?` in the URL
@@ -76,7 +76,7 @@ PORT=5000
 NODE_ENV=development
 
 # Database Configuration - MongoDB Atlas
-MONGODB_URI=mongodb+srv://mwg_admin:SuperSecurePassword123@mwg-hostels-cluster.abcde.mongodb.net/mwg_hostels?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://mwg_admin:YOUR_PRODUCTION_PASSWORD@mwg-hostels-cluster.abcde.mongodb.net/mwg_hostels?retryWrites=true&w=majority
 
 # JWT Configuration
 JWT_SECRET=a9b07c4f9312a16d223621f6d2fe23d5d0192789115e5d860256303293a5715ed542196170a286131fd3834fe38c6d06fd8341068ea1a993d46e04710aa4cb58

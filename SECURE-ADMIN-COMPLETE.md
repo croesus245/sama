@@ -39,7 +39,7 @@ You requested that the admin verification panel should **NOT be visible or acces
 http://localhost:8000/secret-access-mwg.html
 ```
 - Bookmark this URL privately
-- Use credentials: admin / verify123
+- Authentication: Contact system administrator for secure credentials
 - Only you know this URL exists
 
 ### **Method 2: Emergency Access via 404**
@@ -109,7 +109,7 @@ http://localhost:8000/404.html
 2. **Verification Panel**: `mwg-verification-panel-2024.html`
 3. **Emergency Access**: `404.html` + Konami code/triple-click
 
-**Credentials**: admin / verify123
+**Authentication**: Secure credentials managed separately
 
 ---
 

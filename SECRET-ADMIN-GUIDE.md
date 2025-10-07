@@ -24,14 +24,18 @@ Then use: Konami Code (↑↑↓↓←→←→BA) OR Triple-click "404"
 
 ## 🔐 **Access Credentials**
 
-### **Main Admin Account:**
-- **Username:** `admin`
-- **Password:** `verify123`
-- **Role:** Full verification access
+### **🚨 SECURITY UPDATE - All Default Credentials Changed**
 
-### **Backup Accounts:**
-- **Username:** `verifier` | **Password:** `mwg2024`
-- **Username:** `supervisor` | **Password:** `hostels123`
+**Authentication System:**
+- **Access Method:** Secure token-based authentication
+- **Credentials:** Managed separately for security compliance
+- **Contact:** System administrator for access credentials
+- **Security Level:** Enhanced authentication required
+
+**Legacy System (DEPRECATED):**
+- All previous default passwords have been invalidated
+- New secure authentication system implemented
+- Multi-layer security protocols active
 
 ---
 
