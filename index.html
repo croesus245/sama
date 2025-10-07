@@ -19,7 +19,7 @@
     <style>
         .landing-hero {
             min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(102,126,234,0.6)), url('background.jpg');
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(102,126,234,0.6)), url('./background.jpg'), url('./DSC_7939.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -131,9 +131,30 @@
         
         .landing-description {
             font-size: 1.2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             opacity: 0.8;
             line-height: 1.6;
+        }
+        
+        .registration-notice {
+            background: rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .registration-notice p {
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
         
         .landing-cta {
@@ -257,26 +278,32 @@
             
             <!-- Main Content -->
             <h1 class="landing-title">SAMA GREAT</h1>
-            <p class="landing-subtitle">Sustainable and Innovative Solutions</p>
+            <p class="landing-subtitle">Bridging the Gap Between Students & Quality Accommodation</p>
             <p class="landing-description">
-                Move With Great: Structurally solving common student challenges with sustainable and innovative solutions.
-                Connecting Futarians to their perfect accommodation since 2024.
+                Move With Great: Connecting verified realtors with FUTA students for safe, affordable housing.
+                Register now to access verified hostels and connect with trusted property owners.
             </p>
+            
+            <!-- Registration CTA -->
+            <div class="registration-notice">
+                <p><strong>🔐 Registration Required</strong></p>
+                <p>Join thousands of FUTA students finding their perfect accommodation</p>
+            </div>
             
             <!-- Call to Action Buttons -->
             <div class="landing-cta">
-                <a href="demo.html" class="cta-button">
-                    <i class="fas fa-rocket"></i>
-                    Enter MWG Hostels Platform
-                </a>
-                <a href="roommate-finder.html" class="cta-button secondary">
-                    <i class="fas fa-users"></i>
-                    Find Roommates
-                </a>
-                <a href="realtor-login.html" class="cta-button secondary">
+                <button class="cta-button" onclick="openModal('registrationModal')">
+                    <i class="fas fa-user-plus"></i>
+                    Register as Student
+                </button>
+                <button class="cta-button secondary" onclick="openModal('realtorModal')">
                     <i class="fas fa-building"></i>
-                    Realtor Portal
-                </a>
+                    Register as Realtor
+                </button>
+                <button class="cta-button secondary" onclick="openModal('loginModal')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
             </div>
             
             <!-- Feature Cards -->
@@ -312,6 +339,196 @@
             <i class="fas fa-chevron-down fa-2x"></i>
         </div>
     </section>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Student Registration</h2>
+                <span class="close" onclick="closeModal('registrationModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="studentRegistrationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" name="studentId" placeholder="e.g., SET/2021/001" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="faculty">Faculty *</label>
+                            <select id="faculty" name="faculty" required>
+                                <option value="">Select Faculty</option>
+                                <option value="Engineering">Engineering & Technology</option>
+                                <option value="Sciences">Sciences</option>
+                                <option value="Agriculture">Agriculture & Agricultural Technology</option>
+                                <option value="Environmental">Environmental Technology</option>
+                                <option value="Computing">Computing</option>
+                                <option value="Management">Management Technology</option>
+                                <option value="Earth">Earth & Space Sciences</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="yearOfStudy">Year of Study *</label>
+                            <select id="yearOfStudy" name="yearOfStudy" required>
+                                <option value="">Select Year</option>
+                                <option value="1">100 Level</option>
+                                <option value="2">200 Level</option>
+                                <option value="3">300 Level</option>
+                                <option value="4">400 Level</option>
+                                <option value="5">500 Level</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+234XXXXXXXXXX" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" required>
+                        <small>Must be at least 8 characters with uppercase, lowercase, number, and special character</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width">
+                        <i class="fas fa-user-plus"></i> Register as Student
+                    </button>
+                </form>
+                
+                <div class="modal-footer">
+                    <p>Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Realtor Registration Modal -->
+    <div id="realtorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-building"></i> Realtor Registration</h2>
+                <span class="close" onclick="closeModal('realtorModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="realtorRegistrationForm">
+                    <div class="form-group">
+                        <label for="businessName">Business Name *</label>
+                        <input type="text" id="businessName" name="businessName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactFirstName">Contact First Name *</label>
+                            <input type="text" id="contactFirstName" name="contactFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactLastName">Contact Last Name *</label>
+                            <input type="text" id="contactLastName" name="contactLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="realtorEmail">Business Email *</label>
+                        <input type="email" id="realtorEmail" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessPhone">Business Phone *</label>
+                        <input type="tel" id="businessPhone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessRegNumber">Business Registration Number *</label>
+                        <input type="text" id="businessRegNumber" name="businessRegistrationNumber" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="realtorPassword">Password *</label>
+                        <input type="password" id="realtorPassword" name="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="agreeRealtorTerms" name="agreeTerms" required>
+                            I agree to the Realtor Terms and verify that my business is legally registered
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width">
+                        <i class="fas fa-building"></i> Register as Realtor
+                    </button>
+                </form>
+                
+                <div class="modal-footer">
+                    <p>Already registered? <a href="#" onclick="switchToLogin()">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                
+                <div class="modal-footer">
+                    <p><a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
+                    <p>Don't have an account? <a href="#" onclick="switchToRegistration()">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Quick Access Section -->
     <section class="quick-access-section">
@@ -479,5 +696,8 @@
     
     <!-- Theme System -->
     <script src="theme-toggle.js"></script>
+    
+    <!-- Modal System -->
+    <script src="modal-system.js"></script>
 </body>
 </html>
