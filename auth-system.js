@@ -9,9 +9,13 @@ class AuthSystem {
         this.currentUser = JSON.parse(localStorage.getItem('mwg_current_user') || 'null');
         this.isOnline = navigator.onLine;
         
-        // Safely initialize API
+        // Safely initialize API with connectivity check
         try {
             this.api = typeof MWGHostelsAPI !== 'undefined' ? new MWGHostelsAPI() : null;
+            // Test API connectivity if available
+            if (this.api) {
+                this.testAPIConnectivity();
+            }
         } catch (error) {
             console.warn('MWGHostelsAPI not available, running in offline mode:', error);
             this.api = null;
@@ -109,12 +113,34 @@ class AuthSystem {
                     }
                 } catch (apiError) {
                     console.warn('Online registration failed, using local fallback:', apiError.message);
-                    // Fall back to local registration
-                    registrationSuccess = this.registerUserLocally(studentData);
+                    
+                    // Check if it's a network connectivity issue
+                    if (apiError.message.includes('fetch') || apiError.message.includes('network') || apiError.message.includes('Failed to fetch')) {
+                        console.log('Backend server appears to be offline, using local registration');
+                        // Fall back to local registration
+                        try {
+                            registrationSuccess = this.registerUserLocally(studentData);
+                            if (registrationSuccess) {
+                                this.showSuccess(successDiv, '✅ Registration successful! (Local mode - will sync when server is available)');
+                            }
+                        } catch (localError) {
+                            throw new Error(`Registration failed: ${localError.message}`);
+                        }
+                    } else {
+                        throw new Error(`Server error: ${apiError.message}`);
+                    }
                 }
             } else {
                 // Offline registration or API not available
-                registrationSuccess = this.registerUserLocally(studentData);
+                console.log('Using local registration (offline mode or no API)');
+                try {
+                    registrationSuccess = this.registerUserLocally(studentData);
+                    if (registrationSuccess) {
+                        this.showSuccess(successDiv, '✅ Registration successful! (Offline mode)');
+                    }
+                } catch (localError) {
+                    throw new Error(`Registration failed: ${localError.message}`);
+                }
             }
 
             if (registrationSuccess) {
@@ -568,6 +594,78 @@ class AuthSystem {
             window.showNotification(message, type);
         } else {
             alert(message);
+        }
+    }
+
+    async testAPIConnectivity() {
+        if (!this.api) return false;
+        
+        try {
+            // Test with a simple endpoint that should respond quickly
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+            
+            const response = await fetch(`${this.api.baseURL}/health`, {
+                method: 'GET',
+                signal: controller.signal,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                console.log('✅ API connectivity confirmed');
+                this.updateConnectionStatus(true);
+                return true;
+            } else {
+                console.warn('⚠️ API responded but with error status:', response.status);
+                this.api = null; // Disable API if not responding properly
+                this.updateConnectionStatus(false);
+                return false;
+            }
+        } catch (error) {
+            console.warn('❌ API connectivity test failed:', error.message);
+            this.api = null; // Disable API if unreachable
+            this.updateConnectionStatus(false);
+            return false;
+        }
+    }
+
+    updateConnectionStatus(isConnected) {
+        // Create or update connection status indicator
+        let statusIndicator = document.getElementById('connection-status');
+        if (!statusIndicator) {
+            statusIndicator = document.createElement('div');
+            statusIndicator.id = 'connection-status';
+            statusIndicator.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 500;
+                z-index: 10000;
+                transition: all 0.3s ease;
+            `;
+            document.body.appendChild(statusIndicator);
+        }
+
+        if (isConnected) {
+            statusIndicator.innerHTML = '🟢 Online Mode';
+            statusIndicator.style.background = 'rgba(34, 197, 94, 0.9)';
+            statusIndicator.style.color = 'white';
+            setTimeout(() => {
+                statusIndicator.style.opacity = '0';
+                setTimeout(() => statusIndicator.remove(), 300);
+            }, 3000);
+        } else {
+            statusIndicator.innerHTML = '🟡 Offline Mode';
+            statusIndicator.style.background = 'rgba(251, 191, 36, 0.9)';
+            statusIndicator.style.color = 'white';
+            statusIndicator.style.opacity = '1';
         }
     }
 

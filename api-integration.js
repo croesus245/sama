@@ -93,7 +93,7 @@ class MWGHostelsAPI {
             
             // Show user-friendly error message
             if (error.message.includes('Failed to fetch')) {
-                this.showNotification('Connection error. Please check your internet connection.', 'error');
+                this.showNotification('Backend server is not available. Using offline mode.', 'warning');
             } else {
                 this.showNotification(error.message, 'error');
             }
