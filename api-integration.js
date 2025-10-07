@@ -16,9 +16,11 @@ class MWGHostelsAPI {
         
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return 'http://localhost:5001/api';
+        } else if (hostname.includes('sama-ruddy.vercel.app')) {
+            // Production API URL - update when backend is deployed
+            return 'https://mwg-hostels-api.herokuapp.com/api';
         } else if (hostname.includes('vercel.app') || hostname.includes('netlify.app')) {
-            // For production deployment, update with your actual backend URL
-            return 'https://your-backend-api.herokuapp.com/api';
+            return 'https://mwg-hostels-api.herokuapp.com/api';
         } else {
             // For custom domain
             return 'https://api.mwghostels.com/api';
