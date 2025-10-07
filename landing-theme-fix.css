@@ -1,0 +1,163 @@
+/* Landing Page Theme Fix - Ensures text visibility in both dark and light modes */
+
+/* Quick Access Section Theme Fix */
+.quick-access-section {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.access-card {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    box-shadow: 0 4px 15px var(--shadow-color) !important;
+}
+
+.access-card h3 {
+    color: var(--text-primary) !important;
+}
+
+.access-card p {
+    color: var(--text-secondary) !important;
+}
+
+.access-card-icon {
+    color: var(--primary-500) !important;
+}
+
+/* Footer Theme Fix */
+.footer {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-top: 1px solid var(--border-primary) !important;
+}
+
+.footer h4 {
+    color: var(--text-primary) !important;
+}
+
+.footer p {
+    color: var(--text-secondary) !important;
+}
+
+.footer ul li a {
+    color: var(--text-secondary) !important;
+    transition: color 0.3s ease;
+}
+
+.footer ul li a:hover {
+    color: var(--primary-500) !important;
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+}
+
+.footer-bottom p {
+    color: var(--text-secondary) !important;
+}
+
+.social-links a {
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+.social-links a:hover {
+    color: var(--primary-500) !important;
+    background: var(--primary-50) !important;
+}
+
+/* Container and section fixes */
+.container {
+    color: var(--text-primary) !important;
+}
+
+.section-header h2 {
+    color: var(--text-primary) !important;
+}
+
+.section-header p {
+    color: var(--text-secondary) !important;
+}
+
+/* Button theme fixes */
+.btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn:hover {
+    background: var(--primary-600) !important;
+    transform: translateY(-2px);
+}
+
+/* Landing hero section - keep as is since it has proper contrast */
+/* Hero section maintains its original styling for optimal contrast */
+
+/* Theme-aware hero adjustments */
+[data-theme="dark"] .landing-hero {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(102,126,234,0.7)), url('background.jpg');
+}
+
+[data-theme="light"] .landing-hero {
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(102,126,234,0.6)), url('background.jpg');
+}
+
+/* Make sure hero text stays white for contrast */
+.landing-title,
+.landing-subtitle,
+.landing-description,
+.feature-title,
+.feature-text {
+    color: white !important;
+}
+
+/* CTA buttons theme-aware */
+.cta-button {
+    background: rgba(255,255,255,0.95) !important;
+    color: var(--primary-600) !important;
+}
+
+.cta-button:hover {
+    background: white !important;
+    color: var(--primary-700) !important;
+}
+
+.cta-button.secondary {
+    background: transparent !important;
+    color: white !important;
+    border: 2px solid rgba(255,255,255,0.7) !important;
+}
+
+.cta-button.secondary:hover {
+    background: rgba(255,255,255,0.15) !important;
+    border-color: white !important;
+    color: white !important;
+}
+
+/* Ensure proper contrast for all text elements */
+h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+}
+
+/* Dark theme specific overrides */
+[data-theme="dark"] .quick-access-section {
+    background: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .access-card {
+    background: var(--bg-secondary) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+}
+
+/* Light theme specific overrides */
+[data-theme="light"] .quick-access-section {
+    background: var(--bg-primary) !important;
+}
+
+[data-theme="light"] .access-card {
+    background: var(--bg-secondary) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
