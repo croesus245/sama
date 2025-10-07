@@ -288,8 +288,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Indexes for better performance
-userSchema.index({ email: 1 });
-userSchema.index({ studentId: 1 });
+// Email and studentId indexes are automatically created due to unique: true
 userSchema.index({ university: 1, faculty: 1, department: 1 });
 userSchema.index({ 'preferences.budgetMin': 1, 'preferences.budgetMax': 1 });
 userSchema.index({ isVerified: 1, status: 1 });

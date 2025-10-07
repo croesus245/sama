@@ -240,8 +240,7 @@ const realtorSchema = new mongoose.Schema({
 });
 
 // Indexes
-realtorSchema.index({ email: 1 });
-realtorSchema.index({ businessRegistrationNumber: 1 });
+// Email and businessRegistrationNumber indexes are automatically created due to unique: true
 realtorSchema.index({ verificationStatus: 1, status: 1 });
 realtorSchema.index({ 'rating.average': -1 });
 realtorSchema.index({ lastActive: -1 });

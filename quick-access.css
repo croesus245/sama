@@ -1,0 +1,159 @@
+/* ==============================================
+   QUICK ACCESS SECTION STYLES
+   ============================================== */
+
+.quick-access-section {
+    background: var(--bg-primary);
+    padding: 4rem 0;
+    border-top: 1px solid var(--border-primary);
+    transition: var(--transition-theme);
+}
+
+[data-theme="dark"] .quick-access-section {
+    background: var(--bg-secondary);
+}
+
+.quick-access-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.quick-access-title {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.quick-access-subtitle {
+    text-align: center;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.access-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-theme);
+    position: relative;
+    overflow: hidden;
+}
+
+.access-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.access-card:hover::before {
+    transform: scaleX(1);
+}
+
+.access-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--border-focus);
+}
+
+[data-theme="dark"] .access-card:hover {
+    background: var(--bg-tertiary);
+}
+
+.access-card-icon {
+    color: var(--primary-500);
+    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    transition: var(--transition-theme);
+}
+
+.access-card:hover .access-card-icon {
+    transform: scale(1.1);
+    color: var(--primary-600);
+}
+
+.access-card h3 {
+    font-size: clamp(1.3rem, 3vw, 1.5rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.access-card p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.access-card .btn {
+    margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .quick-access-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .quick-access-container {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .quick-access-section {
+        padding: 3rem 0;
+    }
+    
+    .quick-access-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .quick-access-container {
+        padding: 0 1rem;
+    }
+    
+    .access-card {
+        padding: 2rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-access-section {
+        padding: 2rem 0;
+    }
+    
+    .access-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .access-card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+}

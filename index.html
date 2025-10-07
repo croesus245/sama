@@ -2,53 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SAMA - MWG Hostels Platform</title>
     <meta name="description" content="SAMA - Structurally solving common student challenges with sustainable and innovative solutions">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Styles -->
-    <link rel="stylesheet" href="theme-system.css">
-    <link rel="stylesheet" href="theme-integration.css">
-    <link rel="stylesheet" href="landing-theme-fix.css">
-    <link rel="stylesheet" href="hostel-style.css">
-    
-    <style>
-        .landing-hero {
-            min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(102,126,234,0.6)), url('./background.jpg'), url('./DSC_7939.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .landing-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
-                        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%), 
-                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%);
-            background-size: 80px 80px;
-            background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
-            animation: float 30s ease-in-out infinite;
-            z-index: 1;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
+    <!-- Enhanced Styles -->
+    <link rel="stylesheet" href="theme-enhanced.css">
+    <link rel="stylesheet" href="landing-improved.css">
+    <link rel="stylesheet" href="quick-access.css">
+    <link rel="stylesheet" href="advanced-styles.css">
+</head>
+<body>
             50% { transform: translateY(-20px); }
         }
         
