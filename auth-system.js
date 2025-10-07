@@ -89,6 +89,7 @@ class AuthSystem {
                 department: formData.get('department'),
                 yearOfStudy: formData.get('yearOfStudy'),
                 password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword'),
                 userType: 'student'
             };
 
@@ -435,6 +436,9 @@ class AuthSystem {
         }
         if (!this.isStrongPassword(data.password)) {
             throw new Error('Password must contain uppercase, lowercase, number, and special character');
+        }
+        if (data.password !== data.confirmPassword) {
+            throw new Error('Passwords do not match');
         }
     }
 

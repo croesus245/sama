@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="quick-access.css">
     <link rel="stylesheet" href="modal-styles.css">
     <link rel="stylesheet" href="realtor-verification-styles.css">
+    <link rel="stylesheet" href="password-validation.css">
     <link rel="stylesheet" href="responsive-fixes.css">
     
     <style>
@@ -505,7 +506,31 @@
                     <div class="form-group">
                         <label for="password">Password *</label>
                         <input type="password" id="password" name="password" required>
-                        <small>Must be at least 8 characters with uppercase, lowercase, number, and special character</small>
+                        <div class="password-requirements">
+                            <div class="requirement" id="length-req">
+                                <i class="fas fa-times"></i> At least 8 characters
+                            </div>
+                            <div class="requirement" id="uppercase-req">
+                                <i class="fas fa-times"></i> One uppercase letter
+                            </div>
+                            <div class="requirement" id="lowercase-req">
+                                <i class="fas fa-times"></i> One lowercase letter
+                            </div>
+                            <div class="requirement" id="number-req">
+                                <i class="fas fa-times"></i> One number
+                            </div>
+                            <div class="requirement" id="special-req">
+                                <i class="fas fa-times"></i> One special character
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentConfirmPassword">Confirm Password *</label>
+                        <input type="password" id="studentConfirmPassword" name="confirmPassword" required>
+                        <div class="password-match" id="student-password-match">
+                            <i class="fas fa-times"></i> Passwords do not match
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -600,12 +625,31 @@
                     <div class="form-group">
                         <label for="realtorPassword">Password *</label>
                         <input type="password" id="realtorPassword" name="password" required>
-                        <small class="form-help">Minimum 8 characters with uppercase, lowercase, number, and special character</small>
+                        <div class="password-requirements">
+                            <div class="requirement" id="realtor-length-req">
+                                <i class="fas fa-times"></i> At least 8 characters
+                            </div>
+                            <div class="requirement" id="realtor-uppercase-req">
+                                <i class="fas fa-times"></i> One uppercase letter
+                            </div>
+                            <div class="requirement" id="realtor-lowercase-req">
+                                <i class="fas fa-times"></i> One lowercase letter
+                            </div>
+                            <div class="requirement" id="realtor-number-req">
+                                <i class="fas fa-times"></i> One number
+                            </div>
+                            <div class="requirement" id="realtor-special-req">
+                                <i class="fas fa-times"></i> One special character
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password *</label>
                         <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <div class="password-match" id="realtor-password-match">
+                            <i class="fas fa-times"></i> Passwords do not match
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -944,6 +988,9 @@
     
     <!-- Enhanced Error System -->
     <script src="enhanced-error-system.js"></script>
+    
+    <!-- Password Validation System -->
+    <script src="password-validator.js"></script>
     
     <!-- Realtor Verification System -->
     <script src="realtor-verification.js"></script>
