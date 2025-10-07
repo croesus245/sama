@@ -248,6 +248,16 @@
                 flex-direction: column;
             }
         }
+        
+        /* Other Amenity Styles */
+        .other-amenity-group {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .other-amenity-group.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -655,6 +665,16 @@
                             <input type="checkbox" name="amenities" value="study">
                             <span>Study Area</span>
                         </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" id="otherAmenityCheck" name="amenities" value="other" onchange="toggleOtherAmenity()">
+                            <span>Others</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Others field -->
+                    <div class="form-group other-amenity-group" id="otherAmenityGroup">
+                        <label for="otherAmenity">Specify Other Amenities</label>
+                        <input type="text" id="otherAmenity" name="otherAmenity" placeholder="e.g., Swimming Pool, Gym, etc.">
                     </div>
                 </div>
 
@@ -943,6 +963,21 @@
                 setTimeout(() => {
                     targetCard.style.background = '';
                 }, 2000);
+            }
+        }
+        
+        // Toggle other amenity field
+        function toggleOtherAmenity() {
+            const checkbox = document.getElementById('otherAmenityCheck');
+            const otherGroup = document.getElementById('otherAmenityGroup');
+            const otherInput = document.getElementById('otherAmenity');
+            
+            if (checkbox.checked) {
+                otherGroup.classList.add('show');
+                otherInput.focus();
+            } else {
+                otherGroup.classList.remove('show');
+                otherInput.value = '';
             }
         }
 

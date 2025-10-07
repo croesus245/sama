@@ -450,6 +450,16 @@
                             <input type="checkbox" name="amenities" value="Security">
                             <span>24/7 Security</span>
                         </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="otherAmenityCheckRoommate" name="amenities" value="other" onchange="toggleOtherAmenityRoommate()">
+                            <span>Others</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Others field -->
+                    <div class="form-group other-amenity-group" id="otherAmenityGroupRoommate">
+                        <label for="otherAmenityRoommate">Specify Other Amenities</label>
+                        <input type="text" id="otherAmenityRoommate" name="otherAmenity" placeholder="e.g., Balcony, Private Bathroom, Reading Table, etc.">
                     </div>
                 </div>
                 
@@ -568,6 +578,36 @@
         // Form submissions
         document.getElementById('postRoomForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            // Collect amenities including "other" option
+            const amenities = [];
+            const amenityCheckboxes = form.querySelectorAll('input[name="amenities"]:checked');
+            amenityCheckboxes.forEach(checkbox => {
+                if (checkbox.value === 'other') {
+                    // Get the "other" amenity text
+                    const otherAmenityInput = form.querySelector('input[name="otherAmenity"]');
+                    if (otherAmenityInput && otherAmenityInput.value.trim()) {
+                        amenities.push(otherAmenityInput.value.trim());
+                    }
+                } else {
+                    amenities.push(checkbox.value);
+                }
+            });
+            
+            const roomData = {
+                location: formData.get('location'),
+                price: formData.get('price'),
+                address: formData.get('address'),
+                description: formData.get('description'),
+                amenities: amenities,
+                preferences: formData.get('preferences'),
+                phone: formData.get('phone')
+            };
+            
+            console.log('Room data with amenities:', roomData);
             alert('Room posted successfully! Your listing will appear after verification.');
             closePostRoomModal();
         });
@@ -588,6 +628,34 @@
             const files = e.target.files;
             console.log(`${files.length} videos selected for upload`);
         });
+        
+        // Toggle other amenity field for roommate
+        function toggleOtherAmenityRoommate() {
+            const checkbox = document.getElementById('otherAmenityCheckRoommate');
+            const otherGroup = document.getElementById('otherAmenityGroupRoommate');
+            const otherInput = document.getElementById('otherAmenityRoommate');
+            
+            if (checkbox.checked) {
+                otherGroup.classList.add('show');
+                otherInput.focus();
+            } else {
+                otherGroup.classList.remove('show');
+                otherInput.value = '';
+            }
+        }
+    </script>
+    
+    <style>
+        /* Other Amenity Styles */
+        .other-amenity-group {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .other-amenity-group.show {
+            display: block;
+        }
+    </style>
     </script>
     
     <!-- Advanced Features -->

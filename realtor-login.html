@@ -246,6 +246,16 @@
                                     <input type="checkbox" name="amenities" value="Study Room">
                                     <span>Study Room</span>
                                 </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="otherAmenityCheckRealtor" name="amenities" value="other" onchange="toggleOtherAmenityRealtor()">
+                                    <span>Others</span>
+                                </label>
+                            </div>
+                            
+                            <!-- Others field -->
+                            <div class="form-group other-amenity-group" id="otherAmenityGroupRealtor">
+                                <label for="otherAmenityRealtor">Specify Other Amenities</label>
+                                <input type="text" id="otherAmenityRealtor" name="otherAmenity" placeholder="e.g., Swimming Pool, Gym, Recreation Room, etc.">
                             </div>
                         </div>
                         
@@ -308,6 +318,35 @@
         </div>
     </main>
 
+    <style>
+        /* Other Amenity Styles */
+        .other-amenity-group {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .other-amenity-group.show {
+            display: block;
+        }
+    </style>
+    
+    <script>
+        // Toggle other amenity field for realtor
+        function toggleOtherAmenityRealtor() {
+            const checkbox = document.getElementById('otherAmenityCheckRealtor');
+            const otherGroup = document.getElementById('otherAmenityGroupRealtor');
+            const otherInput = document.getElementById('otherAmenityRealtor');
+            
+            if (checkbox.checked) {
+                otherGroup.classList.add('show');
+                otherInput.focus();
+            } else {
+                otherGroup.classList.remove('show');
+                otherInput.value = '';
+            }
+        }
+    </script>
+    
     <script src="realtor-script.js"></script>
 </body>
 </html>

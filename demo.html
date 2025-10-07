@@ -656,6 +656,29 @@
                 }
             });
         });
+        
+        // Show registration modal immediately when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize hostel script functions first
+            if (typeof initializeRegistrationForm === 'function') {
+                initializeRegistrationForm();
+            }
+            
+            // Check if user is already registered
+            const isRegistered = localStorage.getItem('userRegistered');
+            if (!isRegistered) {
+                // Show registration modal after a short delay
+                setTimeout(() => {
+                    if (typeof showRegistrationModal === 'function') {
+                        showRegistrationModal();
+                    } else {
+                        console.error('showRegistrationModal function not found');
+                    }
+                }, 1500);
+            } else {
+                console.log('User already registered, skipping registration modal');
+            }
+        });
     </script>
     
     <!-- Advanced Features -->

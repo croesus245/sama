@@ -196,10 +196,21 @@ function handleRegistration(form) {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
             
+            // Save registration status
+            localStorage.setItem('userRegistered', 'true');
+            localStorage.setItem('userEmail', data.email);
+            localStorage.setItem('userFullName', `${data.firstName} ${data.lastName}`);
+            
             // Show success
             showSuccessModal(data);
             form.reset();
-            document.getElementById('imagePreview').innerHTML = '';
+            const imagePreview = document.getElementById('imagePreview');
+            if (imagePreview) {
+                imagePreview.innerHTML = '';
+            }
+            
+            // Close registration modal
+            closeRegistrationModal();
             
             console.log('✅ Registration successful');
         }, 2000);

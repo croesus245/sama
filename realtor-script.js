@@ -389,7 +389,15 @@ function handleAddHostel(form) {
         const amenities = [];
         const amenityCheckboxes = form.querySelectorAll('input[name="amenities"]:checked');
         amenityCheckboxes.forEach(checkbox => {
-            amenities.push(checkbox.value);
+            if (checkbox.value === 'other') {
+                // Get the "other" amenity text
+                const otherAmenityInput = form.querySelector('input[name="otherAmenity"]');
+                if (otherAmenityInput && otherAmenityInput.value.trim()) {
+                    amenities.push(otherAmenityInput.value.trim());
+                }
+            } else {
+                amenities.push(checkbox.value);
+            }
         });
         hostelData.amenities = amenities;
         
@@ -641,6 +649,21 @@ function handleEditListing(form) {
     const formData = new FormData(form);
     const listingId = formData.get('editListingId') || document.getElementById('editListingId').value;
     
+    // Collect amenities including "other" option
+    const amenities = [];
+    const amenityCheckboxes = form.querySelectorAll('input[name="amenities"]:checked');
+    amenityCheckboxes.forEach(checkbox => {
+        if (checkbox.value === 'other') {
+            // Get the "other" amenity text
+            const otherAmenityInput = form.querySelector('input[name="otherAmenity"]');
+            if (otherAmenityInput && otherAmenityInput.value.trim()) {
+                amenities.push(otherAmenityInput.value.trim());
+            }
+        } else {
+            amenities.push(checkbox.value);
+        }
+    });
+    
     const updatedData = {
         name: formData.get('name'),
         location: formData.get('location'),
@@ -650,7 +673,7 @@ function handleEditListing(form) {
         description: formData.get('description'),
         phone: formData.get('phone'),
         whatsapp: formData.get('whatsapp'),
-        amenities: formData.getAll('amenities')
+        amenities: amenities
     };
     
     // Validation
