@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .success { background: rgba(34, 197, 94, 0.2); }
+        .error { background: rgba(239, 68, 68, 0.2); }
+        .info { background: rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body>
+    <h1>🔍 MWG Hostels - Landing Page Diagnostic</h1>
+    
+    <div class="test-section info">
+        <h2>✅ Basic HTML Structure Test</h2>
+        <p>If you can see this page properly, the basic HTML rendering is working.</p>
+    </div>
+
+    <div class="test-section success">
+        <h2>🎨 CSS Styling Test</h2>
+        <p>If this section has a green background and glass effect, CSS is loading correctly.</p>
+    </div>
+
+    <div class="test-section" id="js-test">
+        <h2>📜 JavaScript Test</h2>
+        <p id="js-result">Testing JavaScript...</p>
+    </div>
+
+    <div class="test-section info">
+        <h2>🔧 File Loading Test</h2>
+        <div id="file-status">
+            <p>Checking resource files...</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Instructions</h2>
+        <p>If you see any raw code (JavaScript, CSS, or HTML) on the main landing page:</p>
+        <ol>
+            <li>Take a screenshot of exactly what code is visible</li>
+            <li>Tell me which section of the page shows the code</li>
+            <li>Let me know if it appears on page load or after clicking something</li>
+        </ol>
+        <p><strong>Common causes:</strong></p>
+        <ul>
+            <li>Unclosed HTML tags</li>
+            <li>JavaScript syntax errors</li>
+            <li>CSS file loading issues</li>
+            <li>Server-side rendering problems</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 Quick Actions</h2>
+        <button onclick="testMainPage()" style="background: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+            Test Main Page
+        </button>
+        <button onclick="checkConsole()" style="background: #059669; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+            Check Console
+        </button>
+        <button onclick="validateFiles()" style="background: #dc2626; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+            Validate Files
+        </button>
+    </div>
+
+    <script>
+        // Test JavaScript execution
+        document.addEventListener('DOMContentLoaded', function() {
+            const jsTest = document.getElementById('js-test');
+            const jsResult = document.getElementById('js-result');
+            
+            try {
+                jsResult.innerHTML = '✅ JavaScript is working correctly!';
+                jsTest.className = 'test-section success';
+            } catch (error) {
+                jsResult.innerHTML = '❌ JavaScript error: ' + error.message;
+                jsTest.className = 'test-section error';
+            }
+        });
+
+        function testMainPage() {
+            window.open('index.html', '_blank');
+        }
+
+        function checkConsole() {
+            console.log('🔍 Checking for errors...');
+            console.log('If you see any red errors above this message, those might be causing display issues.');
+            alert('Check the browser console (F12) for any error messages. Look for red text indicating JavaScript or CSS loading errors.');
+        }
+
+        function validateFiles() {
+            const files = [
+                'universal-bg-system.css',
+                'perfect-vibe-theme.css', 
+                'glass-morphism-global.css',
+                'theme-enhanced.css',
+                'auth-system.js',
+                'modal-system.js'
+            ];
+
+            const statusDiv = document.getElementById('file-status');
+            statusDiv.innerHTML = '<h3>File Status:</h3>';
+
+            files.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        if (response.ok) {
+                            statusDiv.innerHTML += `<p style="color: #10b981;">✅ ${file} - OK</p>`;
+                        } else {
+                            statusDiv.innerHTML += `<p style="color: #ef4444;">❌ ${file} - Failed to load</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        statusDiv.innerHTML += `<p style="color: #ef4444;">❌ ${file} - Error: ${error.message}</p>`;
+                    });
+            });
+        }
+
+        // Auto-validate files on load
+        setTimeout(validateFiles, 1000);
+    </script>
+</body>
+</html>

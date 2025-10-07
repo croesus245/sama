@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAMA - MWG Hostels Platform</title>
     <meta name="description" content="SAMA - Structurally solving common student challenges with sustainable and innovative solutions">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#3b82f6" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
@@ -14,14 +15,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Enhanced Styles -->
+    <link rel="stylesheet" href="universal-bg-system.css">
+    <link rel="stylesheet" href="perfect-vibe-theme.css">
+    <link rel="stylesheet" href="glass-morphism-global.css">
     <link rel="stylesheet" href="theme-enhanced.css">
     <link rel="stylesheet" href="landing-improved.css">
+    <link rel="stylesheet" href="landing-complete.css">
     <link rel="stylesheet" href="quick-access.css">
-    <link rel="stylesheet" href="advanced-styles.css">
-</head>
-<body>
-            50% { transform: translateY(-20px); }
-        }
+    <link rel="stylesheet" href="modal-styles.css">
+    <link rel="stylesheet" href="responsive-fixes.css">
+    
+    <style>
         
         .landing-container {
             text-align: center;
@@ -30,41 +34,7 @@
             position: relative;
             max-width: 800px;
             padding: 2rem;
-        }
-        
-        /* Quick Access Section Styles */
-        .quick-access-section {
-            background: white;
-            padding: 4rem 0;
-        }
-        
-        .quick-access-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .access-card {
-            background: #f8fafc;
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .access-card-icon {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-        
-        .access-card h3 {
-            margin-bottom: 1rem;
-        }
-        
-        .access-card p {
-            color: #64748b;
-            margin-bottom: 1.5rem;
+            margin: 0 auto;
         }
         
         .sama-logo {
@@ -150,6 +120,7 @@
             gap: 0.5rem;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
         
         .cta-button:hover {
@@ -208,12 +179,82 @@
             transform: translateX(-50%);
             color: rgba(255,255,255,0.7);
             animation: bounce 2s infinite;
+            cursor: pointer;
         }
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
             40% { transform: translateX(-50%) translateY(-10px); }
             60% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
+        /* Quick Access Section Styles */
+        .quick-access-section {
+            background: white;
+            padding: 4rem 0;
+        }
+        
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .access-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .access-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .access-card-icon {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .access-card h3 {
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        
+        .access-card p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: #667eea;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
         }
         
         @media (max-width: 768px) {
@@ -237,10 +278,106 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .quick-access-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Link button styles */
+        .link-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            font: inherit;
+            padding: 0;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+        
+        .link-btn:hover {
+            color: var(--primary-color, #3b82f6);
+        }
+        
+        /* Auth system message styles */
+        .auth-required-modal .modal-content {
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .auth-message {
+            margin: 2rem 0;
+        }
+        
+        .auth-message i {
+            font-size: 3rem;
+            color: var(--primary-color, #3b82f6);
+            margin-bottom: 1rem;
+        }
+        
+        .auth-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        /* Error and success message styles */
+        .error-message, .success-message {
+            padding: 1rem;
+            border-radius: var(--radius-md, 8px);
+            margin: 1rem 0;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #16a34a;
+        }
+        
+        .error-message.show, .success-message.show {
+            display: flex;
         }
     </style>
 </head>
 <body>
+    <!-- Dynamic Background System -->
+    <div class="dynamic-background"></div>
+    <div class="geometric-overlay"></div>
+    <div class="floating-elements">
+        <div class="floating-book"></div>
+        <div class="floating-graduation"></div>
+        <div class="floating-building"></div>
+    </div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle stunning-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fas fa-sun icon light-icon"></i>
+        <i class="fas fa-moon icon dark-icon"></i>
+    </button>
+
     <!-- Landing Hero Section -->
     <section class="landing-hero">
         <div class="landing-container">
@@ -306,7 +443,7 @@
         </div>
         
         <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
+        <div class="scroll-indicator" onclick="smoothScrollToNext()">
             <i class="fas fa-chevron-down fa-2x"></i>
         </div>
     </section>
@@ -514,9 +651,9 @@
                     <i class="fas fa-search fa-3x access-card-icon"></i>
                     <h3>Browse Hostels</h3>
                     <p>Explore verified hostels near campus gates</p>
-                    <a href="demo.html#hostels" class="btn btn-primary">
+                    <button class="btn btn-primary" data-action="browse-hostels">
                         <i class="fas fa-arrow-right"></i> Browse Now
-                    </a>
+                    </button>
                 </div>
                 
                 <div class="access-card">
@@ -561,8 +698,8 @@
                 <div class="footer-section">
                     <h4>Platform</h4>
                     <ul>
-                        <li><a href="demo.html">Browse Hostels</a></li>
-                        <li><a href="roommate-finder.html">Find Roommates</a></li>
+                        <li><button class="link-btn" data-action="browse-hostels">Browse Hostels</button></li>
+                        <li><button class="link-btn" data-action="find-roommates">Find Roommates</button></li>
                         <li><a href="realtor-login.html">Realtor Portal</a></li>
                         <li><a href="demo.html#about">About SAMA</a></li>
                     </ul>
@@ -596,39 +733,76 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="form-enhancements.js"></script>
     <script src="api-integration.js"></script>
     <script src="production-optimizations.js"></script>
     <script src="hostel-script.js"></script>
     <script>
-        // Smooth scrolling for scroll indicator
-        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+        // Smooth scrolling function
+        function smoothScrollToNext() {
             window.scrollTo({
                 top: window.innerHeight,
                 behavior: 'smooth'
             });
+        }
+        
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
         });
         
-        // Add some entrance animations
-        window.addEventListener('load', function() {
-            const logo = document.querySelector('.sama-logo');
-            const title = document.querySelector('.landing-title');
-            const subtitle = document.querySelector('.landing-subtitle');
-            const description = document.querySelector('.landing-description');
-            const buttons = document.querySelectorAll('.cta-button');
-            const features = document.querySelectorAll('.feature-card');
-            
-            // Animate logo
-            logo.style.opacity = '0';
-            logo.style.transform = 'scale(0.8) translateY(-20px)';
-            
+        // Form submission handlers
+        document.getElementById('studentRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            console.log('Student registration:', Object.fromEntries(formData));
+            alert('Registration successful! Welcome to MWG Hostels.');
+            closeModal('registrationModal');
+        });
+        
+        document.getElementById('realtorRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            console.log('Realtor registration:', Object.fromEntries(formData));
+            alert('Realtor registration successful! You will be verified within 24 hours.');
+            closeModal('realtorModal');
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            console.log('Login attempt:', Object.fromEntries(formData));
+            alert('Login successful! Redirecting to dashboard...');
+            closeModal('loginModal');
             setTimeout(() => {
-                logo.style.transition = 'all 0.8s ease';
-                logo.style.opacity = '1';
-                logo.style.transform = 'scale(1) translateY(0)';
-            }, 200);
+                window.location.href = 'demo.html';
+            }, 1000);
+        });
+        
+        // Add entrance animations
+        window.addEventListener('load', function() {
+            const elements = document.querySelectorAll('.sama-logo, .landing-title, .landing-subtitle, .landing-description, .cta-button, .feature-card');
             
-            // Animate text elements
-            [title, subtitle, description].forEach((el, index) => {
+            elements.forEach((el, index) => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(20px)';
                 
@@ -636,37 +810,55 @@
                     el.style.transition = 'all 0.6s ease';
                     el.style.opacity = '1';
                     el.style.transform = 'translateY(0)';
-                }, 500 + (index * 200));
-            });
-            
-            // Animate buttons
-            buttons.forEach((btn, index) => {
-                btn.style.opacity = '0';
-                btn.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    btn.style.transition = 'all 0.6s ease';
-                    btn.style.opacity = '1';
-                    btn.style.transform = 'translateY(0)';
-                }, 1200 + (index * 150));
-            });
-            
-            // Animate feature cards
-            features.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'all 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 1800 + (index * 200));
+                }, 200 + (index * 150));
             });
         });
+        
+        // Helper functions for modal switching
+        function switchToLogin() {
+            closeModal('registrationModal');
+            closeModal('realtorModal');
+            openModal('loginModal');
+        }
+        
+        function switchToRegistration() {
+            closeModal('loginModal');
+            openModal('registrationModal');
+        }
+        
+        function showTerms() {
+            alert('Terms of Service: By using MWG Hostels platform, you agree to our terms and conditions for safe and reliable accommodation services.');
+        }
+        
+        function showPrivacy() {
+            alert('Privacy Policy: We protect your personal information and use it only to provide better accommodation matching services.');
+        }
+        
+        function showForgotPassword() {
+            const email = prompt('Enter your email address to reset password:');
+            if (email) {
+                alert('Password reset link sent to ' + email);
+            }
+        }
+        
+        // Theme toggle function (if theme system is available)
+        function toggleTheme() {
+            if (typeof window.toggleTheme !== 'undefined') {
+                window.toggleTheme();
+            } else {
+                console.log('Theme system not loaded');
+            }
+        }
     </script>
     
     <!-- Theme System -->
     <script src="theme-toggle.js"></script>
+    
+    <!-- Enhanced Error System -->
+    <script src="enhanced-error-system.js"></script>
+    
+    <!-- Auth System -->
+    <script src="auth-system.js"></script>
     
     <!-- Modal System -->
     <script src="modal-system.js"></script>

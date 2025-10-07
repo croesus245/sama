@@ -15,7 +15,7 @@ class MWGHostelsAPI {
         const hostname = window.location.hostname;
         
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return 'http://localhost:5001/api';
+            return 'http://localhost:5000/api';
         } else if (hostname.includes('sama-ruddy.vercel.app')) {
             // Production API URL - update when backend is deployed
             return 'https://mwg-hostels-api.herokuapp.com/api';
@@ -155,6 +155,26 @@ class MWGHostelsAPI {
         return await this.makeRequest('/auth/register', {
             method: 'POST',
             body: JSON.stringify(userData)
+        });
+    }
+
+    async registerStudent(studentData) {
+        return await this.makeRequest('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...studentData,
+                userType: 'student'
+            })
+        });
+    }
+
+    async registerRealtor(realtorData) {
+        return await this.makeRequest('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...realtorData,
+                userType: 'realtor'
+            })
         });
     }
 

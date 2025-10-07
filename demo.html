@@ -13,9 +13,14 @@
     <!-- Styles -->
     <link rel="stylesheet" href="theme-system.css">
     <link rel="stylesheet" href="theme-integration.css">
+    <link rel="stylesheet" href="universal-bg-system.css">
+    <link rel="stylesheet" href="perfect-vibe-theme.css">
+    <link rel="stylesheet" href="glass-morphism-global.css">
     <link rel="stylesheet" href="hostel-style.css">
     <link rel="stylesheet" href="futa-gates-styles.css">
     <link rel="stylesheet" href="advanced-styles.css">
+    <link rel="stylesheet" href="modal-styles.css">
+    <link rel="stylesheet" href="responsive-fixes.css">
     
     <!-- Environment Configuration (Load First) -->
     <script src="env-config.js"></script>
@@ -117,6 +122,26 @@
     </style>
 </head>
 <body>
+    <!-- Dynamic Background System -->
+    <div class="dynamic-background"></div>
+    <div class="geometric-overlay"></div>
+    <div class="floating-elements">
+        <div class="floating-book"></div>
+        <div class="floating-graduation"></div>
+        <div class="floating-building"></div>
+    </div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -643,6 +668,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="form-enhancements.js"></script>
     <script src="hostel-script.js"></script>
     <script>
         // Smooth scrolling for navigation links
@@ -666,19 +692,94 @@
                 initializeRegistrationForm();
             }
             
+            // Initialize app features
+            if (typeof initializeApp === 'function') {
+                initializeApp();
+            }
+            
             // Check if user is already registered
             const isRegistered = localStorage.getItem('userRegistered');
             if (!isRegistered) {
                 // Show registration modal after a short delay
                 setTimeout(() => {
-                    if (typeof showRegistrationModal === 'function') {
-                        showRegistrationModal();
-                    } else {
-                        console.error('showRegistrationModal function not found');
-                    }
+                    showRegistrationModal();
                 }, 1500);
             } else {
                 console.log('User already registered, skipping registration modal');
+            }
+        });
+        
+        // Registration modal functions
+        function showRegistrationModal() {
+            const modal = document.getElementById('registrationModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeRegistrationModal() {
+            const modal = document.getElementById('registrationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Handle profile photo upload
+        function handleProfilePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    const previewImage = document.getElementById('previewImage');
+                    if (preview && previewImage) {
+                        previewImage.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        document.querySelector('.file-upload-content').style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeProfilePhoto() {
+            document.getElementById('profilePhoto').value = '';
+            document.getElementById('photoPreview').classList.add('hidden');
+            document.querySelector('.file-upload-content').style.display = 'block';
+        }
+        
+        // Registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const userData = Object.fromEntries(formData);
+            
+            // Validate required fields
+            if (!userData.firstName || !userData.lastName || !userData.email || !userData.phone || !userData.matricNumber) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Validate matric number format
+            const matricPattern = /^[A-Z]{3}\/\d{2}\/\d{4}$/;
+            if (!matricPattern.test(userData.matricNumber)) {
+                alert('Please enter a valid matric number in format: CSC/23/0011');
+                return;
+            }
+            
+            // Store user data
+            localStorage.setItem('userRegistered', 'true');
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            alert('Registration successful! Welcome to MWG Hostels Platform.');
+            closeRegistrationModal();
+            
+            // Refresh hostel listings to show new data
+            if (typeof refreshHostelListings === 'function') {
+                refreshHostelListings();
             }
         });
     </script>

@@ -7,8 +7,13 @@
     <link rel="icon" type="image/png" href="MWG logo@300x.png">
     <link rel="stylesheet" href="theme-system.css">
     <link rel="stylesheet" href="theme-integration.css">
+    <link rel="stylesheet" href="universal-bg-system.css">
+    <link rel="stylesheet" href="perfect-vibe-theme.css">
+    <link rel="stylesheet" href="glass-morphism-global.css">
     <link rel="stylesheet" href="hostel-style.css">
     <link rel="stylesheet" href="realtor-style.css">
+    <link rel="stylesheet" href="modal-styles.css">
+    <link rel="stylesheet" href="responsive-fixes.css">
     
     <!-- Environment Configuration -->
     <script src="env-config.js"></script>
@@ -16,6 +21,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="realtor-body">
+    <!-- Dynamic Background System -->
+    <div class="dynamic-background"></div>
+    <div class="geometric-overlay"></div>
+    <div class="floating-elements">
+        <div class="floating-book"></div>
+        <div class="floating-graduation"></div>
+        <div class="floating-building"></div>
+    </div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
     <!-- Navigation -->
     <nav class="navbar realtor-nav">
         <div class="nav-container">
@@ -333,23 +358,308 @@
     </style>
     
     <script>
+        // Global state for realtor dashboard
+        const realtorState = {
+            isLoggedIn: false,
+            realtorData: null,
+            hostels: []
+        };
+        
         // Toggle other amenity field for realtor
         function toggleOtherAmenityRealtor() {
             const checkbox = document.getElementById('otherAmenityCheckRealtor');
             const otherGroup = document.getElementById('otherAmenityGroupRealtor');
             const otherInput = document.getElementById('otherAmenityRealtor');
             
-            if (checkbox.checked) {
-                otherGroup.classList.add('show');
-                otherInput.focus();
-            } else {
-                otherGroup.classList.remove('show');
-                otherInput.value = '';
+            if (checkbox && otherGroup && otherInput) {
+                if (checkbox.checked) {
+                    otherGroup.classList.add('show');
+                    otherInput.focus();
+                } else {
+                    otherGroup.classList.remove('show');
+                    otherInput.value = '';
+                }
             }
         }
+        
+        // Modal functions
+        function showAddHostelForm() {
+            const modal = document.getElementById('addHostelModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeAddHostelModal() {
+            const modal = document.getElementById('addHostelModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Login functionality
+        function showRegistrationForm() {
+            alert('Realtor Registration: Please contact our team at hello@mwghostels.com for business verification and account setup. All realtors must be verified before listing properties.');
+        }
+        
+        function refreshDashboard() {
+            if (realtorState.isLoggedIn) {
+                loadRealtorHostels();
+                updateDashboardStats();
+                alert('Dashboard refreshed successfully!');
+            }
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                realtorState.isLoggedIn = false;
+                realtorState.realtorData = null;
+                localStorage.removeItem('realtorSession');
+                
+                document.getElementById('dashboardSection').classList.add('hidden');
+                document.getElementById('loginSection').classList.remove('hidden');
+                
+                alert('Logged out successfully!');
+            }
+        }
+        
+        // Dashboard functions
+        function loadRealtorHostels() {
+            // Load hostels from localStorage for demo
+            const hostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+            realtorState.hostels = hostels;
+            
+            const grid = document.getElementById('listingsGrid');
+            if (grid) {
+                if (hostels.length === 0) {
+                    grid.innerHTML = '<div class="no-listings"><i class="fas fa-home"></i><h3>No Hostels Listed Yet</h3><p>Start by adding your first hostel listing!</p></div>';
+                } else {
+                    grid.innerHTML = hostels.map(hostel => `
+                        <div class="listing-card">
+                            <div class="listing-header">
+                                <h4>${hostel.name}</h4>
+                                <span class="listing-status ${hostel.status || 'active'}">${hostel.status || 'Active'}</span>
+                            </div>
+                            <div class="listing-details">
+                                <p><i class="fas fa-map-marker-alt"></i> ${hostel.location}</p>
+                                <p><i class="fas fa-naira-sign"></i> ₦${hostel.price.toLocaleString()} per ${hostel.pricePeriod}</p>
+                                <p><i class="fas fa-users"></i> ${hostel.capacity} per room</p>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="btn btn-outline btn-sm" onclick="editHostel('${hostel.id}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="viewHostelStats('${hostel.id}')">
+                                    <i class="fas fa-chart-bar"></i> Stats
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+        
+        function updateDashboardStats() {
+            const totalListings = realtorState.hostels.length;
+            const totalViews = realtorState.hostels.reduce((sum, h) => sum + (h.views || 0), 0);
+            const totalInquiries = realtorState.hostels.reduce((sum, h) => sum + (h.inquiries || 0), 0);
+            
+            document.getElementById('totalListings').textContent = totalListings;
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('totalInquiries').textContent = totalInquiries;
+        }
+        
+        function editHostel(hostelId) {
+            alert(`Edit hostel functionality - ID: ${hostelId}`);
+            // This would open the edit modal with pre-filled data
+        }
+        
+        function viewHostelStats(hostelId) {
+            const hostel = realtorState.hostels.find(h => h.id === hostelId);
+            if (hostel) {
+                alert(`Hostel Stats for ${hostel.name}:\nViews: ${hostel.views || 0}\nInquiries: ${hostel.inquiries || 0}\nLast Updated: ${hostel.lastUpdated || 'N/A'}`);
+            }
+        }
+        
+        // Form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login form
+            document.getElementById('realtorLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
+                
+                if (!email || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Demo login (in real app, this would call API)
+                if (email === 'demo@realtor.com' && password === 'demo123') {
+                    realtorState.isLoggedIn = true;
+                    realtorState.realtorData = {
+                        name: 'Demo Realtor',
+                        email: email,
+                        businessName: 'Demo Properties Ltd'
+                    };
+                    
+                    localStorage.setItem('realtorSession', JSON.stringify(realtorState.realtorData));
+                    
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('dashboardSection').classList.remove('hidden');
+                    document.getElementById('realtorName').textContent = realtorState.realtorData.name;
+                    
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                    
+                    alert('Login successful! Welcome to your dashboard.');
+                } else {
+                    alert('Invalid credentials. Demo login: demo@realtor.com / demo123');
+                }
+            });
+            
+            // Add hostel form
+            document.getElementById('addHostelForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                
+                // Validate required fields
+                const requiredFields = ['name', 'location', 'price', 'pricePeriod', 'capacity', 'address', 'description', 'phone'];
+                for (let field of requiredFields) {
+                    if (!formData.get(field)) {
+                        alert(`Please fill in the ${field} field`);
+                        return;
+                    }
+                }
+                
+                // Check for images
+                const images = formData.get('images');
+                if (!images || images.size === 0) {
+                    alert('Please upload at least one hostel image');
+                    return;
+                }
+                
+                // Collect amenities
+                const amenities = [];
+                const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]:checked');
+                amenityCheckboxes.forEach(checkbox => {
+                    if (checkbox.value === 'other') {
+                        const otherAmenityInput = document.querySelector('input[name="otherAmenity"]');
+                        if (otherAmenityInput && otherAmenityInput.value.trim()) {
+                            amenities.push(otherAmenityInput.value.trim());
+                        }
+                    } else {
+                        amenities.push(checkbox.value);
+                    }
+                });
+                
+                if (amenities.length === 0) {
+                    alert('Please select at least one amenity');
+                    return;
+                }
+                
+                const hostelData = {
+                    id: 'hostel_' + Date.now(),
+                    name: formData.get('name'),
+                    location: formData.get('location'),
+                    price: parseInt(formData.get('price')),
+                    pricePeriod: formData.get('pricePeriod'),
+                    capacity: formData.get('capacity'),
+                    address: formData.get('address'),
+                    description: formData.get('description'),
+                    amenities: amenities,
+                    phone: formData.get('phone'),
+                    whatsapp: formData.get('whatsapp'),
+                    status: 'active',
+                    views: 0,
+                    inquiries: 0,
+                    dateAdded: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    realtorId: realtorState.realtorData?.email
+                };
+                
+                // Save to localStorage for demo
+                const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+                existingHostels.push(hostelData);
+                localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
+                
+                alert('Hostel added successfully! It will be reviewed and published within 24 hours.');
+                
+                // Reset form and close modal
+                e.target.reset();
+                closeAddHostelModal();
+                
+                // Refresh dashboard
+                loadRealtorHostels();
+                updateDashboardStats();
+            });
+            
+            // File upload previews
+            document.getElementById('hostelImages').addEventListener('change', function(e) {
+                const files = e.target.files;
+                const previews = document.getElementById('imagePreviews');
+                
+                if (files.length < 3 || files.length > 8) {
+                    alert('Please upload between 3 and 8 images');
+                    e.target.value = '';
+                    return;
+                }
+                
+                previews.innerHTML = `<p>${files.length} images selected for upload</p>`;
+            });
+            
+            document.getElementById('hostelVideos').addEventListener('change', function(e) {
+                const files = e.target.files;
+                const previews = document.getElementById('videoPreviews');
+                
+                if (files.length > 3) {
+                    alert('Please upload a maximum of 3 videos');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Check file sizes
+                for (let file of files) {
+                    if (file.size > 50 * 1024 * 1024) { // 50MB
+                        alert('Each video must be under 50MB');
+                        e.target.value = '';
+                        return;
+                    }
+                }
+                
+                previews.innerHTML = files.length > 0 ? `<p>${files.length} videos selected for upload</p>` : '';
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeAddHostelModal();
+                }
+            });
+            
+            // Check for existing session
+            const savedSession = localStorage.getItem('realtorSession');
+            if (savedSession) {
+                realtorState.realtorData = JSON.parse(savedSession);
+                realtorState.isLoggedIn = true;
+                
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                document.getElementById('realtorName').textContent = realtorState.realtorData.name;
+                
+                loadRealtorHostels();
+                updateDashboardStats();
+            }
+        });
     </script>
     
     <!-- Theme System -->
+    <script src="form-enhancements.js"></script>
     <script src="theme-toggle.js"></script>
     
     <script src="realtor-script.js"></script>

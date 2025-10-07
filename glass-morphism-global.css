@@ -1,0 +1,347 @@
+/* Global Glass Morphism Enhancement System
+   Automatically applies glass effects to all cards and components across the platform */
+
+/* Card Enhancements - Universal Glass Effect */
+.card,
+.hostel-card,
+.review-card,
+.realtor-card,
+.property-card,
+.feature-card,
+.stats-card,
+.dashboard-card,
+.sidebar-card,
+.modal-card,
+.login-card,
+.register-card,
+.form-container,
+.search-card,
+.filter-card,
+.listing-card,
+.profile-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Dark Mode Enhancements */
+.dark .card,
+.dark .hostel-card,
+.dark .review-card,
+.dark .realtor-card,
+.dark .property-card,
+.dark .feature-card,
+.dark .stats-card,
+.dark .dashboard-card,
+.dark .sidebar-card,
+.dark .modal-card,
+.dark .login-card,
+.dark .register-card,
+.dark .form-container,
+.dark .search-card,
+.dark .filter-card,
+.dark .listing-card,
+.dark .profile-card {
+    background: rgba(30, 30, 46, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover Effects for All Glass Cards */
+.card:hover,
+.hostel-card:hover,
+.review-card:hover,
+.realtor-card:hover,
+.property-card:hover,
+.feature-card:hover,
+.stats-card:hover,
+.dashboard-card:hover,
+.sidebar-card:hover,
+.listing-card:hover,
+.profile-card:hover {
+    transform: translateY(-5px) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        0 8px 24px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.dark .card:hover,
+.dark .hostel-card:hover,
+.dark .review-card:hover,
+.dark .realtor-card:hover,
+.dark .property-card:hover,
+.dark .feature-card:hover,
+.dark .stats-card:hover,
+.dark .dashboard-card:hover,
+.dark .sidebar-card:hover,
+.dark .listing-card:hover,
+.dark .profile-card:hover {
+    background: rgba(30, 30, 46, 0.9) !important;
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Navigation Enhancement */
+.navbar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .navbar {
+    background: rgba(30, 30, 46, 0.8) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Modal Enhancements */
+.modal,
+.modal-content {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.dark .modal,
+.dark .modal-content {
+    background: rgba(30, 30, 46, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Form Elements Enhancement */
+.form-group input,
+.form-group select,
+.form-group textarea,
+.search-input,
+.filter-select {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: inherit !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.search-input:focus,
+.filter-select:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    box-shadow: 
+        0 0 0 3px rgba(59, 130, 246, 0.1),
+        0 4px 12px rgba(59, 130, 246, 0.2) !important;
+}
+
+.dark .form-group input,
+.dark .form-group select,
+.dark .form-group textarea,
+.dark .search-input,
+.dark .filter-select {
+    background: rgba(30, 30, 46, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark .form-group input:focus,
+.dark .form-group select:focus,
+.dark .form-group textarea:focus,
+.dark .search-input:focus,
+.dark .filter-select:focus {
+    background: rgba(30, 30, 46, 0.8) !important;
+    border: 1px solid rgba(59, 130, 246, 0.6) !important;
+}
+
+/* Button Enhancements */
+.btn,
+.button,
+.cta-btn,
+.primary-btn,
+.secondary-btn,
+.stunning-btn {
+    background: rgba(59, 130, 246, 0.8) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn:hover,
+.button:hover,
+.cta-btn:hover,
+.primary-btn:hover,
+.secondary-btn:hover,
+.stunning-btn:hover {
+    background: rgba(59, 130, 246, 0.9) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 
+        0 10px 25px rgba(59, 130, 246, 0.3),
+        0 5px 15px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Special Glass Panel for Dashboard */
+.dashboard-container,
+.review-system,
+.main-content {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border-radius: var(--radius-xl) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin: var(--space-lg) !important;
+    padding: var(--space-xl) !important;
+}
+
+.dark .dashboard-container,
+.dark .review-system,
+.dark .main-content {
+    background: rgba(15, 15, 23, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Sidebar Enhancement */
+.sidebar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark .sidebar {
+    background: rgba(30, 30, 46, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Statistics Cards Special Effect */
+.stats-grid .card,
+.metrics-card,
+.kpi-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    position: relative !important;
+}
+
+.stats-grid .card::before,
+.metrics-card::before,
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #1e40af, #06b6d4);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Search and Filter Glass Effects */
+.search-section,
+.filter-section {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: var(--radius-xl) !important;
+    padding: var(--space-lg) !important;
+}
+
+.dark .search-section,
+.dark .filter-section {
+    background: rgba(30, 30, 46, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Animation Enhancement for All Glass Elements */
+@keyframes glass-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.card:hover::before,
+.modal:hover::before,
+.btn:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: glass-shimmer 2s infinite;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-container,
+    .review-system,
+    .main-content {
+        margin: var(--space-sm) !important;
+        padding: var(--space-lg) !important;
+    }
+    
+    .card,
+    .hostel-card,
+    .review-card {
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .dynamic-background,
+    .geometric-overlay,
+    .floating-elements,
+    .particles {
+        display: none !important;
+    }
+    
+    .card,
+    .modal,
+    .navbar {
+        background: white !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+    }
+}
