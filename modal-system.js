@@ -48,15 +48,9 @@ class ModalSystem {
     }
 
     showRegistrationRequirement() {
-        // Check if user is already logged in
-        const isLoggedIn = localStorage.getItem('userToken') || localStorage.getItem('realtorToken');
-        
-        if (!isLoggedIn && !sessionStorage.getItem('registrationShown')) {
-            setTimeout(() => {
-                this.showModal('registrationModal');
-                sessionStorage.setItem('registrationShown', 'true');
-            }, 2000); // Show after 2 seconds
-        }
+        // Registration is now optional - users can browse freely
+        // No automatic modal popup
+        console.log('✅ Registration is optional - full access available');
     }
 
     showModal(modalId) {

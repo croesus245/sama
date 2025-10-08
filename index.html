@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="quick-access.css">
     <link rel="stylesheet" href="modal-styles.css">
     <link rel="stylesheet" href="realtor-verification-styles.css">
+    <link rel="stylesheet" href="realtor-form-enhancements.css">
     <link rel="stylesheet" href="password-validation.css">
     <link rel="stylesheet" href="responsive-fixes.css">
     <link rel="stylesheet" href="student-accessibility.css">
@@ -494,68 +495,14 @@
         </div>
     </section>
 
-    <!-- Demo Hostels Section -->
-    <section id="demo-hostels" class="demo-section">
+    <!-- Dynamic Hostels Section (Loaded from Realtor Portal) -->
+    <section class="hostels-section">
         <div class="container">
             <h2>
                 <i class="fas fa-home"></i> Available Student Hostels
             </h2>
-            
-            <div class="hostels-grid">
-                <div class="hostel-card">
-                    <div class="hostel-image hostel-image-royal">
-                        <i class="fas fa-building fa-3x"></i>
-                    </div>
-                    <div class="hostel-info">
-                        <h3>MWG Royal Hostel</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Near North Gate, FUTA</p>
-                        <p><i class="fas fa-naira-sign"></i> ₦150,000/Session</p>
-                        <div class="hostel-features">
-                            <span class="feature-tag">WiFi</span>
-                            <span class="feature-tag">24/7 Security</span>
-                            <span class="feature-tag">Study Room</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hostel-card">
-                    <div class="hostel-image hostel-image-elite">
-                        <i class="fas fa-home fa-3x"></i>
-                    </div>
-                    <div class="hostel-info">
-                        <h3>Elite Student Lodge</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> South Gate Area</p>
-                        <p><i class="fas fa-naira-sign"></i> ₦120,000/Session</p>
-                        <div class="hostel-features">
-                            <span class="feature-tag">Kitchen</span>
-                            <span class="feature-tag">Parking</span>
-                            <span class="feature-tag">Laundry</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hostel-card">
-                    <div class="hostel-image hostel-image-campus">
-                        <i class="fas fa-university fa-3x"></i>
-                    </div>
-                    <div class="hostel-info">
-                        <h3>Campus View Apartments</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Behind Main Campus</p>
-                        <p><i class="fas fa-naira-sign"></i> ₦180,000/Session</p>
-                        <div class="hostel-features">
-                            <span class="feature-tag">Furnished</span>
-                            <span class="feature-tag">AC Rooms</span>
-                            <span class="feature-tag">Generator</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="demo-footer">
-                <p>
-                    <i class="fas fa-info-circle"></i> 
-                    This is demo content. Register to see real hostel listings and contact property owners.
-                </p>
+            <div id="hostelsGrid" class="hostels-grid">
+                <!-- Hostels will be loaded dynamically from realtor listings -->
             </div>
         </div>
     </section>
@@ -1240,48 +1187,11 @@
     </script>
     
     <script>
-        // Browse without registration function
+        // Browse without registration function - direct access
         function browseWithoutRegistration() {
-            // Hide registration modals and show success message
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-            
-            // Show the demo hostels section
-            const demoSection = document.getElementById('demo-hostels');
-            if (demoSection) {
-                demoSection.style.display = 'block';
-                // Smooth scroll to demo section
-                demoSection.scrollIntoView({ behavior: 'smooth' });
-            }
-            
-            // Show a notification
-            if (typeof showNotification === 'function') {
-                showNotification('Welcome! Browsing demo hostels. Register for full access to real listings.', 'success');
-            } else {
-                alert('Welcome! You can now browse demo hostels. Register for full access.');
-            }
-            
-            // Enable guest mode
-            window.guestMode = true;
-            
-            // Update UI to show guest access
-            const authButtons = document.querySelector('.cta-buttons');
-            if (authButtons) {
-                authButtons.innerHTML = `
-                    <div class="guest-access-banner">
-                        <h4>
-                            <i class="fas fa-check-circle"></i> Guest Access Enabled
-                        </h4>
-                        <p>
-                            You're browsing as a guest. Register for full access to booking and messaging features.
-                        </p>
-                        <button class="cta-button secondary" onclick="location.reload()">
-                            <i class="fas fa-user-plus"></i> Register Now
-                        </button>
-                    </div>
-                `;
-            }
+            console.log('🏠 Browsing hostels without registration - direct access');
+            // Direct navigation to browse page
+            window.location.href = 'demo.html';
         }
         
         // Hide demo banner function
@@ -1308,6 +1218,9 @@
     
     <!-- Realtor Verification System -->
     <script src="realtor-verification.js"></script>
+    
+    <!-- Realtor Registration Fixes -->
+    <script src="realtor-registration-fixes.js"></script>
     
     <!-- Auth System -->
     <script src="auth-system.js"></script>

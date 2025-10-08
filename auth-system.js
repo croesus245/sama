@@ -51,25 +51,23 @@ class AuthSystem {
             }
         });
 
-        // Browse hostels button with auth check
+        // Browse hostels button - allow direct access
         const browseButtons = document.querySelectorAll('[onclick*="browseHostels"], .browse-btn, [data-action="browse-hostels"]');
         browseButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.requireAuth('browse hostels', () => {
-                    window.location.href = 'demo.html';
-                });
+                // Direct access without auth requirement
+                window.location.href = 'demo.html';
             });
         });
 
-        // Find roommates button with auth check
+        // Find roommates button - allow direct access
         const roommateButtons = document.querySelectorAll('[onclick*="findRoommates"], .roommate-btn, [data-action="find-roommates"]');
         roommateButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.requireAuth('find roommates', () => {
-                    window.location.href = 'roommate-finder.html';
-                });
+                // Direct access without auth requirement
+                window.location.href = 'roommate-finder.html';
             });
         });
     }
@@ -161,6 +159,7 @@ class AuthSystem {
                 websiteUrl: formData.get('websiteUrl'),
                 password: formData.get('password'),
                 confirmPassword: formData.get('confirmPassword'),
+                agreeTerms: formData.get('agreeTerms'),
                 userType: 'realtor',
                 verificationStatus: 'pending',
                 submittedAt: new Date().toISOString()
@@ -194,10 +193,20 @@ class AuthSystem {
             }
 
             if (registrationSuccess) {
+                // Store application in verification system
+                if (typeof verificationManager !== 'undefined') {
+                    try {
+                        verificationManager.submitVerificationApplication(realtorData);
+                    } catch (verifyError) {
+                        console.warn('Verification system unavailable:', verifyError);
+                    }
+                }
+                
+                // Close modal after success message
                 setTimeout(() => {
-                    this.closeModal('registrationModal');
-                    this.showModal('loginModal');
-                }, 2000);
+                    this.closeModal('realtorModal');
+                    this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
+                }, 3000);
             }
 
         } catch (error) {
@@ -419,7 +428,6 @@ class AuthSystem {
         if (!data.phone || data.phone.length < 10) {
             throw new Error('Please enter a valid phone number');
         }
-
         if (!data.businessAddress || data.businessAddress.trim().length < 10) {
             throw new Error('Complete business address is required');
         }
@@ -437,6 +445,9 @@ class AuthSystem {
         }
         if (data.password !== data.confirmPassword) {
             throw new Error('Passwords do not match');
+        }
+        if (!data.agreeTerms) {
+            throw new Error('You must agree to the terms and conditions to proceed');
         }
         if (data.websiteUrl && !this.isValidUrl(data.websiteUrl)) {
             throw new Error('Please enter a valid website URL');
