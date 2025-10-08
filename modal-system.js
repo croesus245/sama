@@ -25,12 +25,6 @@ class ModalSystem {
     }
 
     bindEvents() {
-        // Student registration form
-        const studentForm = document.getElementById('studentRegistrationForm');
-        if (studentForm) {
-            studentForm.addEventListener('submit', (e) => this.handleStudentRegistration(e));
-        }
-
         // Realtor registration form
         const realtorForm = document.getElementById('realtorRegistrationForm');
         if (realtorForm) {
@@ -43,14 +37,13 @@ class ModalSystem {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
 
-        // Show registration requirement popup on page load
-        this.showRegistrationRequirement();
+        // Show open access message
+        this.showOpenAccess();
     }
 
-    showRegistrationRequirement() {
-        // Registration is now optional - users can browse freely
-        // No automatic modal popup
-        console.log('✅ Registration is optional - full access available');
+    showOpenAccess() {
+        // Full open access - no registration required
+        console.log('✅ Platform open access - no registration barriers');
     }
 
     showModal(modalId) {
@@ -92,59 +85,14 @@ class ModalSystem {
     }
 
     switchToRegistration() {
-        this.closeAllModals();
-        this.showModal('registrationModal');
+        // Registration is no longer required - redirect to browse
+        console.log('🎯 Registration not needed - platform has open access');
+        window.location.href = 'demo.html';
     }
 
     switchToRealtorModal() {
         this.closeAllModals();
         this.showModal('realtorModal');
-    }
-
-    async handleStudentRegistration(e) {
-        e.preventDefault();
-        const form = e.target;
-        const submitBtn = form.querySelector('button[type="submit"]');
-        
-        try {
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-
-            const formData = new FormData(form);
-            const studentData = {
-                firstName: formData.get('firstName'),
-                lastName: formData.get('lastName'),
-                email: formData.get('email'),
-                faculty: formData.get('faculty'),
-                department: formData.get('department'),
-                yearOfStudy: formData.get('yearOfStudy'),
-                phone: formData.get('phone'),
-                password: formData.get('password')
-            };
-
-            // Validate password strength
-            if (!this.validatePassword(studentData.password)) {
-                throw new Error('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
-            }
-
-            // Register student via API
-            const api = new MWGHostelsAPI();
-            const response = await api.registerStudent(studentData);
-
-            if (response.success) {
-                this.showSuccessMessage('Registration successful! Please check your email for verification.');
-                this.closeModal('registrationModal');
-                setTimeout(() => this.showModal('loginModal'), 1000);
-            } else {
-                throw new Error(response.message || 'Registration failed');
-            }
-
-        } catch (error) {
-            this.showErrorMessage(error.message);
-        } finally {
-            submitBtn.classList.remove('loading');
-            submitBtn.disabled = false;
-        }
     }
 
     async handleRealtorRegistration(e) {

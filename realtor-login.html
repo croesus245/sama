@@ -401,7 +401,19 @@
         
         // Login functionality
         function showRegistrationForm() {
-            alert('Realtor Registration: Please contact our team at hello@mwghostels.com for business verification and account setup. All realtors must be verified before listing properties.');
+            // Redirect to main page registration
+            window.location.href = 'index.html#realtor-registration';
+            setTimeout(() => {
+                if (typeof openModal === 'function') {
+                    openModal('realtorModal');
+                } else {
+                    // Fallback if openModal not available
+                    const modal = document.getElementById('realtorModal');
+                    if (modal) {
+                        modal.style.display = 'flex';
+                    }
+                }
+            }, 500);
         }
         
         function refreshDashboard() {

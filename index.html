@@ -381,6 +381,17 @@
         .error-message.show, .success-message.show {
             display: flex;
         }
+        
+        /* Button group styles */
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .button-group .btn {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -392,7 +403,7 @@
     
     <!-- Offline Banner -->
     <div id="offline-banner" class="offline-banner">
-        You're browsing in demo mode. Register for access to real hostels.
+        Browse mode active - All hostels available for viewing
     </div>
 
     <!-- Dynamic Background System -->
@@ -432,32 +443,28 @@
             <p class="landing-subtitle">Bridging the Gap Between Students & Quality Accommodation</p>
             <p class="landing-description">
                 Move With Great: Connecting verified realtors with FUTA students for safe, affordable housing.
-                Register now to access verified hostels and connect with trusted property owners.
+                Browse hostels instantly - no registration required for students.
             </p>
             
-            <!-- Registration CTA -->
+            <!-- Access Notice -->
             <div class="registration-notice">
-                <p><strong>🔐 Registration Required</strong></p>
-                <p>Join thousands of FUTA students finding their perfect accommodation</p>
+                <p><strong>🎯 Instant Access</strong></p>
+                <p>Browse thousands of verified hostels near FUTA campus - completely free for students</p>
             </div>
             
             <!-- Call to Action Buttons -->
             <div class="landing-cta">
-                <button class="cta-button" onclick="console.log('Student registration button clicked'); openModal('registrationModal')">
-                    <i class="fas fa-user-plus"></i>
-                    Register as Student
+                <button class="cta-button" onclick="browseWithoutRegistration()">
+                    <i class="fas fa-home"></i>
+                    Browse Hostels Now
                 </button>
                 <button class="cta-button secondary" onclick="console.log('Realtor registration button clicked'); openModal('realtorModal')">
                     <i class="fas fa-building"></i>
                     Register as Realtor
                 </button>
-                <button class="cta-button secondary" onclick="openModal('loginModal')">
+                <button class="cta-button tertiary" onclick="openModal('loginModal')">
                     <i class="fas fa-sign-in-alt"></i>
-                    Login
-                </button>
-                <button class="cta-button tertiary" onclick="browseWithoutRegistration()">
-                    <i class="fas fa-eye"></i>
-                    Browse Without Registration
+                    Login (Optional)
                 </button>
             </div>
             
@@ -653,108 +660,6 @@
         }
     </style>
 
-    <!-- Registration Modal -->
-    <div id="registrationModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-user-plus"></i> Student Registration</h2>
-                <span class="close" onclick="closeModal('registrationModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="studentRegistrationForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">First Name *</label>
-                            <input type="text" id="firstName" name="firstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name *</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="faculty">Faculty *</label>
-                            <input type="text" id="faculty" name="faculty" placeholder="e.g., Engineering & Technology" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="department">Department *</label>
-                            <input type="text" id="department" name="department" placeholder="e.g., Computer Science" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="yearOfStudy">Year of Study *</label>
-                        <select id="yearOfStudy" name="yearOfStudy" required>
-                            <option value="">Select Year</option>
-                            <option value="1">100 Level</option>
-                            <option value="2">200 Level</option>
-                            <option value="3">300 Level</option>
-                            <option value="4">400 Level</option>
-                            <option value="5">500 Level</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+234XXXXXXXXXX" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" required>
-                        <div class="password-requirements">
-                            <div class="requirement" id="length-req">
-                                <i class="fas fa-times"></i> At least 8 characters
-                            </div>
-                            <div class="requirement" id="uppercase-req">
-                                <i class="fas fa-times"></i> One uppercase letter
-                            </div>
-                            <div class="requirement" id="lowercase-req">
-                                <i class="fas fa-times"></i> One lowercase letter
-                            </div>
-                            <div class="requirement" id="number-req">
-                                <i class="fas fa-times"></i> One number
-                            </div>
-                            <div class="requirement" id="special-req">
-                                <i class="fas fa-times"></i> One special character
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="studentConfirmPassword">Confirm Password *</label>
-                        <input type="password" id="studentConfirmPassword" name="confirmPassword" required>
-                        <div class="password-match" id="student-password-match">
-                            <i class="fas fa-times"></i> Passwords do not match
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
-                            I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary full-width">
-                        <i class="fas fa-user-plus"></i> Register as Student
-                    </button>
-                </form>
-                
-                <div class="modal-footer">
-                    <p>Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Realtor Registration Modal -->
     <div id="realtorModal" class="modal">
         <div class="modal-content">
@@ -917,7 +822,7 @@
                 
                 <div class="modal-footer">
                     <p><a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
-                    <p>Don't have an account? <a href="#" onclick="switchToRegistration()">Register here</a></p>
+                    <p class="info-text">Login is optional - browse hostels anytime without an account</p>
                 </div>
             </div>
         </div>
@@ -942,21 +847,26 @@
                 </div>
                 
                 <div class="access-card">
-                    <i class="fas fa-user-plus fa-3x access-card-icon"></i>
-                    <h3>Join Platform</h3>
-                    <p>Create your student profile and start searching</p>
-                    <a href="demo.html" class="btn btn-primary" onclick="setTimeout(() => showRegistrationModal(), 500)">
-                        <i class="fas fa-arrow-right"></i> Register Now
+                    <i class="fas fa-users fa-3x access-card-icon"></i>
+                    <h3>Find Roommates</h3>
+                    <p>Connect with compatible roommates for shared living</p>
+                    <a href="roommate-finder.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Find Roommates
                     </a>
                 </div>
                 
                 <div class="access-card">
                     <i class="fas fa-building fa-3x access-card-icon"></i>
                     <h3>List Property</h3>
-                    <p>Property owners and realtors - list your hostels</p>
-                    <a href="realtor-login.html" class="btn btn-primary">
-                        <i class="fas fa-arrow-right"></i> Get Started
-                    </a>
+                    <p>Property owners and realtors - register to list your hostels</p>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="openModal('realtorModal')">
+                            <i class="fas fa-user-plus"></i> Register Now
+                        </button>
+                        <a href="realtor-login.html" class="btn btn-secondary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1090,11 +1000,6 @@
             openModal('loginModal');
         }
         
-        function switchToRegistration() {
-            closeModal('loginModal');
-            openModal('registrationModal');
-        }
-        
         function showTerms() {
             alert('Terms of Service: By using MWG Hostels platform, you agree to our terms and conditions for safe and reliable accommodation services.');
         }
@@ -1189,7 +1094,7 @@
     <script>
         // Browse without registration function - direct access
         function browseWithoutRegistration() {
-            console.log('🏠 Browsing hostels without registration - direct access');
+            console.log('🏠 Browsing hostels - direct access');
             // Direct navigation to browse page
             window.location.href = 'demo.html';
         }

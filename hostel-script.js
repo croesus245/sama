@@ -118,38 +118,17 @@ function handleFABAction(action) {
     }
 }
 
-// Registration Form
+// Registration Form - Updated for Open Access
 function initializeRegistrationForm() {
-    const form = document.getElementById('studentRegistrationForm');
-    const photoInput = document.getElementById('profilePhoto');
-    const imagePreview = document.getElementById('imagePreview');
+    // Student registration no longer required - platform has open access
+    console.log('✅ Platform open access - no student registration needed');
     
-    if (form) {
-        // Photo preview functionality
-        if (photoInput && imagePreview) {
-            photoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.innerHTML = `
-                            <img src="${e.target.result}" alt="Profile Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                            <p style="margin-top: 0.5rem; color: var(--primary-blue); font-weight: 500;">Photo uploaded successfully!</p>
-                        `;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-        
-        // Form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handleRegistration(this);
-        });
+    // Check if any realtor forms need initialization
+    const realtorForm = document.getElementById('realtorRegistrationForm');
+    if (realtorForm) {
+        console.log('🏢 Initializing realtor registration form...');
+        // Realtor registration still available
     }
-    
-    console.log('✅ Registration form initialized');
 }
 
 // Handle Registration
@@ -221,43 +200,10 @@ function handleRegistration(form) {
     }
 }
 
-// Validate Registration Data
+// Validate Registration Data - Updated for Open Access
 function validateRegistrationData(data) {
-    // Check required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'matricNumber', 'department', 'yearOfStudy', 'gender', 'preferredGate', 'accommodationPreference', 'priceRange'];
-    const missingFields = requiredFields.filter(field => !data[field] || data[field].trim() === '');
-    
-    if (missingFields.length > 0) {
-        showNotification(`Please fill in all required fields: ${missingFields.join(', ')}`, 'error');
-        return false;
-    }
-    
-    // Validate matric number format (CSC/23/0011)
-    const matricPattern = /^[A-Z]{2,4}\/\d{2}\/\d{4}$/;
-    if (!matricPattern.test(data.matricNumber)) {
-        showNotification('Please enter your matric number in the format: CSC/23/0011', 'error');
-        return false;
-    }
-    
-    // Validate email
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(data.email)) {
-        showNotification('Please enter a valid email address', 'error');
-        return false;
-    }
-    
-    // Check if profile photo is uploaded
-    if (!data.profilePhoto || data.profilePhoto.size === 0) {
-        showNotification('Please upload your profile photo (headshot)', 'error');
-        return false;
-    }
-    
-    // Check if terms are accepted
-    if (!data.agreeTerms) {
-        showNotification('Please accept the Terms and Conditions to continue', 'error');
-        return false;
-    }
-    
+    // Platform now has open access - minimal validation needed
+    console.log('✅ Platform open access - minimal validation applied');
     return true;
 }
 
@@ -1203,10 +1149,10 @@ function showRegistrationRequiredModal(action) {
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
                 <button class="btn btn-outline" onclick="closeModal(); showLoginModal();">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                    <i class="fas fa-sign-in-alt"></i> Login (Optional)
                 </button>
-                <button class="btn btn-primary" onclick="closeModal(); showRegistrationModal();">
-                    <i class="fas fa-user-plus"></i> Register
+                <button class="btn btn-primary" onclick="closeModal(); showNotification('Browse all hostels freely!', 'success');">
+                    <i class="fas fa-eye"></i> Continue Browsing
                 </button>
             </div>
         </div>
@@ -1217,42 +1163,16 @@ function showRegistrationRequiredModal(action) {
 // REALTOR AVAILABILITY TOGGLE SYSTEM
 // ===========================================
 
-// Registration Modal Functions
+// Open Access Functions - No registration required
 function showRegistrationModal() {
-    console.log('🔓 Opening registration modal...');
-    const modal = document.getElementById('registrationModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-        // Focus first input
-        setTimeout(() => {
-            const firstInput = modal.querySelector('input');
-            if (firstInput) firstInput.focus();
-        }, 100);
-    } else {
-        console.error('Registration modal not found!');
-    }
+    console.log('🎯 Platform open access - no registration needed');
+    // Show notification that registration is not required
+    showNotification('No registration required! Browse all hostels freely.', 'success');
 }
 
 function closeRegistrationModal() {
-    console.log('🔒 Closing registration modal...');
-    const modal = document.getElementById('registrationModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        
-        // Reset form
-        const form = document.getElementById('registrationForm');
-        if (form) {
-            form.reset();
-            // Clear photo preview
-            const photoPreview = document.getElementById('photoPreview');
-            if (photoPreview) {
-                photoPreview.style.display = 'none';
-            }
-        }
-    }
+    console.log('✅ Platform open access active');
+    // No action needed since no modal to close
 }
 
 // Hostel Modal Functions
@@ -1806,7 +1726,7 @@ function showFABMenu() {
     const fabMenu = document.createElement('div');
     fabMenu.className = 'fab-menu';
     fabMenu.innerHTML = `
-        <div class="fab-option" onclick="event.stopPropagation(); showRegistrationModal(); closeFABMenu();">
+        <div class="fab-option" onclick="event.stopPropagation(); showNotification('Browse all hostels freely - no registration needed!', 'success'); closeFABMenu();">
             <i class="fas fa-search"></i>
             <span>Find Hostel</span>
         </div>

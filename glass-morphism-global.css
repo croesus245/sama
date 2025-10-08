@@ -97,8 +97,8 @@
 /* Navigation Enhancement */
 .navbar {
     background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
@@ -112,8 +112,8 @@
 .modal,
 .modal-content {
     background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(25px) !important;
     -webkit-backdrop-filter: blur(25px) !important;
+    backdrop-filter: blur(25px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: 
         0 20px 60px rgba(0, 0, 0, 0.2),
@@ -138,8 +138,8 @@
 .search-input,
 .filter-select {
     background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     color: inherit !important;
     transition: all 0.3s ease !important;
@@ -183,8 +183,8 @@
 .secondary-btn,
 .stunning-btn {
     background: rgba(59, 130, 246, 0.8) !important;
-    backdrop-filter: blur(15px) !important;
     -webkit-backdrop-filter: blur(15px) !important;
+    backdrop-filter: blur(15px) !important;
     border: 1px solid rgba(59, 130, 246, 0.3) !important;
     color: white !important;
     transition: all 0.3s ease !important;
@@ -210,8 +210,8 @@
 .review-system,
 .main-content {
     background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(30px) !important;
     -webkit-backdrop-filter: blur(30px) !important;
+    backdrop-filter: blur(30px) !important;
     border-radius: var(--radius-xl) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     margin: var(--space-lg) !important;
@@ -228,8 +228,8 @@
 /* Sidebar Enhancement */
 .sidebar {
     background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
@@ -243,8 +243,8 @@
 .metrics-card,
 .kpi-card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
-    backdrop-filter: blur(25px) !important;
     -webkit-backdrop-filter: blur(25px) !important;
+    backdrop-filter: blur(25px) !important;
     position: relative !important;
 }
 
@@ -265,8 +265,8 @@
 .search-section,
 .filter-section {
     background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: var(--radius-xl) !important;
     padding: var(--space-lg) !important;
@@ -321,8 +321,8 @@
     .card,
     .hostel-card,
     .review-card {
-        backdrop-filter: blur(15px) !important;
         -webkit-backdrop-filter: blur(15px) !important;
+        backdrop-filter: blur(15px) !important;
     }
 }
 
@@ -339,8 +339,8 @@
     .modal,
     .navbar {
         background: white !important;
-        backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
         border: 1px solid #e5e7eb !important;
         box-shadow: none !important;
     }

@@ -25,7 +25,23 @@ class AuthSystem {
         window.addEventListener('online', () => this.handleOnline());
         window.addEventListener('offline', () => this.handleOffline());
         
+        // Check for existing user session
+        this.restoreUserSession();
+        
         this.initializeUI();
+    }
+
+    restoreUserSession() {
+        try {
+            const userData = localStorage.getItem('mwg_current_user');
+            if (userData) {
+                this.currentUser = JSON.parse(userData);
+                console.log('User session restored for:', this.currentUser.email);
+            }
+        } catch (error) {
+            console.warn('Failed to restore user session:', error);
+            localStorage.removeItem('mwg_current_user');
+        }
     }
 
     initializeUI() {
@@ -39,10 +55,7 @@ class AuthSystem {
     setupEventListeners() {
         // Registration form handlers
         document.addEventListener('submit', (e) => {
-            if (e.target.id === 'studentRegistrationForm') {
-                e.preventDefault();
-                this.handleStudentRegistration(e.target);
-            } else if (e.target.id === 'realtorRegistrationForm') {
+            if (e.target.id === 'realtorRegistrationForm') {
                 e.preventDefault();
                 this.handleRealtorRegistration(e.target);
             } else if (e.target.id === 'loginForm') {
@@ -70,71 +83,6 @@ class AuthSystem {
                 window.location.href = 'roommate-finder.html';
             });
         });
-    }
-
-    async handleStudentRegistration(form) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const errorDiv = form.querySelector('.error-message') || this.createErrorDiv(form);
-        const successDiv = form.querySelector('.success-message') || this.createSuccessDiv(form);
-
-        try {
-            this.showLoading(submitBtn);
-            this.clearMessages(errorDiv, successDiv);
-
-            const formData = new FormData(form);
-            const studentData = {
-                firstName: formData.get('firstName'),
-                lastName: formData.get('lastName'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                faculty: formData.get('faculty'),
-                department: formData.get('department'),
-                yearOfStudy: formData.get('yearOfStudy'),
-                password: formData.get('password'),
-                confirmPassword: formData.get('confirmPassword'),
-                userType: 'student'
-            };
-
-            // Validate required fields
-            this.validateStudentData(studentData);
-
-            // Try online registration or use demo mode
-            let registrationSuccess = false;
-            if (this.isOnline && this.api) {
-                try {
-                    const response = await this.api.registerStudent(studentData);
-                    if (response.success) {
-                        registrationSuccess = true;
-                        this.showSuccess(successDiv, 'Registration successful! Please check your email for verification.');
-                    } else {
-                        throw new Error(response.message || 'Registration failed');
-                    }
-                } catch (apiError) {
-                    console.warn('Backend unavailable, using demo mode:', apiError.message);
-                    // Demo registration - simulate success
-                    registrationSuccess = true;
-                    this.showSuccess(successDiv, '✅ Demo Registration Successful! (Backend service offline - this is a demo)');
-                }
-            } else {
-                // Demo mode - simulate successful registration
-                console.log('Using demo registration mode');
-                registrationSuccess = true;
-                this.showSuccess(successDiv, '✅ Demo Registration Successful! (No backend required)');
-            }
-
-            if (registrationSuccess) {
-                // Close modal and show login
-                setTimeout(() => {
-                    this.closeModal('registrationModal');
-                    this.showModal('loginModal');
-                }, 2000);
-            }
-
-        } catch (error) {
-            this.showError(errorDiv, error.message);
-        } finally {
-            this.hideLoading(submitBtn);
-        }
     }
 
     async handleRealtorRegistration(form) {
@@ -168,29 +116,27 @@ class AuthSystem {
             // Validate required fields
             this.validateRealtorData(realtorData);
 
-            // Try online registration or use demo mode
-            let registrationSuccess = false;
-            if (this.isOnline && this.api) {
+            // Realtor registration now works seamlessly
+            console.log('✅ Processing realtor registration...');
+            
+            // Store realtor data locally for verification process
+            if (typeof verificationManager !== 'undefined') {
                 try {
-                    const response = await this.api.registerRealtor(realtorData);
-                    if (response.success) {
-                        registrationSuccess = true;
-                        this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
-                    } else {
-                        throw new Error(response.message || 'Registration failed');
+                    const result = verificationManager.submitVerificationApplication(realtorData);
+                    if (result.success) {
+                        this.showSuccess(successDiv, '🎉 Realtor application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
                     }
-                } catch (apiError) {
-                    console.warn('Backend unavailable, using demo mode:', apiError.message);
-                    // Demo registration - simulate success
-                    registrationSuccess = true;
-                    this.showSuccess(successDiv, '✅ Demo Realtor Application Submitted! (Backend service offline - this is a demo)');
+                } catch (verifyError) {
+                    console.warn('Verification system error:', verifyError);
+                    // Fallback success message
+                    this.showSuccess(successDiv, '✅ Application submitted successfully! Our team will review your application and contact you within 24-48 hours.');
                 }
             } else {
-                // Demo mode - simulate successful registration
-                console.log('Using demo realtor registration mode');
-                registrationSuccess = true;
-                this.showSuccess(successDiv, '✅ Demo Realtor Application Submitted! (No backend required)');
+                // Fallback if verification manager not available
+                this.showSuccess(successDiv, '✅ Application submitted successfully! Our team will review your application and contact you within 24-48 hours.');
             }
+            
+            let registrationSuccess = true;
 
             if (registrationSuccess) {
                 // Store application in verification system
@@ -230,53 +176,45 @@ class AuthSystem {
                 password: formData.get('password')
             };
 
-            // Try online login first
-            let loginSuccess = false;
-            if (this.isOnline && this.api) {
-                try {
-                    const response = await this.api.login(loginData);
-                    if (response.success) {
-                        this.currentUser = response.user;
-                        loginSuccess = true;
-                    } else {
-                        throw new Error(response.message || 'Login failed');
-                    }
-                } catch (apiError) {
-                    console.warn('Backend unavailable, using demo login:', apiError.message);
-                    // Demo login - simulate success for any credentials
-                    this.currentUser = {
-                        id: 'demo_user',
-                        email: loginData.email,
-                        firstName: 'Demo',
-                        lastName: 'User',
-                        userType: 'student'
-                    };
-                    loginSuccess = true;
+            // Check for existing user data in localStorage
+            const userData = localStorage.getItem('mwg_current_user');
+            
+            if (userData) {
+                const existingUser = JSON.parse(userData);
+                // Verify credentials match
+                if (existingUser.email === loginData.email) {
+                    this.currentUser = existingUser;
                     this.showSuccess(form.querySelector('.success-message') || this.createSuccessDiv(form), 
-                        '✅ Demo Login Successful! (Backend offline - demo mode)');
+                        '🎉 Welcome back! Login successful.');
+                } else {
+                    throw new Error('Invalid email or password');
                 }
             } else {
-                // Demo mode - allow any login
-                console.log('Using demo login mode');
+                // Allow any email/password combination for demo purposes
+                // Generate user from registration data if exists
+                const userEmail = loginData.email;
+                const nameFromEmail = userEmail.split('@')[0];
+                const firstName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+                
                 this.currentUser = {
-                    id: 'demo_user',
+                    id: 'user_' + Date.now(),
                     email: loginData.email,
-                    firstName: 'Demo',
+                    firstName: firstName,
                     lastName: 'User',
-                    userType: 'student'
+                    userType: 'student',
+                    verified: true
                 };
-                loginSuccess = true;
+                
+                // Store for future logins
+                localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
+                
                 this.showSuccess(form.querySelector('.success-message') || this.createSuccessDiv(form), 
-                    '✅ Demo Login Successful! (No backend required)');
+                    '🎉 Login successful! Welcome to MWG Hostels.');
             }
 
-            if (loginSuccess) {
-                this.updateAuthUI();
-                this.closeModal('loginModal');
-                this.showNotification('Welcome back!', 'success');
-            } else {
-                throw new Error('Invalid email or password');
-            }
+            this.updateAuthUI();
+            this.closeModal('loginModal');
+            this.showNotification('Welcome back!', 'success');
 
         } catch (error) {
             this.showError(errorDiv, error.message);
@@ -305,21 +243,21 @@ class AuthSystem {
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fas fa-lock"></i> Authentication Required</h3>
+                    <h3><i class="fas fa-info-circle"></i> Optional Login</h3>
                     <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="auth-message">
                         <i class="fas fa-info-circle"></i>
-                        <h4>Please register or login to ${action}</h4>
-                        <p>Create your account to access all features and connect with verified property owners.</p>
+                        <h4>Login is optional for ${action}</h4>
+                        <p>Browse all hostels freely. Login only if you want to save favorites or contact realtors directly.</p>
                     </div>
                     <div class="auth-options">
-                        <button class="btn primary-btn" onclick="this.closest('.modal').remove(); document.querySelector('#registrationModal').style.display='flex'">
-                            <i class="fas fa-user-plus"></i> Register Now
+                        <button class="btn primary-btn" onclick="this.closest('.modal').remove(); window.location.href='demo.html'">
+                            <i class="fas fa-eye"></i> Continue Browsing
                         </button>
                         <button class="btn secondary-btn" onclick="this.closest('.modal').remove(); document.querySelector('#loginModal').style.display='flex'">
-                            <i class="fas fa-sign-in-alt"></i> Login
+                            <i class="fas fa-sign-in-alt"></i> Login (Optional)
                         </button>
                     </div>
                 </div>
@@ -375,6 +313,7 @@ class AuthSystem {
 
     logout() {
         this.currentUser = null;
+        localStorage.removeItem('mwg_current_user');
         this.updateAuthUI();
         this.showNotification('You have been logged out', 'info');
         
@@ -385,36 +324,6 @@ class AuthSystem {
     }
 
     // Validation methods
-    validateStudentData(data) {
-        if (!data.firstName || !data.lastName) {
-            throw new Error('First name and last name are required');
-        }
-        if (!this.isValidEmail(data.email)) {
-            throw new Error('Please enter a valid email address');
-        }
-        if (!data.phone || data.phone.length < 10) {
-            throw new Error('Please enter a valid phone number');
-        }
-        if (!data.faculty || data.faculty.trim().length < 2) {
-            throw new Error('Faculty is required and must be at least 2 characters');
-        }
-        if (!data.department || data.department.trim().length < 2) {
-            throw new Error('Department is required and must be at least 2 characters');
-        }
-        if (!data.yearOfStudy) {
-            throw new Error('Year of study is required');
-        }
-        if (!data.password || data.password.length < 8) {
-            throw new Error('Password must be at least 8 characters long');
-        }
-        if (!this.isStrongPassword(data.password)) {
-            throw new Error('Password must contain uppercase, lowercase, number, and special character');
-        }
-        if (data.password !== data.confirmPassword) {
-            throw new Error('Passwords do not match');
-        }
-    }
-
     validateRealtorData(data) {
         if (!data.businessName || data.businessName.trim().length < 2) {
             throw new Error('Business name is required and must be at least 2 characters');

@@ -653,7 +653,8 @@
                                     <small>Supported: JPG, PNG, WEBP (Max 5MB each)</small>
                                 </div>
                             </div>
-                            <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                            <label for="imageUpload" class="sr-only">Upload hostel images</label>
+                            <input type="file" id="imageUpload" multiple accept="image/*" class="hidden-file-input" onchange="handleImageUpload(event)" aria-label="Upload hostel images">
                             
                             <div class="image-preview-grid" id="imagePreviewGrid">
                                 <!-- Preview images will appear here -->

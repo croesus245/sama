@@ -135,8 +135,8 @@
 /* Enhanced Glass Morphism */
 .glass-effect {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -238,8 +238,8 @@
 .enhanced-card {
     position: relative;
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 2rem;
@@ -326,14 +326,14 @@
 /* Modal with Perfect Background */
 .perfect-modal {
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .perfect-modal-content {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 24px;
     box-shadow: 
@@ -351,8 +351,8 @@
 /* Navigation Enhancement */
 .perfect-navbar {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -367,8 +367,8 @@
 .perfect-section {
     position: relative;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

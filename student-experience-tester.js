@@ -25,8 +25,8 @@ class StudentExperienceTester {
         // Test 2: Loading Performance
         await this.testLoadingPerformance();
         
-        // Test 3: Registration Flow
-        await this.testRegistrationFlow();
+        // Test 3: Open Access Flow
+        await this.testOpenAccessFlow();
         
         // Test 4: Browse Without Registration
         this.testBrowseWithoutRegistration();
@@ -99,23 +99,23 @@ class StudentExperienceTester {
         });
     }
 
-    async testRegistrationFlow() {
-        console.log('📝 Testing student registration flow...');
+    async testOpenAccessFlow() {
+        console.log('🎯 Testing open access flow...');
         
-        const registrationTests = {
-            'Registration modal opens': this.testModalOpening('registrationModal'),
-            'Form validation works': this.testFormValidation(),
-            'Password requirements clear': this.testPasswordVisibility(),
-            'FUTA-specific fields present': this.testFUTAFields(),
-            'Demo registration works': await this.testDemoRegistration(),
-            'Error messages helpful': this.testErrorMessages(),
-            'Mobile-friendly forms': this.testMobileForms()
+        const openAccessTests = {
+            'No registration required': this.testNoRegistrationRequired(),
+            'Browse button accessible': this.testBrowseAccessibility(),
+            'Platform fully accessible': this.testFullAccess(),
+            'Student-friendly messaging': this.testStudentMessaging(),
+            'Open access works': await this.testOpenAccess(),
+            'Error messages clear': this.testErrorMessages(),
+            'Mobile-friendly interface': this.testMobileForms()
         };
 
         this.testResults.push({
-            category: 'Registration Flow',
-            tests: registrationTests,
-            passed: Object.values(registrationTests).every(Boolean)
+            category: 'Open Access Flow',
+            tests: openAccessTests,
+            passed: Object.values(openAccessTests).every(Boolean)
         });
     }
 
@@ -401,6 +401,42 @@ class StudentExperienceTester {
 
     testContactForms() {
         return document.querySelectorAll('form').length > 0;
+    }
+
+    // New test functions for open access flow
+    testNoRegistrationRequired() {
+        // Check that browse buttons are accessible without registration
+        const browseButtons = document.querySelectorAll('[onclick*="browseWithoutRegistration"], [data-action="browse-hostels"]');
+        return browseButtons.length > 0;
+    }
+
+    testBrowseAccessibility() {
+        // Check that main browse button is prominent and accessible
+        const mainBrowseBtn = document.querySelector('.cta-button');
+        return mainBrowseBtn && mainBrowseBtn.textContent.includes('Browse');
+    }
+
+    testFullAccess() {
+        // Check that no registration barriers exist
+        const registrationModal = document.getElementById('registrationModal');
+        return !registrationModal; // Should not exist anymore
+    }
+
+    testStudentMessaging() {
+        // Check for student-friendly messaging
+        const instantAccess = document.querySelector('.registration-notice');
+        return instantAccess && instantAccess.textContent.includes('Instant Access');
+    }
+
+    async testOpenAccess() {
+        // Test that open access actually works
+        try {
+            const browseBtn = document.querySelector('[onclick*="browseWithoutRegistration"]');
+            return !!browseBtn;
+        } catch (error) {
+            console.warn('Open access test failed:', error);
+            return false;
+        }
     }
 
     generateStudentReport() {
