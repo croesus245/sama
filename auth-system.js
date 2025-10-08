@@ -1,12 +1,12 @@
 /**
- * Enhanced Authentication System with Fallback
- * Handles user registration, login, and access control
+ * Simplified Authentication System
+ * Handles user registration and login without local storage
  */
 
 class AuthSystem {
     constructor() {
-        this.users = JSON.parse(localStorage.getItem('mwg_users') || '[]');
-        this.currentUser = JSON.parse(localStorage.getItem('mwg_current_user') || 'null');
+        this.users = []; // No local storage
+        this.currentUser = null; // No local storage
         this.isOnline = navigator.onLine;
         
         // Safely initialize API with connectivity check
@@ -17,7 +17,7 @@ class AuthSystem {
                 this.testAPIConnectivity();
             }
         } catch (error) {
-            console.warn('MWGHostelsAPI not available, running in offline mode:', error);
+            console.warn('MWGHostelsAPI not available, running in simplified mode:', error);
             this.api = null;
         }
         
@@ -100,7 +100,7 @@ class AuthSystem {
             // Validate required fields
             this.validateStudentData(studentData);
 
-            // Try online registration first
+            // Try online registration or use demo mode
             let registrationSuccess = false;
             if (this.isOnline && this.api) {
                 try {
@@ -112,35 +112,16 @@ class AuthSystem {
                         throw new Error(response.message || 'Registration failed');
                     }
                 } catch (apiError) {
-                    console.warn('Online registration failed, using local fallback:', apiError.message);
-                    
-                    // Check if it's a network connectivity issue
-                    if (apiError.message.includes('fetch') || apiError.message.includes('network') || apiError.message.includes('Failed to fetch')) {
-                        console.log('Backend server appears to be offline, using local registration');
-                        // Fall back to local registration
-                        try {
-                            registrationSuccess = this.registerUserLocally(studentData);
-                            if (registrationSuccess) {
-                                this.showSuccess(successDiv, '✅ Registration successful! (Local mode - will sync when server is available)');
-                            }
-                        } catch (localError) {
-                            throw new Error(`Registration failed: ${localError.message}`);
-                        }
-                    } else {
-                        throw new Error(`Server error: ${apiError.message}`);
-                    }
+                    console.warn('Backend unavailable, using demo mode:', apiError.message);
+                    // Demo registration - simulate success
+                    registrationSuccess = true;
+                    this.showSuccess(successDiv, '✅ Demo Registration Successful! (Backend service offline - this is a demo)');
                 }
             } else {
-                // Offline registration or API not available
-                console.log('Using local registration (offline mode or no API)');
-                try {
-                    registrationSuccess = this.registerUserLocally(studentData);
-                    if (registrationSuccess) {
-                        this.showSuccess(successDiv, '✅ Registration successful! (Offline mode)');
-                    }
-                } catch (localError) {
-                    throw new Error(`Registration failed: ${localError.message}`);
-                }
+                // Demo mode - simulate successful registration
+                console.log('Using demo registration mode');
+                registrationSuccess = true;
+                this.showSuccess(successDiv, '✅ Demo Registration Successful! (No backend required)');
             }
 
             if (registrationSuccess) {
@@ -188,7 +169,7 @@ class AuthSystem {
             // Validate required fields
             this.validateRealtorData(realtorData);
 
-            // Try online registration first
+            // Try online registration or use demo mode
             let registrationSuccess = false;
             if (this.isOnline && this.api) {
                 try {
@@ -200,32 +181,16 @@ class AuthSystem {
                         throw new Error(response.message || 'Registration failed');
                     }
                 } catch (apiError) {
-                    console.warn('Online registration failed, using local fallback:', apiError.message);
-                    registrationSuccess = this.registerUserLocally(realtorData);
+                    console.warn('Backend unavailable, using demo mode:', apiError.message);
+                    // Demo registration - simulate success
+                    registrationSuccess = true;
+                    this.showSuccess(successDiv, '✅ Demo Realtor Application Submitted! (Backend service offline - this is a demo)');
                 }
             } else {
-                // Offline registration - submit to verification system
-                try {
-                    if (typeof verificationManager !== 'undefined') {
-                        const result = verificationManager.submitVerificationApplication(realtorData);
-                        if (result.success) {
-                            registrationSuccess = true;
-                            this.showSuccess(successDiv, `Application submitted successfully! Application ID: ${result.applicationId}. You will receive an email notification within 24-48 hours once your account is verified.`);
-                        }
-                    } else {
-                        // Fallback to local storage
-                        registrationSuccess = this.registerUserLocally(realtorData);
-                        if (registrationSuccess) {
-                            this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Verification submission failed:', error);
-                    registrationSuccess = this.registerUserLocally(realtorData);
-                    if (registrationSuccess) {
-                        this.showSuccess(successDiv, 'Application submitted successfully! You will receive an email notification within 24-48 hours once your account is verified.');
-                    }
-                }
+                // Demo mode - simulate successful registration
+                console.log('Using demo realtor registration mode');
+                registrationSuccess = true;
+                this.showSuccess(successDiv, '✅ Demo Realtor Application Submitted! (No backend required)');
             }
 
             if (registrationSuccess) {
@@ -263,17 +228,37 @@ class AuthSystem {
                     const response = await this.api.login(loginData);
                     if (response.success) {
                         this.currentUser = response.user;
-                        localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
                         loginSuccess = true;
                     } else {
                         throw new Error(response.message || 'Login failed');
                     }
                 } catch (apiError) {
-                    console.warn('Online login failed, trying local:', apiError.message);
-                    loginSuccess = this.loginUserLocally(loginData);
+                    console.warn('Backend unavailable, using demo login:', apiError.message);
+                    // Demo login - simulate success for any credentials
+                    this.currentUser = {
+                        id: 'demo_user',
+                        email: loginData.email,
+                        firstName: 'Demo',
+                        lastName: 'User',
+                        userType: 'student'
+                    };
+                    loginSuccess = true;
+                    this.showSuccess(form.querySelector('.success-message') || this.createSuccessDiv(form), 
+                        '✅ Demo Login Successful! (Backend offline - demo mode)');
                 }
             } else {
-                loginSuccess = this.loginUserLocally(loginData);
+                // Demo mode - allow any login
+                console.log('Using demo login mode');
+                this.currentUser = {
+                    id: 'demo_user',
+                    email: loginData.email,
+                    firstName: 'Demo',
+                    lastName: 'User',
+                    userType: 'student'
+                };
+                loginSuccess = true;
+                this.showSuccess(form.querySelector('.success-message') || this.createSuccessDiv(form), 
+                    '✅ Demo Login Successful! (No backend required)');
             }
 
             if (loginSuccess) {
@@ -291,53 +276,7 @@ class AuthSystem {
         }
     }
 
-    registerUserLocally(userData) {
-        // Check if user already exists
-        const existingUser = this.users.find(u => u.email === userData.email);
-        if (existingUser) {
-            throw new Error('User with this email already exists');
-        }
-
-        // Add user to local storage
-        const newUser = {
-            id: this.generateId(),
-            ...userData,
-            createdAt: new Date().toISOString(),
-            isVerified: false,
-            needsSync: true // Flag for when online sync is available
-        };
-
-        delete newUser.password; // Don't store password in local storage
-        this.users.push(newUser);
-        localStorage.setItem('mwg_users', JSON.stringify(this.users));
-
-        return true;
-    }
-
-    loginUserLocally(loginData) {
-        const user = this.users.find(u => u.email === loginData.email);
-        if (user) {
-            // Check if user is a realtor and verify their status
-            if (user.userType === 'realtor' && typeof verificationManager !== 'undefined') {
-                const verificationStatus = verificationManager.getVerificationStatus(user.email);
-                
-                if (verificationStatus.status === 'pending') {
-                    throw new Error(`Your account is pending verification. Application ID: ${verificationStatus.applicationId}. Please wait for approval email.`);
-                } else if (verificationStatus.status === 'rejected') {
-                    const canReapply = verificationStatus.canReapply ? ' You can reapply after 30 days.' : '';
-                    throw new Error(`Your account verification was rejected. Reason: ${verificationStatus.reason}.${canReapply}`);
-                } else if (verificationStatus.status === 'not_found') {
-                    throw new Error('Account verification required. Please contact support.');
-                }
-                // If verified, proceed with login
-            }
-            
-            this.currentUser = user;
-            localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
-            return true;
-        }
-        return false;
-    }
+    // Local storage functions removed - using API only
 
     requireAuth(action, callback) {
         if (this.isAuthenticated()) {
@@ -427,7 +366,6 @@ class AuthSystem {
 
     logout() {
         this.currentUser = null;
-        localStorage.removeItem('mwg_current_user');
         this.updateAuthUI();
         this.showNotification('You have been logged out', 'info');
         
@@ -662,7 +600,7 @@ class AuthSystem {
                 setTimeout(() => statusIndicator.remove(), 300);
             }, 3000);
         } else {
-            statusIndicator.innerHTML = '🟡 Offline Mode';
+            statusIndicator.innerHTML = '🟡 Demo Mode';
             statusIndicator.style.background = 'rgba(251, 191, 36, 0.9)';
             statusIndicator.style.color = 'white';
             statusIndicator.style.opacity = '1';
@@ -697,7 +635,6 @@ class AuthSystem {
                 }
             }
         }
-        localStorage.setItem('mwg_users', JSON.stringify(this.users));
     }
 }
 

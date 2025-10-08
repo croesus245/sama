@@ -322,6 +322,93 @@ function handleImagePreview(event) {
     });
 }
 
+// Enhanced Image Upload Functions
+let uploadedImages = [];
+const MAX_IMAGES = 8;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+function triggerImageUpload() {
+    document.getElementById('imageUpload').click();
+}
+
+function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    const previewGrid = document.getElementById('imagePreviewGrid');
+    
+    files.forEach(file => {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showNotification('Please select only image files', 'error');
+            return;
+        }
+        
+        // Validate file size
+        if (file.size > MAX_FILE_SIZE) {
+            showNotification(`File ${file.name} is too large. Maximum size is 5MB`, 'error');
+            return;
+        }
+        
+        // Check if we've reached the maximum number of images
+        if (uploadedImages.length >= MAX_IMAGES) {
+            showNotification(`Maximum ${MAX_IMAGES} images allowed`, 'error');
+            return;
+        }
+        
+        // Create file reader
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageId = Date.now() + Math.random();
+            const imageData = {
+                id: imageId,
+                file: file,
+                url: e.target.result,
+                name: file.name
+            };
+            
+            uploadedImages.push(imageData);
+            
+            // Create preview element
+            const previewItem = createImagePreview(imageData);
+            previewGrid.appendChild(previewItem);
+            
+            showNotification(`${file.name} uploaded successfully`, 'success');
+        };
+        
+        reader.readAsDataURL(file);
+    });
+    
+    // Clear the input so the same file can be uploaded again
+    event.target.value = '';
+}
+
+function createImagePreview(imageData) {
+    const previewItem = document.createElement('div');
+    previewItem.className = 'image-preview-item';
+    previewItem.dataset.imageId = imageData.id;
+    
+    previewItem.innerHTML = `
+        <img src="${imageData.url}" alt="${imageData.name}" title="${imageData.name}">
+        <button class="image-remove-btn" onclick="removeImage(${imageData.id})" title="Remove image">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    return previewItem;
+}
+
+function removeImage(imageId) {
+    // Remove from uploaded images array
+    uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+    
+    // Remove from preview grid
+    const previewItem = document.querySelector(`[data-image-id="${imageId}"]`);
+    if (previewItem) {
+        previewItem.remove();
+    }
+    
+    showNotification('Image removed', 'info');
+}
+
 // Remove Image Preview
 function removeImagePreview(button) {
     button.parentElement.remove();
@@ -343,16 +430,140 @@ function closeAddHostelModal() {
         modal.classList.remove('active');
         document.body.style.overflow = '';
         
-        // Reset form
+        // Reset form and uploaded images
         const form = document.getElementById('addHostelForm');
         if (form) {
             form.reset();
-            document.getElementById('imagePreviews').innerHTML = '';
+        }
+        
+        // Clear uploaded images
+        uploadedImages = [];
+        const previewGrid = document.getElementById('imagePreviewGrid');
+        if (previewGrid) {
+            previewGrid.innerHTML = '';
+        }
+        
+        // Clear old image previews if they exist
+        const oldPreviews = document.getElementById('imagePreviews');
+        if (oldPreviews) {
+            oldPreviews.innerHTML = '';
         }
     }
 }
 
-// Handle Add Hostel
+// Enhanced Add Hostel Form Submission
+document.addEventListener('DOMContentLoaded', function() {
+    const addHostelForm = document.getElementById('addHostelForm');
+    if (addHostelForm) {
+        addHostelForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            handleEnhancedAddHostel(this);
+        });
+    }
+});
+
+// Enhanced Handle Add Hostel
+function handleEnhancedAddHostel(form) {
+    console.log('🏠 Adding new hostel with enhanced features...');
+    
+    const formData = new FormData(form);
+    const hostelData = {};
+    
+    // Extract form data
+    for (let [key, value] of formData.entries()) {
+        if (key === 'amenities') {
+            if (!hostelData.amenities) {
+                hostelData.amenities = [];
+            }
+            hostelData.amenities.push(value);
+        } else {
+            hostelData[key] = value;
+        }
+    }
+    
+    // Add enhanced data structure
+    hostelData.id = 'hostel_' + Date.now();
+    hostelData.status = 'active';
+    hostelData.createdAt = new Date().toISOString();
+    hostelData.views = Math.floor(Math.random() * 50);
+    hostelData.inquiries = Math.floor(Math.random() * 10);
+    
+    // Add image data from uploads
+    hostelData.images = uploadedImages.map(img => ({
+        id: img.id,
+        name: img.name,
+        url: img.url,
+        file: img.file
+    }));
+    
+    // Add realtor information
+    hostelData.realtorInfo = {
+        name: realtorState.currentRealtor?.name || 'MWG Hostels',
+        fullName: realtorState.currentRealtor?.fullName || realtorState.currentRealtor?.name,
+        brandName: realtorState.currentRealtor?.brandName || realtorState.currentRealtor?.name,
+        email: realtorState.currentRealtor?.email,
+        phone: realtorState.currentRealtor?.phone
+    };
+    
+    // Validate required fields
+    const requiredFields = ['hostelName', 'hostelType', 'description', 'address', 'pricePerSemester', 'roomCapacity', 'contactPhone'];
+    const missingFields = requiredFields.filter(field => !hostelData[field]);
+    
+    if (missingFields.length > 0) {
+        showNotification(`Please fill in all required fields: ${missingFields.join(', ')}`, 'error');
+        return;
+    }
+    
+    // Validate images
+    if (uploadedImages.length === 0) {
+        const confirm = window.confirm('No images uploaded. Do you want to continue without images?');
+        if (!confirm) return;
+    }
+    
+    // Show loading state
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Hostel...';
+    submitBtn.disabled = true;
+    
+    try {
+        // Simulate API call (in demo mode)
+        setTimeout(() => {
+            // Add to realtors hostels array
+            if (!realtorState.hostels) {
+                realtorState.hostels = [];
+            }
+            realtorState.hostels.unshift(hostelData);
+            
+            // Add to hostel listings in UI
+            addEnhancedHostelToList(hostelData);
+            
+            // Reset form and close modal
+            closeAddHostelModal();
+            
+            // Restore button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            showNotification('Hostel added successfully with images!', 'success');
+            
+            // Update dashboard stats
+            updateDashboardStats();
+            
+            console.log('✅ Hostel added successfully:', hostelData);
+        }, 2000);
+        
+    } catch (error) {
+        console.error('❌ Error adding hostel:', error);
+        showNotification('Error adding hostel. Please try again.', 'error');
+        
+        // Restore button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+// Legacy Handle Add Hostel (for backward compatibility)
 function handleAddHostel(form) {
     console.log('🏠 Adding new hostel...');
     
@@ -541,6 +752,153 @@ function validateHostelData(data) {
     }
     
     return true;
+}
+
+// Enhanced Hostel Display Function
+function addEnhancedHostelToList(hostelData) {
+    const hostelList = document.querySelector('.listing-grid');
+    if (!hostelList) return;
+    
+    // Create new hostel card
+    const hostelCard = document.createElement('div');
+    hostelCard.className = 'listing-card';
+    
+    // Get primary image or use placeholder
+    const primaryImage = hostelData.images && hostelData.images.length > 0 
+        ? hostelData.images[0].url 
+        : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=250&fit=crop';
+    
+    // Format amenities
+    const amenitiesHtml = hostelData.amenities 
+        ? hostelData.amenities.slice(0, 3).map(amenity => `
+            <span class="amenity-tag">
+                <i class="fas fa-${getAmenityIcon(amenity)}"></i>
+                ${formatAmenityName(amenity)}
+            </span>
+        `).join('')
+        : '';
+    
+    // Format price
+    const price = parseInt(hostelData.pricePerSemester || hostelData.price || 0);
+    
+    hostelCard.innerHTML = `
+        <div class="listing-image">
+            <img src="${primaryImage}" alt="${hostelData.hostelName || hostelData.name}">
+            <div class="listing-badge">${hostelData.hostelType || 'Mixed'}</div>
+            ${hostelData.images && hostelData.images.length > 1 ? `<div class="image-count">${hostelData.images.length} photos</div>` : ''}
+        </div>
+        <div class="listing-content">
+            <div class="listing-header">
+                <h3>${hostelData.hostelName || hostelData.name}</h3>
+                <div class="listing-price">₦${price.toLocaleString()}/semester</div>
+            </div>
+            <p class="listing-location">
+                <i class="fas fa-map-marker-alt"></i>
+                ${hostelData.address || hostelData.location}
+                ${hostelData.distance ? ` • ${hostelData.distance}` : ''}
+            </p>
+            <p class="listing-description">${(hostelData.description || '').substring(0, 100)}${(hostelData.description || '').length > 100 ? '...' : ''}</p>
+            <div class="listing-features">
+                <span class="feature-tag">
+                    <i class="fas fa-users"></i>
+                    ${hostelData.roomCapacity || hostelData.capacity || 2} per room
+                </span>
+                ${amenitiesHtml}
+            </div>
+            <div class="listing-actions">
+                <button class="btn btn-primary btn-sm" onclick="viewHostelDetails('${hostelData.id}')">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="editListing('${hostelData.id}')">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="listing-share-btn" onclick="shareHostel('${hostelData.id}')">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add to the beginning of the list
+    hostelList.insertBefore(hostelCard, hostelList.firstChild);
+    
+    // Animate the new card
+    hostelCard.style.opacity = '0';
+    hostelCard.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+        hostelCard.style.transition = 'all 0.3s ease';
+        hostelCard.style.opacity = '1';
+        hostelCard.style.transform = 'translateY(0)';
+    }, 100);
+}
+
+// Helper functions for amenities
+function getAmenityIcon(amenity) {
+    const icons = {
+        'wifi': 'wifi',
+        'security': 'shield-alt',
+        'parking': 'car',
+        'kitchen': 'utensils',
+        'laundry': 'tshirt',
+        'generator': 'bolt',
+        'ac': 'snowflake',
+        'study-room': 'book'
+    };
+    return icons[amenity] || 'check';
+}
+
+function formatAmenityName(amenity) {
+    const names = {
+        'wifi': 'WiFi',
+        'security': 'Security',
+        'parking': 'Parking',
+        'kitchen': 'Kitchen',
+        'laundry': 'Laundry',
+        'generator': 'Generator',
+        'ac': 'AC',
+        'study-room': 'Study Room'
+    };
+    return names[amenity] || amenity;
+}
+
+// Enhanced Hostel Actions
+function viewHostelDetails(hostelId) {
+    const hostel = realtorState.hostels?.find(h => h.id === hostelId) || 
+                   realtorState.listings?.find(l => l.id === hostelId);
+    
+    if (hostel) {
+        showNotification(`Viewing details for ${hostel.hostelName || hostel.name}`, 'info');
+        // In a real application, this would navigate to a detailed view
+    } else {
+        showNotification('Hostel not found', 'error');
+    }
+}
+
+function shareHostel(hostelId) {
+    const hostel = realtorState.hostels?.find(h => h.id === hostelId) || 
+                   realtorState.listings?.find(l => l.id === hostelId);
+    
+    if (!hostel) {
+        showNotification('Hostel not found', 'error');
+        return;
+    }
+    
+    const hostelName = hostel.hostelName || hostel.name;
+    
+    // Simple sharing functionality
+    if (navigator.share) {
+        navigator.share({
+            title: `Check out ${hostelName}`,
+            text: `I found this great hostel: ${hostelName}`,
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        const shareUrl = `${window.location.href}#${hostelName.replace(/\s+/g, '-').toLowerCase()}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showNotification('Share link copied to clipboard!', 'success');
+        });
+    }
 }
 
 // Listing Actions

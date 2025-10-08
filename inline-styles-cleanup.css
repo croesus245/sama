@@ -1,0 +1,298 @@
+/* ===============================================
+   DEMO HOSTELS & INLINE STYLES CLEANUP
+   =============================================== */
+
+/* Demo Section Styles */
+.demo-section {
+    display: none;
+    padding: 4rem 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.demo-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.demo-section.active {
+    display: block;
+}
+
+/* Hostel Image Gradients */
+.hostel-image-royal {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.hostel-image-elite {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.hostel-image-campus {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.hostel-image-royal:hover,
+.hostel-image-elite:hover,
+.hostel-image-campus:hover {
+    transform: scale(1.05);
+}
+
+/* Demo Footer */
+.demo-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 10px;
+}
+
+.demo-footer p {
+    color: #666;
+    font-style: italic;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+/* Realtor Terms Link */
+.realtor-terms-link {
+    color: #007bff !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.realtor-terms-link:hover {
+    color: #0056b3 !important;
+    text-decoration: underline;
+}
+
+/* Hidden File Input */
+.hidden-file-input {
+    display: none !important;
+}
+
+/* Admin Panel Flex Layout */
+.admin-flex-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Error and Success Message Containers */
+.error-div,
+.success-div {
+    display: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+}
+
+.error-div {
+    background: #fee2e2;
+    border: 2px solid #dc2626;
+    color: #991b1b;
+}
+
+.success-div {
+    background: #d1fae5;
+    border: 2px solid #059669;
+    color: #065f46;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Demo Banner Styles (replaces inline styles) */
+.demo-banner {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.demo-banner.show {
+    transform: translateY(0);
+}
+
+.demo-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.demo-content h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.demo-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.demo-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.demo-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Diagnostic Button Styles */
+.diagnostic-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.diagnostic-btn.success {
+    background: #059669;
+}
+
+.diagnostic-btn.danger {
+    background: #dc2626;
+}
+
+.diagnostic-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Small Text Styling */
+.small-italic-text {
+    color: #856404;
+    font-style: italic;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .demo-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .demo-content h4 {
+        font-size: 1rem;
+    }
+    
+    .demo-content p {
+        font-size: 0.8rem;
+    }
+    
+    .admin-flex-layout {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hostel-image-royal,
+    .hostel-image-elite,
+    .hostel-image-campus {
+        height: 150px;
+        font-size: 16px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .demo-section {
+        background: rgba(30, 41, 59, 0.95);
+    }
+    
+    .demo-section h2 {
+        color: #f1f5f9;
+    }
+    
+    .demo-footer {
+        background: rgba(59, 130, 246, 0.2);
+    }
+    
+    .demo-footer p {
+        color: #cbd5e1;
+    }
+    
+    .error-div {
+        background: #7f1d1d;
+        border-color: #dc2626;
+        color: #fca5a5;
+    }
+    
+    .success-div {
+        background: #14532d;
+        border-color: #059669;
+        color: #86efac;
+    }
+}

@@ -1,0 +1,365 @@
+/* ===============================================
+   STUDENT-FOCUSED ACCESSIBILITY ENHANCEMENTS
+   =============================================== */
+
+/* High Contrast Mode for Better Visibility */
+@media (prefers-contrast: high) {
+    :root {
+        --text-primary: #000000 !important;
+        --text-secondary: #1a1a1a !important;
+        --bg-primary: #ffffff !important;
+        --bg-secondary: #f5f5f5 !important;
+        --primary-blue: #0066cc !important;
+        --border-primary: #333333 !important;
+    }
+    
+    .modal-content,
+    .feature-card,
+    .hostel-card {
+        border: 2px solid #333333 !important;
+    }
+}
+
+/* Focus Indicators for Keyboard Navigation */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+.btn:focus,
+.nav-link:focus {
+    outline: 3px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Large Click Targets for Mobile Users */
+@media (max-width: 768px) {
+    button,
+    .btn,
+    .cta-button,
+    .nav-link,
+    input[type="submit"] {
+        min-height: 48px !important;
+        min-width: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+    
+    input,
+    select,
+    textarea {
+        min-height: 48px !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 12px !important;
+    }
+}
+
+/* Enhanced Error and Success Messages */
+.error-message {
+    background: #fee2e2 !important;
+    border: 2px solid #dc2626 !important;
+    color: #991b1b !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    margin: 10px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.error-message::before {
+    content: "⚠️";
+    font-size: 18px;
+}
+
+.success-message {
+    background: #d1fae5 !important;
+    border: 2px solid #059669 !important;
+    color: #065f46 !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    margin: 10px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.success-message::before {
+    content: "✅";
+    font-size: 18px;
+}
+
+/* Loading States for Slow Connections */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Improved Connection Status Indicator */
+.connection-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 10000;
+    transition: all 0.3s ease;
+}
+
+.connection-status.online {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.connection-status.offline {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.connection-status.demo {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+}
+
+/* Enhanced Touch Targets for Better Mobile UX */
+@media (max-width: 768px) {
+    .feature-card,
+    .hostel-card {
+        margin-bottom: 20px !important;
+        padding: 20px !important;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    
+    .feature-card:active,
+    .hostel-card:active {
+        transform: scale(0.98);
+    }
+    
+    /* Larger modal close buttons */
+    .modal-close {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 24px !important;
+    }
+    
+    /* Better form spacing on mobile */
+    .form-group {
+        margin-bottom: 20px !important;
+    }
+    
+    .form-group label {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+        font-weight: 600 !important;
+    }
+}
+
+/* Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark Mode Accessibility Improvements */
+@media (prefers-color-scheme: dark) {
+    .error-message {
+        background: #7f1d1d !important;
+        border-color: #dc2626 !important;
+        color: #fca5a5 !important;
+    }
+    
+    .success-message {
+        background: #14532d !important;
+        border-color: #059669 !important;
+        color: #86efac !important;
+    }
+    
+    /* Better contrast for form elements */
+    input,
+    select,
+    textarea {
+        background: #374151 !important;
+        border-color: #6b7280 !important;
+        color: #f9fafb !important;
+    }
+    
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #60a5fa !important;
+        background: #4b5563 !important;
+    }
+}
+
+/* Internet Connection Warning */
+.offline-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #f59e0b;
+    color: #ffffff;
+    text-align: center;
+    padding: 12px;
+    font-weight: 600;
+    z-index: 10001;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.offline-banner.show {
+    transform: translateY(0);
+}
+
+.offline-banner::before {
+    content: "📶 ";
+    margin-right: 8px;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip Link for Accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #3b82f6;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 10002;
+    transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Better Button States */
+button:disabled,
+.btn:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Print Styles for Students Who Want to Save Info */
+@media print {
+    .navbar,
+    .modal,
+    .cta-buttons,
+    .floating-elements {
+        display: none !important;
+    }
+    
+    .hostel-card,
+    .feature-card {
+        break-inside: avoid;
+        border: 1px solid #333 !important;
+        margin-bottom: 20px !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Network-Aware Loading */
+.slow-connection .lazy-load {
+    background: #f3f4f6;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.slow-connection .lazy-load::before {
+    content: "Loading...";
+}
+
+/* Enhanced Notification System */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 10003;
+    transform: translateX(450px);
+    transition: transform 0.3s ease;
+    font-weight: 500;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    background: #d1fae5;
+    border-left: 4px solid #059669;
+    color: #065f46;
+}
+
+.notification.error {
+    background: #fee2e2;
+    border-left: 4px solid #dc2626;
+    color: #991b1b;
+}
+
+.notification.info {
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    color: #1e40af;
+}
+
+.notification.warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+}
