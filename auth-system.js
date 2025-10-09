@@ -58,9 +58,6 @@ class AuthSystem {
             if (e.target.id === 'realtorRegistrationForm') {
                 e.preventDefault();
                 this.handleRealtorRegistration(e.target);
-            } else if (e.target.id === 'studentRegistrationForm') {
-                e.preventDefault();
-                this.handleStudentRegistration(e.target);
             } else if (e.target.id === 'loginForm') {
                 e.preventDefault();
                 this.handleLogin(e.target);
@@ -86,93 +83,6 @@ class AuthSystem {
                 window.location.href = 'roommate-finder.html';
             });
         });
-    }
-
-    async handleStudentRegistration(form) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const errorDiv = form.querySelector('.error-message') || this.createErrorDiv(form);
-        const successDiv = form.querySelector('.success-message') || this.createSuccessDiv(form);
-
-        try {
-            this.showLoading(submitBtn);
-            this.clearMessages(errorDiv, successDiv);
-
-            const formData = new FormData(form);
-            const studentData = {
-                firstName: formData.get('firstName'),
-                lastName: formData.get('lastName'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                studentId: formData.get('studentId'),
-                faculty: formData.get('faculty'),
-                department: formData.get('department'),
-                yearOfStudy: parseInt(formData.get('yearOfStudy')),
-                graduationYear: parseInt(formData.get('graduationYear')),
-                dateOfBirth: formData.get('dateOfBirth'),
-                gender: formData.get('gender'),
-                bio: formData.get('bio') || '',
-                password: formData.get('password'),
-                confirmPassword: formData.get('confirmPassword'),
-                agreeTerms: formData.get('agreeTerms'),
-                userType: 'student'
-            };
-
-            // Validate required fields
-            this.validateStudentData(studentData);
-
-            console.log('✅ Processing student registration...');
-            
-            // Try API registration first if backend is available
-            if (this.api) {
-                try {
-                    const response = await this.api.registerStudent(studentData);
-                    if (response && response.success) {
-                        this.currentUser = response.data.user;
-                        localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
-                        this.showSuccess(successDiv, '🎉 Registration successful! Welcome to MWG Hostels. Please check your email to verify your account.');
-                        this.updateAuthUI();
-                        setTimeout(() => {
-                            this.closeModal('studentRegistrationModal');
-                        }, 3000);
-                        return;
-                    }
-                } catch (apiError) {
-                    console.warn('API registration failed, falling back to demo mode:', apiError);
-                }
-            }
-            
-            // Fallback to demo mode
-            this.currentUser = {
-                id: 'student_' + Date.now(),
-                firstName: studentData.firstName,
-                lastName: studentData.lastName,
-                email: studentData.email,
-                studentId: studentData.studentId,
-                faculty: studentData.faculty,
-                department: studentData.department,
-                yearOfStudy: studentData.yearOfStudy,
-                userType: 'student',
-                verified: true,
-                registeredAt: new Date().toISOString()
-            };
-            
-            // Store user data
-            localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
-            
-            this.showSuccess(successDiv, '🎉 Registration successful! Welcome to MWG Hostels. You can now browse hostels and connect with roommates.');
-            this.updateAuthUI();
-            
-            // Close modal after success message
-            setTimeout(() => {
-                this.closeModal('studentRegistrationModal');
-                this.showNotification('Registration successful! You can now access all platform features.', 'success');
-            }, 3000);
-
-        } catch (error) {
-            this.showError(errorDiv, error.message);
-        } finally {
-            this.hideLoading(submitBtn);
-        }
     }
 
     async handleRealtorRegistration(form) {
@@ -266,26 +176,7 @@ class AuthSystem {
                 password: formData.get('password')
             };
 
-            // Try API login first if backend is available
-            if (this.api) {
-                try {
-                    const response = await this.api.login(loginData.email, loginData.password);
-                    if (response && response.success) {
-                        this.currentUser = response.data.user;
-                        localStorage.setItem('mwg_current_user', JSON.stringify(this.currentUser));
-                        this.showSuccess(form.querySelector('.success-message') || this.createSuccessDiv(form), 
-                            '🎉 Login successful! Welcome to MWG Hostels.');
-                        this.updateAuthUI();
-                        this.closeModal('loginModal');
-                        this.showNotification('Welcome back!', 'success');
-                        return;
-                    }
-                } catch (apiError) {
-                    console.warn('API login failed, falling back to demo mode:', apiError);
-                }
-            }
-
-            // Fallback to demo mode - check localStorage first
+            // Check for existing user data in localStorage
             const userData = localStorage.getItem('mwg_current_user');
             
             if (userData) {
@@ -433,64 +324,6 @@ class AuthSystem {
     }
 
     // Validation methods
-    validateStudentData(data) {
-        if (!data.firstName || data.firstName.trim().length < 2) {
-            throw new Error('First name is required and must be at least 2 characters');
-        }
-        if (!data.lastName || data.lastName.trim().length < 2) {
-            throw new Error('Last name is required and must be at least 2 characters');
-        }
-        if (!this.isValidEmail(data.email)) {
-            throw new Error('Please enter a valid email address');
-        }
-        if (!data.phone || data.phone.length < 10) {
-            throw new Error('Please enter a valid phone number');
-        }
-        if (!data.studentId || data.studentId.trim().length < 5) {
-            throw new Error('Student ID is required');
-        }
-        if (!data.faculty) {
-            throw new Error('Faculty selection is required');
-        }
-        if (!data.department || data.department.trim().length < 2) {
-            throw new Error('Department is required');
-        }
-        if (!data.yearOfStudy || data.yearOfStudy < 1 || data.yearOfStudy > 7) {
-            throw new Error('Year of study must be between 1 and 7');
-        }
-        if (!data.graduationYear || data.graduationYear < new Date().getFullYear()) {
-            throw new Error('Please enter a valid graduation year');
-        }
-        if (!data.dateOfBirth) {
-            throw new Error('Date of birth is required');
-        }
-        
-        // Validate age (must be at least 16)
-        const birthDate = new Date(data.dateOfBirth);
-        const today = new Date();
-        const age = today.getFullYear() - birthDate.getFullYear();
-        
-        if (age < 16) {
-            throw new Error('You must be at least 16 years old to register');
-        }
-        
-        if (!data.gender) {
-            throw new Error('Gender selection is required');
-        }
-        if (!data.password || data.password.length < 8) {
-            throw new Error('Password must be at least 8 characters long');
-        }
-        if (!this.isStrongPassword(data.password)) {
-            throw new Error('Password must contain uppercase, lowercase, number, and special character');
-        }
-        if (data.password !== data.confirmPassword) {
-            throw new Error('Passwords do not match');
-        }
-        if (!data.agreeTerms) {
-            throw new Error('You must agree to the terms and conditions to proceed');
-        }
-    }
-
     validateRealtorData(data) {
         if (!data.businessName || data.businessName.trim().length < 2) {
             throw new Error('Business name is required and must be at least 2 characters');

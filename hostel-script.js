@@ -534,14 +534,25 @@ function contactRealtor(hostelId) {
     
     console.log(`📞 Contacting realtor for: ${hostel.name}`);
     
-    const platformName = ENV.get('PLATFORM_NAME', 'MWG Hostels');
-    const platformTagline = ENV.get('PLATFORM_TAGLINE', 'Powered by SAMA');
+    // Safe ENV access with fallbacks
+    const platformName = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('PLATFORM_NAME', 'MWG Hostels') : 'MWG Hostels';
+    const platformTagline = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('PLATFORM_TAGLINE', 'Powered by SAMA') : 'Powered by SAMA';
     const defaultMessage = `Hi! I saw your hostel listing for "${hostel.name}" on the ${platformName} platform ${platformTagline}. I'm interested in learning more about the accommodation. Can we discuss the details?`;
     
     // Generate realistic contact info based on realtor data
-    const phoneNumber = hostel.realtorContact || ENV.get('SUPPORT_PHONE', '+234 801 234 5678');
+    const supportPhone = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('SUPPORT_PHONE', '+234 801 234 5678') : '+234 801 234 5678';
+    const phoneNumber = hostel.realtorContact || supportPhone;
     const whatsappNumber = hostel.whatsapp || phoneNumber;
-    const email = ENV.generateSecureEmail((hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, ''));
+    
+    // Generate email with fallback
+    let email;
+    if (typeof ENV !== 'undefined' && ENV.generateSecureEmail) {
+        email = ENV.generateSecureEmail((hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, ''));
+    } else {
+        // Fallback email generation
+        const sanitizedName = (hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, '');
+        email = `${sanitizedName}@mwghostels.com`;
+    }
     
     showModal('Contact Realtor', `
         <div class="contact-realtor">
@@ -581,7 +592,7 @@ function contactRealtor(hostelId) {
                 <button class="btn btn-primary" onclick="window.open('https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </button>
-                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name + ' - ' + ENV.get('PLATFORM_NAME', 'MWG Hostels'))}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
+                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name + ' - ' + platformName)}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
                     <i class="fas fa-envelope"></i> Email
                 </button>
             </div>
@@ -589,7 +600,7 @@ function contactRealtor(hostelId) {
             <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
                 <p style="margin: 0; font-size: 0.9rem; color: var(--primary-blue);">
                     <i class="fas fa-shield-check"></i> 
-                    This is a verified realtor on the ${ENV.get('PLATFORM_NAME', 'MWG Hostels')} platform
+                    This is a verified realtor on the ${platformName} platform
                 </p>
             </div>
         </div>
@@ -1091,8 +1102,9 @@ function showHostelGallery(hostelId) {
 // ===========================================
 
 function checkLoginAndContact(hostelId) {
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
+    const userRegistered = localStorage.getItem('userRegistered');
+    const userData = localStorage.getItem('userData');
+    if (!userRegistered || userRegistered !== 'true') {
         showRegistrationRequiredModal('contact a realtor');
         return;
     }
@@ -1100,21 +1112,28 @@ function checkLoginAndContact(hostelId) {
 }
 
 function checkLoginAndApply(hostelId) {
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
+    const userRegistered = localStorage.getItem('userRegistered');
+    const userData = localStorage.getItem('userData');
+    if (!userRegistered || userRegistered !== 'true') {
         showRegistrationRequiredModal('apply for this hostel');
         return;
     }
-    applyForHostel(hostelId);
+    // Call the student application system
+    if (typeof studentApplicationSystem !== 'undefined' && studentApplicationSystem.showApplicationForm) {
+        studentApplicationSystem.showApplicationForm(hostelId);
+    } else {
+        showNotification('Application system is loading. Please try again in a moment.', 'info');
+    }
 }
 
 function checkLoginAndAddRoommate() {
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
-        showRegistrationRequiredModal('find a roommate');
+    const userRegistered = localStorage.getItem('userRegistered');
+    const userData = localStorage.getItem('userData');
+    if (!userRegistered || userRegistered !== 'true') {
+        showRegistrationRequiredModal('add a roommate request');
         return;
     }
-    showRoommateRegistrationModal();
+    showRoommateModal();
 }
 
 function showRegistrationRequiredModal(action) {
