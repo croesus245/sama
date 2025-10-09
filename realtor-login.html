@@ -165,6 +165,10 @@
                         <i class="fas fa-bug"></i>
                         Debug
                     </button>
+                    <button class="btn btn-outline" onclick="addTestHostel()">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Test Hostel
+                    </button>
                     <button class="btn btn-outline" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
@@ -197,8 +201,13 @@
                             
                             <div class="form-group">
                                 <label for="hostelLocation">Campus Location *</label>
-                                <input type="text" id="hostelLocation" name="location" required placeholder="e.g., North Gate, South Gate, West Gate, or specify custom location">
-                                <small>Enter the specific gate location or area name near campus</small>
+                                <select id="hostelLocation" name="location" required>
+                                    <option value="">Select Campus Area</option>
+                                    <option value="North Gate">North Gate Area</option>
+                                    <option value="South Gate">South Gate Area</option>
+                                    <option value="West Gate">West Gate Area</option>
+                                </select>
+                                <small>Choose the area closest to campus gates or main locations</small>
                             </div>
                         </div>
                         
@@ -231,13 +240,31 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="hostelAddress">Full Address *</label>
-                            <textarea id="hostelAddress" name="address" rows="3" required placeholder="Provide the complete address of the hostel"></textarea>
+                            <label for="hostelAddress">Full Address & Directions *</label>
+                            <textarea id="hostelAddress" name="address" rows="4" required 
+                                placeholder="Provide complete address and directions. Include:
+• Street name and house number
+• Landmarks (e.g., opposite First Bank, behind ShopRite)
+• Clear directions from campus gates
+• How to locate the building
+
+Example: 'No. 15 Adeyemi Street, behind GTBank, North Gate Area. From North Gate, walk straight for 2 minutes, turn left at the junction after the pharmacy, the building is the 3rd house on your right - blue gate with 'Peace Lodge' written on it.'"></textarea>
+                            <small>Clear directions help students find your hostel easily</small>
                         </div>
                         
                         <div class="form-group">
-                            <label for="hostelDescription">Description *</label>
-                            <textarea id="hostelDescription" name="description" rows="4" required placeholder="Describe the hostel, its features, and what makes it special"></textarea>
+                            <label for="hostelDescription">Hostel Description *</label>
+                            <textarea id="hostelDescription" name="description" rows="6" required 
+                                placeholder="Provide a detailed description of your hostel. Include:
+• Room features (e.g., spacious rooms, study tables, wardrobes)
+• Building quality (e.g., newly built, renovated, modern facilities)
+• Environment (e.g., quiet area, close to shops, security)
+• Special features (e.g., balcony, kitchen access, parking)
+• Distance from campus (e.g., 5 minutes walk to North Gate)
+• What makes your hostel unique
+
+Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table and wardrobe. Located 3 minutes walk from North Gate with 24/7 security. Newly renovated building with reliable power supply and water. Quiet environment perfect for studying. Kitchen and laundry facilities available.'"></textarea>
+                            <small>Be detailed and honest - this helps students make better decisions</small>
                         </div>
                         
                         <div class="form-group">
@@ -344,6 +371,7 @@
                         
                         <div class="form-actions">
                             <button type="button" class="btn btn-outline" onclick="closeAddHostelModal()">Cancel</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-plus"></i>
                                 Add Hostel Listing
@@ -597,6 +625,21 @@
             }
         }
         
+        function clearForm() {
+            if (confirm('⚠️ Are you sure you want to clear all form data?')) {
+                const form = document.getElementById('addHostelForm');
+                if (form) {
+                    form.reset();
+                    // Clear any other amenity input
+                    const otherGroup = document.getElementById('otherAmenityGroupRealtor');
+                    if (otherGroup) {
+                        otherGroup.classList.remove('show');
+                    }
+                    alert('✅ Form cleared!');
+                }
+            }
+        }
+        
         // WhatsApp contact function for realtor application
         function contactForRealtorAccess() {
             const whatsappNumber = "2348145653433"; // Updated number for new realtor applications
@@ -639,6 +682,50 @@
             loadRealtorHostels();
         }
         
+        function addTestHostel() {
+            const testHostel = {
+                id: 'test_hostel_' + Date.now(),
+                name: 'Test Hostel - ' + new Date().toLocaleTimeString(),
+                location: 'North Gate',
+                price: 50000,
+                pricePeriod: 'semester',
+                capacity: '2',
+                address: 'Test Address, North Gate Area',
+                description: 'This is a test hostel to verify the system is working properly.',
+                amenities: ['WiFi', 'Security', 'Generator'],
+                phone: '08012345678',
+                whatsapp: '08012345678',
+                images: ['https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'],
+                videoCount: 0,
+                videos: [],
+                status: 'available',
+                views: Math.floor(Math.random() * 20),
+                inquiries: Math.floor(Math.random() * 5),
+                dateAdded: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                realtorId: realtorState.realtorData?.email || 'test',
+                verified: true
+            };
+            
+            try {
+                const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+                existingHostels.push(testHostel);
+                localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
+                
+                realtorState.hostels = existingHostels;
+                
+                console.log('✅ Test hostel added:', testHostel);
+                alert('✅ Test hostel added successfully!');
+                
+                loadRealtorHostels();
+                updateDashboardStats();
+                
+            } catch (error) {
+                console.error('❌ Error adding test hostel:', error);
+                alert('❌ Error adding test hostel: ' + error.message);
+            }
+        }
+        
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 realtorState.isLoggedIn = false;
@@ -671,10 +758,29 @@
             
             const grid = document.getElementById('listingsGrid');
             if (!grid) {
-                console.error('❌ Listings grid not found');
+                console.error('❌ Listings grid not found - checking if dashboard is visible');
+                const dashboard = document.getElementById('dashboardSection');
+                console.log('Dashboard section:', dashboard ? 'found' : 'not found');
+                console.log('Dashboard visible:', dashboard ? !dashboard.classList.contains('hidden') : 'N/A');
+                
+                // Try again after a short delay
+                setTimeout(() => {
+                    const gridRetry = document.getElementById('listingsGrid');
+                    if (gridRetry) {
+                        console.log('✅ Grid found on retry, continuing...');
+                        renderHostelGrid(gridRetry, hostels);
+                    } else {
+                        console.error('❌ Grid still not found after retry');
+                    }
+                }, 500);
                 return;
             }
             
+            renderHostelGrid(grid, hostels);
+        }
+        
+        function renderHostelGrid(grid, hostels) {
+        function renderHostelGrid(grid, hostels) {
             if (hostels.length === 0) {
                 grid.innerHTML = `
                     <div class="no-listings">
@@ -712,7 +818,7 @@
                                 <div class="listing-details" style="margin-bottom: 15px;">
                                     <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
                                         <i class="fas fa-map-marker-alt" style="color: #3b82f6; margin-right: 8px;"></i>
-                                        ${hostel.location}
+                                        <strong>${hostel.location}</strong> - Campus Area
                                     </p>
                                     <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
                                         <i class="fas fa-money-bill" style="color: #3b82f6; margin-right: 8px;"></i>
@@ -720,11 +826,15 @@
                                     </p>
                                     <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
                                         <i class="fas fa-users" style="color: #3b82f6; margin-right: 8px;"></i>
-                                        ${hostel.capacity} per room
+                                        ${hostel.capacity} student${hostel.capacity > 1 ? 's' : ''} per room
                                     </p>
                                     <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
                                         <i class="fas fa-calendar-plus" style="color: #3b82f6; margin-right: 8px;"></i>
                                         Added: ${new Date(hostel.dateAdded).toLocaleDateString()}
+                                    </p>
+                                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
+                                        <i class="fas fa-eye" style="color: #3b82f6; margin-right: 8px;"></i>
+                                        ${hostel.views || 0} views • ${hostel.inquiries || 0} inquiries
                                     </p>
                                 </div>
                                 
@@ -758,6 +868,7 @@
                 
                 console.log('✅ Hostels rendered successfully');
             }
+        }
         }
         
         function updateDashboardStats() {
@@ -962,8 +1073,15 @@
                     document.getElementById('dashboardSection').classList.remove('hidden');
                     document.getElementById('realtorName').textContent = realtorState.realtorData.name;
                     
-                    loadRealtorHostels();
-                    updateDashboardStats();
+                    // Add debug logging
+                    console.log('🔐 Login successful, loading hostels...');
+                    
+                    // Force load hostels after a short delay
+                    setTimeout(() => {
+                        loadRealtorHostels();
+                        updateDashboardStats();
+                        console.log('📊 Dashboard loaded with hostels:', realtorState.hostels.length);
+                    }, 100);
                     
                     alert(`Login successful! Welcome ${validRealtor.name} from ${validRealtor.businessName}.`);
                 } else {
@@ -972,22 +1090,69 @@
                 }
             });
             
-            // FIXED Add hostel form submission
+            // IMPROVED Add hostel form submission with better validation
             document.getElementById('addHostelForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 console.log('📝 Add hostel form submitted');
                 
                 const formData = new FormData(e.target);
                 
-                // Basic validation
-                const name = formData.get('name');
+                // Get form values
+                const name = formData.get('name')?.trim();
                 const location = formData.get('location');
                 const price = formData.get('price');
-                const description = formData.get('description');
-                const phone = formData.get('phone');
+                const pricePeriod = formData.get('pricePeriod');
+                const capacity = formData.get('capacity');
+                const address = formData.get('address')?.trim();
+                const description = formData.get('description')?.trim();
+                const phone = formData.get('phone')?.trim();
                 
-                if (!name || !location || !price || !description || !phone) {
-                    alert('❌ Please fill in all required fields');
+                // Detailed validation
+                if (!name) {
+                    alert('❌ Please enter the hostel name');
+                    document.getElementById('hostelName').focus();
+                    return;
+                }
+                
+                if (!location) {
+                    alert('❌ Please select a campus location');
+                    document.getElementById('hostelLocation').focus();
+                    return;
+                }
+                
+                if (!price || price < 10000) {
+                    alert('❌ Please enter a valid price (minimum ₦10,000)');
+                    document.getElementById('hostelPrice').focus();
+                    return;
+                }
+                
+                if (!pricePeriod) {
+                    alert('❌ Please select the price period');
+                    document.getElementById('pricePeriod').focus();
+                    return;
+                }
+                
+                if (!capacity) {
+                    alert('❌ Please select room capacity');
+                    document.getElementById('hostelCapacity').focus();
+                    return;
+                }
+                
+                if (!address || address.length < 10) {
+                    alert('❌ Please provide a detailed address (at least 10 characters)');
+                    document.getElementById('hostelAddress').focus();
+                    return;
+                }
+                
+                if (!description || description.length < 20) {
+                    alert('❌ Please provide a detailed description (at least 20 characters)');
+                    document.getElementById('hostelDescription').focus();
+                    return;
+                }
+                
+                if (!phone) {
+                    alert('❌ Please enter contact phone number');
+                    document.getElementById('contactPhone').focus();
                     return;
                 }
                 
@@ -1005,57 +1170,84 @@
                     }
                 });
                 
-                // Create hostel data
+                if (amenities.length === 0) {
+                    alert('❌ Please select at least one amenity');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Hostel...';
+                submitBtn.disabled = true;
+                
+                // Create hostel data with improved structure
                 const hostelData = {
                     id: 'hostel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                     name: name,
                     location: location,
                     price: parseInt(price),
-                    pricePeriod: formData.get('pricePeriod') || 'semester',
-                    capacity: formData.get('capacity') || '2',
-                    address: formData.get('address') || location,
+                    pricePeriod: pricePeriod,
+                    capacity: capacity,
+                    address: address,
                     description: description,
-                    amenities: amenities.length > 0 ? amenities : ['WiFi', 'Security'],
+                    amenities: amenities,
                     phone: phone,
                     whatsapp: formData.get('whatsapp') || phone,
-                    images: ['https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'],
+                    images: [
+                        'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80',
+                        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+                    ],
                     videoCount: 0,
                     videos: [],
                     status: 'available',
-                    views: 0,
+                    views: Math.floor(Math.random() * 50), // Random initial views
                     inquiries: 0,
                     dateAdded: new Date().toISOString(),
                     lastUpdated: new Date().toISOString(),
-                    realtorId: realtorState.realtorData?.email || 'demo'
+                    realtorId: realtorState.realtorData?.email || 'demo',
+                    verified: true
                 };
                 
                 console.log('🏠 Creating hostel:', hostelData);
                 
-                // Save to localStorage
-                try {
-                    const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
-                    existingHostels.push(hostelData);
-                    localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
-                    
-                    // Update state
-                    realtorState.hostels = existingHostels;
-                    
-                    console.log('✅ Hostel saved! Total hostels:', existingHostels.length);
-                    
-                    alert('✅ Hostel added successfully!');
-                    
-                    // Reset form and close modal
-                    e.target.reset();
-                    closeAddHostelModal();
-                    
-                    // Refresh dashboard
-                    loadRealtorHostels();
-                    updateDashboardStats();
-                    
-                } catch (error) {
-                    console.error('❌ Error saving hostel:', error);
-                    alert('❌ Error saving hostel. Please try again.');
-                }
+                // Simulate processing time
+                setTimeout(() => {
+                    try {
+                        // Save to localStorage
+                        const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+                        existingHostels.push(hostelData);
+                        localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
+                        
+                        // Update state
+                        realtorState.hostels = existingHostels;
+                        
+                        console.log('✅ Hostel saved! Total hostels:', existingHostels.length);
+                        
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        
+                        alert(`✅ "${name}" has been added successfully!\n\n📍 Location: ${location}\n💰 Price: ₦${parseInt(price).toLocaleString()} per ${pricePeriod}\n👥 Capacity: ${capacity} per room\n\nYour hostel is now visible to students!`);
+                        
+                        // Reset form and close modal
+                        e.target.reset();
+                        closeAddHostelModal();
+                        
+                        // Refresh dashboard
+                        loadRealtorHostels();
+                        updateDashboardStats();
+                        
+                    } catch (error) {
+                        console.error('❌ Error saving hostel:', error);
+                        
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        
+                        alert('❌ Error saving hostel. Please try again.');
+                    }
+                }, 1000); // 1 second delay to show loading
             });
             
             // File upload previews
@@ -1148,15 +1340,27 @@
             // Check for existing session
             const savedSession = localStorage.getItem('realtorSession');
             if (savedSession) {
-                realtorState.realtorData = JSON.parse(savedSession);
-                realtorState.isLoggedIn = true;
-                
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('dashboardSection').classList.remove('hidden');
-                document.getElementById('realtorName').textContent = realtorState.realtorData.name;
-                
-                loadRealtorHostels();
-                updateDashboardStats();
+                try {
+                    realtorState.realtorData = JSON.parse(savedSession);
+                    realtorState.isLoggedIn = true;
+                    
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('dashboardSection').classList.remove('hidden');
+                    document.getElementById('realtorName').textContent = realtorState.realtorData.name;
+                    
+                    console.log('🔄 Restoring session and loading hostels...');
+                    
+                    // Load hostels with a slight delay to ensure DOM is ready
+                    setTimeout(() => {
+                        loadRealtorHostels();
+                        updateDashboardStats();
+                        console.log('✅ Session restored, hostels loaded:', realtorState.hostels.length);
+                    }, 200);
+                    
+                } catch (error) {
+                    console.error('❌ Error restoring session:', error);
+                    localStorage.removeItem('realtorSession');
+                }
             }
         });
     </script>
