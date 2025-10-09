@@ -46,10 +46,10 @@ class EnvironmentConfig {
                     fullName: 'Oluwaseun Great Sama'
                 },
                 {
-                    email: 'michael@mwghostels.com',
-                    password: 'michael2024', // Would be hashed in production
-                    brandName: 'Elite Student Homes',
-                    fullName: 'Michael Adebayo'
+                    email: 'david@mwghostels.com',
+                    password: 'Adedaem2024', // Would be hashed in production
+                    brandName: 'DAVIX HOUSING',
+                    fullName: 'Aderemi Emmanuel David'
                 },
                 {
                     email: 'funmi@mwghostels.com',
