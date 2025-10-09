@@ -825,7 +825,6 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
         }
         
         function renderHostelGrid(grid, hostels) {
-        function renderHostelGrid(grid, hostels) {
             if (hostels.length === 0) {
                 grid.innerHTML = `
                     <div class="no-listings">
@@ -926,7 +925,7 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
             document.getElementById('totalInquiries').textContent = totalInquiries;
         }
         
-        // SIMPLIFIED EDIT FUNCTION
+        // ENHANCED EDIT FUNCTION
         function editHostelSimple(hostelId) {
             console.log('🔧 Editing hostel:', hostelId);
             
@@ -936,34 +935,61 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                 return;
             }
             
-            // Simple prompt-based editing
-            const newName = prompt('Edit Hostel Name:', hostel.name);
-            if (newName === null) return; // User cancelled
+            // Create a comprehensive edit dialog
+            const editData = {};
             
-            const newLocation = prompt('Edit Location:', hostel.location);
-            if (newLocation === null) return;
+            // Edit basic information
+            editData.name = prompt('📝 Edit Hostel Name:', hostel.name);
+            if (editData.name === null) return; // User cancelled
             
-            const newPrice = prompt('Edit Price (₦):', hostel.price);
-            if (newPrice === null) return;
+            // Edit location with dropdown options
+            const locations = ['North Gate', 'South Gate', 'Main Campus', 'School Gate'];
+            const locationIndex = prompt(`📍 Select Location (enter number):\n1. North Gate\n2. South Gate\n3. Main Campus\n4. School Gate\n\nCurrent: ${hostel.location}`, 
+                locations.indexOf(hostel.location) + 1 || 1);
+            if (locationIndex === null) return;
+            editData.location = locations[parseInt(locationIndex) - 1] || hostel.location;
             
-            const newDescription = prompt('Edit Description:', hostel.description);
-            if (newDescription === null) return;
+            // Edit price
+            editData.price = prompt('💰 Edit Price (₦):', hostel.price);
+            if (editData.price === null) return;
+            
+            // Edit capacity
+            const capacityOptions = ['1', '2', '3', '4'];
+            const capacityIndex = prompt(`👥 Select Room Capacity (enter number):\n1. 1 student per room\n2. 2 students per room\n3. 3 students per room\n4. 4 students per room\n\nCurrent: ${hostel.capacity}`, 
+                hostel.capacity);
+            if (capacityIndex === null) return;
+            editData.capacity = parseInt(capacityIndex) || hostel.capacity;
+            
+            // Edit address
+            editData.address = prompt('🏠 Edit Address:', hostel.address);
+            if (editData.address === null) return;
+            
+            // Edit description
+            editData.description = prompt('📝 Edit Description:', hostel.description);
+            if (editData.description === null) return;
+            
+            // Edit phone
+            editData.phone = prompt('📞 Edit Contact Phone:', hostel.phone);
+            if (editData.phone === null) return;
             
             // Update the hostel
             const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
             if (hostelIndex !== -1) {
                 realtorState.hostels[hostelIndex] = {
                     ...realtorState.hostels[hostelIndex],
-                    name: newName.trim() || hostel.name,
-                    location: newLocation.trim() || hostel.location,
-                    price: parseInt(newPrice) || hostel.price,
-                    description: newDescription.trim() || hostel.description,
+                    name: editData.name.trim() || hostel.name,
+                    location: editData.location || hostel.location,
+                    price: parseInt(editData.price) || hostel.price,
+                    capacity: editData.capacity || hostel.capacity,
+                    address: editData.address.trim() || hostel.address,
+                    description: editData.description.trim() || hostel.description,
+                    phone: editData.phone.trim() || hostel.phone,
                     lastUpdated: new Date().toISOString()
                 };
                 
                 // Save to localStorage using sync function
                 if (syncHostelData(realtorState.hostels)) {
-                    alert('✅ Hostel updated successfully!');
+                    alert(`✅ "${editData.name || hostel.name}" updated successfully!\n\n📍 Location: ${editData.location || hostel.location}\n💰 Price: ₦${parseInt(editData.price || hostel.price).toLocaleString()}\n👥 Capacity: ${editData.capacity || hostel.capacity} per room`);
                     
                     // Refresh display
                     loadRealtorHostels();
@@ -1245,10 +1271,11 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                     amenities: amenities,
                     phone: phone,
                     whatsapp: formData.get('whatsapp') || phone,
-                    images: [
-                        'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80',
-                        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
-                    ],
+                    images: window.uploadedImageUrls && window.uploadedImageUrls.length > 0 ? 
+                        window.uploadedImageUrls : [
+                            'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80',
+                            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+                        ],
                     videoCount: 0,
                     videos: [],
                     status: 'available',
@@ -1257,7 +1284,12 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                     dateAdded: new Date().toISOString(),
                     lastUpdated: new Date().toISOString(),
                     realtorId: realtorState.realtorData?.email || 'demo',
-                    verified: true
+                    verified: true,
+                    realtorInfo: {
+                        fullName: realtorState.realtorData?.name || 'Verified Realtor',
+                        brandName: realtorState.realtorData?.businessName || 'Verified Business',
+                        email: realtorState.realtorData?.email || 'contact@mwghostels.com'
+                    }
                 };
                 
                 console.log('🏠 Creating hostel:', hostelData);
@@ -1283,6 +1315,11 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                             
                             // Reset form and close modal
                             e.target.reset();
+                            
+                            // Clear uploaded images
+                            window.uploadedImageUrls = [];
+                            document.getElementById('imagePreviews').innerHTML = '';
+                            
                             closeAddHostelModal();
                             
                             // Refresh dashboard
@@ -1319,7 +1356,54 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                     return;
                 }
                 
-                previews.innerHTML = `<p>${files.length} images selected for upload</p>`;
+                // Clear previous previews
+                previews.innerHTML = '';
+                
+                // Store image URLs for form submission
+                window.uploadedImageUrls = [];
+                
+                // Create image previews
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    // Check file type
+                    if (!file.type.startsWith('image/')) {
+                        alert(`"${file.name}" is not a valid image file`);
+                        continue;
+                    }
+                    
+                    // Check file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`Image "${file.name}" is too large. Each image must be under 5MB`);
+                        continue;
+                    }
+                    
+                    // Create image preview
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-preview-item';
+                    imageContainer.style.cssText = 'display: inline-block; margin: 10px; position: relative; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden;';
+                    
+                    const img = document.createElement('img');
+                    const imageUrl = URL.createObjectURL(file);
+                    img.src = imageUrl;
+                    img.style.cssText = 'width: 120px; height: 80px; object-fit: cover; display: block;';
+                    
+                    // Store the URL for form submission
+                    window.uploadedImageUrls.push(imageUrl);
+                    
+                    const fileName = document.createElement('div');
+                    fileName.textContent = file.name;
+                    fileName.style.cssText = 'padding: 5px; font-size: 12px; background: #f8fafc; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+                    
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(fileName);
+                    previews.appendChild(imageContainer);
+                }
+                
+                const summary = document.createElement('div');
+                summary.style.cssText = 'width: 100%; text-align: center; margin-top: 10px; color: #10b981; font-weight: 600;';
+                summary.textContent = `✅ ${window.uploadedImageUrls.length} images ready for upload`;
+                previews.appendChild(summary);
             });
             
             document.getElementById('hostelVideos').addEventListener('change', function(e) {
