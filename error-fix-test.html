@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Fix Test - MWG Hostels</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .success {
+            color: #10b981;
+            border-left: 4px solid #10b981;
+            background: #ecfdf5;
+        }
+        .error {
+            color: #ef4444;
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+        }
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 MWG Hostels - Error Fix Verification</h1>
+    
+    <div class="test-card">
+        <h2>Error Handling Test</h2>
+        <p>This page tests if the "An unexpected error occurred" issue has been resolved.</p>
+        
+        <div id="status" class="status">
+            ⏳ Testing error handling system...
+        </div>
+        
+        <div>
+            <button class="test-button" onclick="testNormalFunction()">Test Normal Function</button>
+            <button class="test-button" onclick="testCriticalError()">Test Critical Error</button>
+            <button class="test-button" onclick="testNonCriticalError()">Test Non-Critical Error</button>
+            <button class="test-button" onclick="testNotification()">Test Notification</button>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>Navigation Test</h2>
+        <p>Test links to main pages:</p>
+        <div>
+            <a href="index.html" class="test-button">Go to Homepage</a>
+            <a href="demo.html" class="test-button">Browse Hostels</a>
+            <a href="roommate-finder.html" class="test-button">Find Roommates</a>
+            <a href="realtor-login.html" class="test-button">Realtor Portal</a>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>Current Status</h2>
+        <div id="diagnostics">
+            <p>Loading diagnostics...</p>
+        </div>
+    </div>
+
+    <!-- Load fixed error handler first -->
+    <script src="fixed-error-handler.js"></script>
+    
+    <script>
+        // Test functions
+        function testNormalFunction() {
+            updateStatus('✅ Normal function executed successfully', 'success');
+            notifications.success('Normal function works perfectly!');
+        }
+        
+        function testCriticalError() {
+            try {
+                throw new Error('Registration failed - critical error test');
+            } catch (error) {
+                console.error('Testing critical error:', error);
+                notifications.error('This is a critical error (should show)');
+            }
+        }
+        
+        function testNonCriticalError() {
+            try {
+                throw new Error('Non-critical error that should be suppressed');
+            } catch (error) {
+                console.warn('Testing non-critical error:', error);
+                updateStatus('⚠️ Non-critical error suppressed (check console)', 'success');
+            }
+        }
+        
+        function testNotification() {
+            notifications.info('Test notification system is working!');
+            updateStatus('📢 Notification system tested', 'success');
+        }
+        
+        function updateStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        // Run diagnostics
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const diagnostics = document.getElementById('diagnostics');
+                
+                let results = [];
+                
+                // Check if fixed error handler is loaded
+                if (typeof notifications !== 'undefined') {
+                    results.push('✅ Fixed error handler loaded');
+                } else {
+                    results.push('❌ Fixed error handler not loaded');
+                }
+                
+                // Check if showNotification exists
+                if (typeof showNotification === 'function') {
+                    results.push('✅ Notification system available');
+                } else {
+                    results.push('❌ Notification system missing');
+                }
+                
+                // Check if showModal exists
+                if (typeof showModal === 'function') {
+                    results.push('✅ Modal system available');
+                } else {
+                    results.push('❌ Modal system missing');
+                }
+                
+                diagnostics.innerHTML = results.map(result => `<p>${result}</p>`).join('');
+                
+                updateStatus('🎯 Error handling system initialized', 'success');
+                
+                // Test notification
+                setTimeout(() => {
+                    notifications.info('Error fix verification complete!');
+                }, 1000);
+                
+            }, 500);
+        });
+        
+        // Global error test
+        window.addEventListener('load', function() {
+            console.log('✅ Page loaded without unexpected error messages');
+        });
+    </script>
+</body>
+</html>

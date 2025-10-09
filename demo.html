@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="advanced-styles.css">
     <link rel="stylesheet" href="modal-styles.css">
     <link rel="stylesheet" href="responsive-fixes.css">
+    <link rel="stylesheet" href="student-application-system.css">
     
     <!-- Environment Configuration (Load First) -->
     <script src="env-config.js"></script>
@@ -175,9 +176,20 @@
     </div>
 
     <!-- Floating Action Button -->
-    <div class="floating-action-btn" onclick="showRegistrationModal()">
-        <i class="fas fa-plus"></i>
-        <span class="fab-text">Join MWG</span>
+    <div class="floating-action-menu">
+        <div class="fab-main" id="fabMain">
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class="fab-menu" id="fabMenu">
+            <div class="fab-option" data-action="view-applications" title="My Applications">
+                <i class="fas fa-clipboard-list"></i>
+                <span class="fab-text">My Applications</span>
+            </div>
+            <div class="fab-option" onclick="showRegistrationModal()" title="Join MWG">
+                <i class="fas fa-user-plus"></i>
+                <span class="fab-text">Join MWG</span>
+            </div>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -668,6 +680,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="fixed-error-handler.js"></script>
     <script src="form-enhancements.js"></script>
     <script src="hostel-script.js"></script>
     <script>
@@ -790,5 +803,8 @@
     <!-- Advanced Features -->
     <script src="environment-config.js"></script>
     <script src="advanced-features.js"></script>
+    
+    <!-- Student Application System -->
+    <script src="student-application-system.js"></script>
 </body>
 </html>

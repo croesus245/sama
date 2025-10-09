@@ -233,32 +233,61 @@ class ErrorHandler {
     }
     
     setupGlobalErrorHandling() {
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            this.handleError(event.error);
-        });
+        // Disabled aggressive global error handling that was causing spam
+        // Error handling is now managed by fixed-error-handler.js
+        console.log('🔧 Global error handling disabled - using improved error system');
         
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
-            this.handleError(event.reason);
+        // Only handle specific form-related errors
+        document.addEventListener('submit', (event) => {
+            const form = event.target;
+            if (form.tagName === 'FORM') {
+                form.addEventListener('error', (e) => {
+                    this.handleFormError(form, e.error);
+                });
+            }
         });
     }
     
     handleError(error, context = 'Application') {
         console.error(`${context} Error:`, error);
         
-        let message = 'An unexpected error occurred. Please try again.';
-        
-        if (error.message) {
-            // Don't expose sensitive error details to users
-            if (error.message.includes('network') || error.message.includes('fetch')) {
-                message = 'Network error. Please check your connection and try again.';
-            } else if (error.message.includes('validation')) {
-                message = 'Please check your input and try again.';
-            }
+        // Only show errors for critical application failures
+        if (!error || !error.message) {
+            return; // Don't show generic errors
         }
         
-        notifications.error(message);
+        // Only show user-facing errors for specific critical issues
+        const criticalErrors = [
+            'Registration failed',
+            'Login failed',
+            'Payment failed',
+            'Form submission failed',
+            'Data validation failed'
+        ];
+        
+        const isCritical = criticalErrors.some(critical => 
+            error.message.includes(critical)
+        );
+        
+        if (!isCritical) {
+            console.warn('Non-critical error suppressed:', error.message);
+            return;
+        }
+        
+        let message = error.message;
+        
+        if (error.message.includes('network') || error.message.includes('fetch')) {
+            message = 'Network error. Please check your connection and try again.';
+        } else if (error.message.includes('validation')) {
+            message = 'Please check your input and try again.';
+        }
+        
+        // Use improved notification system if available
+        if (typeof notifications !== 'undefined' && notifications.error) {
+            notifications.error(message);
+        } else {
+            console.error('Critical Error:', message);
+        }
     }
     
     handleFormError(form, error) {

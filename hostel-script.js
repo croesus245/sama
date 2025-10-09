@@ -1021,6 +1021,9 @@ function generateEnhancedHostelCard(hostel) {
                     <button class="btn btn-outline btn-sm" onclick="viewHostelDetails('${hostel.id}')">
                         <i class="fas fa-eye"></i> View Details
                     </button>
+                    <button class="btn btn-success btn-sm" data-action="apply-hostel" data-hostel-id="${hostel.id}">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </button>
                     <button class="btn btn-primary btn-sm" onclick="checkLoginAndContact('${hostel.id}')">
                         <i class="fas fa-phone"></i> Contact
                     </button>

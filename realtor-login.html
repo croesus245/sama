@@ -510,6 +510,7 @@
                                 <p><i class="fas fa-map-marker-alt"></i> ${hostel.location}</p>
                                 <p><i class="fas fa-naira-sign"></i> ₦${hostel.price.toLocaleString()} per ${hostel.pricePeriod}</p>
                                 <p><i class="fas fa-users"></i> ${hostel.capacity} per room</p>
+                                ${hostel.videoCount > 0 ? `<p><i class="fas fa-video"></i> ${hostel.videoCount} video${hostel.videoCount > 1 ? 's' : ''}</p>` : ''}
                             </div>
                             <div class="listing-actions">
                                 <button class="btn btn-outline btn-sm" onclick="editHostel('${hostel.id}')">
@@ -652,21 +653,25 @@
             // Add hostel form
             document.getElementById('addHostelForm').addEventListener('submit', function(e) {
                 e.preventDefault();
+                console.log('Add hostel form submitted');
                 
                 const formData = new FormData(e.target);
+                console.log('Form data created');
                 
                 // Validate required fields
                 const requiredFields = ['name', 'location', 'price', 'pricePeriod', 'capacity', 'address', 'description', 'phone'];
                 for (let field of requiredFields) {
-                    if (!formData.get(field)) {
+                    const value = formData.get(field);
+                    console.log(`Field ${field}:`, value);
+                    if (!value || value.trim() === '') {
                         alert(`Please fill in the ${field} field`);
                         return;
                     }
                 }
                 
                 // Check for images
-                const images = formData.get('images');
-                if (!images || images.size === 0) {
+                const imageFiles = formData.getAll('images');
+                if (!imageFiles || imageFiles.length === 0 || (imageFiles.length === 1 && imageFiles[0].size === 0)) {
                     alert('Please upload at least one hostel image');
                     return;
                 }
@@ -690,6 +695,21 @@
                     return;
                 }
                 
+                // Collect video information
+                const videoFiles = formData.getAll('videos');
+                const videoInfo = [];
+                for (let i = 0; i < videoFiles.length; i++) {
+                    const video = videoFiles[i];
+                    if (video && video.size > 0) {
+                        videoInfo.push({
+                            name: video.name,
+                            size: video.size,
+                            type: video.type,
+                            uploadDate: new Date().toISOString()
+                        });
+                    }
+                }
+                
                 const hostelData = {
                     id: 'hostel_' + Date.now(),
                     name: formData.get('name'),
@@ -702,6 +722,8 @@
                     amenities: amenities,
                     phone: formData.get('phone'),
                     whatsapp: formData.get('whatsapp'),
+                    videoCount: videoInfo.length,
+                    videos: videoInfo,
                     status: 'active',
                     views: 0,
                     inquiries: 0,
@@ -714,14 +736,17 @@
                 const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
                 existingHostels.push(hostelData);
                 localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
+                console.log('Hostel saved to localStorage:', hostelData);
+                console.log('Total hostels now:', existingHostels.length);
                 
-                alert('Hostel added successfully! It will be reviewed and published within 24 hours.');
+                alert('✅ Hostel added successfully! Your listing is now active and visible to students.');
                 
                 // Reset form and close modal
                 e.target.reset();
                 closeAddHostelModal();
                 
                 // Refresh dashboard
+                console.log('Refreshing dashboard...');
                 loadRealtorHostels();
                 updateDashboardStats();
             });
@@ -750,16 +775,60 @@
                     return;
                 }
                 
-                // Check file sizes
-                for (let file of files) {
-                    if (file.size > 50 * 1024 * 1024) { // 50MB
-                        alert('Each video must be under 50MB');
-                        e.target.value = '';
-                        return;
+                // Check file sizes and create previews
+                previews.innerHTML = '';
+                let validFiles = 0;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    // Check file size (50MB limit)
+                    if (file.size > 50 * 1024 * 1024) {
+                        alert(`Video "${file.name}" is too large. Each video must be under 50MB`);
+                        continue;
                     }
+                    
+                    // Check file type
+                    if (!file.type.startsWith('video/')) {
+                        alert(`"${file.name}" is not a valid video file`);
+                        continue;
+                    }
+                    
+                    validFiles++;
+                    
+                    // Create video preview
+                    const videoContainer = document.createElement('div');
+                    videoContainer.className = 'video-preview-item';
+                    videoContainer.style.cssText = 'display: inline-block; margin: 10px; position: relative;';
+                    
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.controls = true;
+                    video.style.cssText = 'width: 200px; height: 150px; border-radius: 8px; object-fit: cover;';
+                    
+                    const fileName = document.createElement('p');
+                    fileName.textContent = file.name;
+                    fileName.style.cssText = 'margin: 5px 0; font-size: 12px; text-align: center; color: #666;';
+                    
+                    const fileSize = document.createElement('small');
+                    fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+                    fileSize.style.cssText = 'color: #999; font-size: 11px; display: block; text-align: center;';
+                    
+                    videoContainer.appendChild(video);
+                    videoContainer.appendChild(fileName);
+                    videoContainer.appendChild(fileSize);
+                    previews.appendChild(videoContainer);
                 }
                 
-                previews.innerHTML = files.length > 0 ? `<p>${files.length} videos selected for upload</p>` : '';
+                if (validFiles === 0) {
+                    previews.innerHTML = '<p style="color: #666;">No valid videos selected</p>';
+                    e.target.value = '';
+                } else {
+                    const summary = document.createElement('p');
+                    summary.innerHTML = `<strong>✅ ${validFiles} video${validFiles > 1 ? 's' : ''} ready for upload</strong>`;
+                    summary.style.cssText = 'color: #22c55e; font-weight: 500; text-align: center; margin: 10px 0;';
+                    previews.insertBefore(summary, previews.firstChild);
+                }
             });
             
             // Close modals when clicking outside
