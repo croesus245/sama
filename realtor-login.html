@@ -435,7 +435,7 @@
         function showAddHostelForm() {
             const modal = document.getElementById('addHostelModal');
             if (modal) {
-                modal.style.display = 'flex';
+                modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
         }
@@ -443,7 +443,7 @@
         function closeAddHostelModal() {
             const modal = document.getElementById('addHostelModal');
             if (modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('active');
                 document.body.style.overflow = '';
             }
         }
