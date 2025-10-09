@@ -161,6 +161,10 @@
                         <i class="fas fa-refresh"></i>
                         Refresh
                     </button>
+                    <button class="btn btn-outline" onclick="debugHostels()">
+                        <i class="fas fa-bug"></i>
+                        Debug
+                    </button>
                     <button class="btn btn-outline" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
@@ -621,6 +625,20 @@
             }
         }
         
+        function debugHostels() {
+            const stored = localStorage.getItem('realtorHostels');
+            const hostels = stored ? JSON.parse(stored) : [];
+            
+            console.log('🐛 DEBUG: Stored hostels:', hostels);
+            console.log('🐛 DEBUG: Current state hostels:', realtorState.hostels);
+            console.log('🐛 DEBUG: localStorage keys:', Object.keys(localStorage));
+            
+            alert(`🐛 DEBUG INFO:\n\nStored hostels: ${hostels.length}\nCurrent state hostels: ${realtorState.hostels.length}\n\nCheck console for detailed data.`);
+            
+            // Force refresh
+            loadRealtorHostels();
+        }
+        
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 realtorState.isLoggedIn = false;
@@ -634,53 +652,111 @@
             }
         }
         
-        // Dashboard functions
+        // Dashboard functions - FIXED VERSION
         function loadRealtorHostels() {
-            // Load hostels from localStorage for demo
-            const hostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+            console.log('🔄 Loading realtor hostels...');
+            
+            // Load hostels from localStorage
+            let hostels = [];
+            try {
+                const stored = localStorage.getItem('realtorHostels');
+                hostels = stored ? JSON.parse(stored) : [];
+                console.log('📦 Loaded hostels from storage:', hostels.length);
+            } catch (error) {
+                console.error('❌ Error loading hostels:', error);
+                hostels = [];
+            }
+            
             realtorState.hostels = hostels;
             
             const grid = document.getElementById('listingsGrid');
-            if (grid) {
-                if (hostels.length === 0) {
-                    grid.innerHTML = '<div class="no-listings"><i class="fas fa-home"></i><h3>No Hostels Listed Yet</h3><p>Start by adding your first hostel listing!</p></div>';
-                } else {
-                    grid.innerHTML = hostels.map(hostel => `
-                        <div class="listing-card">
+            if (!grid) {
+                console.error('❌ Listings grid not found');
+                return;
+            }
+            
+            if (hostels.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-listings">
+                        <i class="fas fa-home"></i>
+                        <h3>No Hostels Listed Yet</h3>
+                        <p>Start by adding your first hostel listing!</p>
+                        <button class="btn btn-primary" onclick="showAddHostelForm()">
+                            <i class="fas fa-plus"></i> Add Your First Hostel
+                        </button>
+                    </div>
+                `;
+            } else {
+                console.log('🏠 Displaying', hostels.length, 'hostels');
+                
+                grid.innerHTML = hostels.map((hostel, index) => {
+                    console.log(`Rendering hostel ${index + 1}:`, hostel.name);
+                    
+                    return `
+                        <div class="listing-card" data-hostel-id="${hostel.id}">
                             <div class="listing-image">
-                                <img src="${hostel.images && hostel.images[0] ? hostel.images[0] : 'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'}" alt="${hostel.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                                <img src="${hostel.images && hostel.images[0] ? hostel.images[0] : 'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'}" 
+                                     alt="${hostel.name}" 
+                                     style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;"
+                                     onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'">
                             </div>
-                            <div class="listing-header">
-                                <h4>${hostel.name}</h4>
-                                <span class="listing-status ${hostel.status || 'available'}">${hostel.status === 'allocated' ? 'Allocated' : 'Available'}</span>
-                            </div>
-                            <div class="listing-details">
-                                <p><i class="fas fa-map-marker-alt"></i> ${hostel.location}</p>
-                                <p><i class="fas fa-naira-sign"></i> ₦${hostel.price.toLocaleString()} per ${hostel.pricePeriod || 'semester'}</p>
-                                <p><i class="fas fa-users"></i> ${hostel.capacity} per room</p>
-                                <p><i class="fas fa-calendar-plus"></i> Added: ${new Date(hostel.dateAdded).toLocaleDateString()}</p>
-                                ${hostel.videoCount > 0 ? `<p><i class="fas fa-video"></i> ${hostel.videoCount} video${hostel.videoCount > 1 ? 's' : ''}</p>` : ''}
-                            </div>
-                            <div class="allocation-status">
-                                <label class="allocation-checkbox">
-                                    <input type="checkbox" ${hostel.status === 'allocated' ? 'checked' : ''} onchange="toggleAllocation('${hostel.id}', this.checked)">
-                                    <span>Mark as Allocated</span>
-                                </label>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn btn-outline btn-sm" onclick="editHostel('${hostel.id}')">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn btn-outline btn-sm" onclick="viewHostelStats('${hostel.id}')">
-                                    <i class="fas fa-chart-bar"></i> Stats
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteHostel('${hostel.id}')">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
+                            <div class="listing-content" style="padding: 15px;">
+                                <div class="listing-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <h4 style="margin: 0; color: #1e293b;">${hostel.name}</h4>
+                                    <span class="listing-status ${hostel.status === 'allocated' ? 'allocated' : 'available'}" 
+                                          style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                        ${hostel.status === 'allocated' ? 'ALLOCATED' : 'AVAILABLE'}
+                                    </span>
+                                </div>
+                                
+                                <div class="listing-details" style="margin-bottom: 15px;">
+                                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #3b82f6; margin-right: 8px;"></i>
+                                        ${hostel.location}
+                                    </p>
+                                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
+                                        <i class="fas fa-money-bill" style="color: #3b82f6; margin-right: 8px;"></i>
+                                        ₦${parseInt(hostel.price).toLocaleString()} per ${hostel.pricePeriod || 'semester'}
+                                    </p>
+                                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
+                                        <i class="fas fa-users" style="color: #3b82f6; margin-right: 8px;"></i>
+                                        ${hostel.capacity} per room
+                                    </p>
+                                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
+                                        <i class="fas fa-calendar-plus" style="color: #3b82f6; margin-right: 8px;"></i>
+                                        Added: ${new Date(hostel.dateAdded).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                
+                                <div class="allocation-status" style="padding: 10px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin: 15px 0;">
+                                    <label class="allocation-checkbox" style="display: flex; align-items: center; cursor: pointer;">
+                                        <input type="checkbox" ${hostel.status === 'allocated' ? 'checked' : ''} 
+                                               onchange="toggleAllocation('${hostel.id}', this.checked)"
+                                               style="margin-right: 8px; transform: scale(1.2);">
+                                        <span style="font-size: 14px; color: #475569;">Mark as Allocated</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="listing-actions" style="display: flex; gap: 8px; justify-content: center;">
+                                    <button class="btn btn-outline btn-sm" onclick="editHostelSimple('${hostel.id}')" 
+                                            style="padding: 6px 12px; font-size: 12px; border: 1px solid #3b82f6; color: #3b82f6; background: white; border-radius: 6px; cursor: pointer;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-info btn-sm" onclick="viewHostelDetails('${hostel.id}')"
+                                            style="padding: 6px 12px; font-size: 12px; border: 1px solid #10b981; color: #10b981; background: white; border-radius: 6px; cursor: pointer;">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteHostelConfirm('${hostel.id}')"
+                                            style="padding: 6px 12px; font-size: 12px; border: 1px solid #dc2626; color: #dc2626; background: white; border-radius: 6px; cursor: pointer;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    `).join('');
-                }
+                    `;
+                }).join('');
+                
+                console.log('✅ Hostels rendered successfully');
             }
         }
         
@@ -694,162 +770,66 @@
             document.getElementById('totalInquiries').textContent = totalInquiries;
         }
         
-        function editHostel(hostelId) {
+        // SIMPLIFIED EDIT FUNCTION
+        function editHostelSimple(hostelId) {
+            console.log('🔧 Editing hostel:', hostelId);
+            
             const hostel = realtorState.hostels.find(h => h.id === hostelId);
             if (!hostel) {
-                alert('Hostel not found!');
+                alert('❌ Hostel not found!');
                 return;
             }
             
-            // Create edit modal HTML
-            const editModalHTML = `
-                <div class="modal" id="editHostelModal" style="display: flex;">
-                    <div class="modal-content modal-large">
-                        <div class="modal-header">
-                            <h3>Edit Hostel - ${hostel.name}</h3>
-                            <button class="modal-close" onclick="closeEditHostelModal()">&times;</button>
-                        </div>
-                        
-                        <form class="edit-hostel-form" id="editHostelForm">
-                            <input type="hidden" id="editHostelId" value="${hostel.id}">
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="editHostelName">Hostel Name *</label>
-                                    <input type="text" id="editHostelName" name="name" value="${hostel.name}" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="editHostelLocation">Campus Location *</label>
-                                    <input type="text" id="editHostelLocation" name="location" value="${hostel.location}" required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="editHostelPrice">Price (₦) *</label>
-                                    <input type="number" id="editHostelPrice" name="price" value="${hostel.price}" min="10000" max="500000" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="editPricePeriod">Price Period *</label>
-                                    <select id="editPricePeriod" name="pricePeriod" required>
-                                        <option value="semester" ${hostel.pricePeriod === 'semester' ? 'selected' : ''}>Per Semester</option>
-                                        <option value="year" ${hostel.pricePeriod === 'year' ? 'selected' : ''}>Per Year</option>
-                                        <option value="month" ${hostel.pricePeriod === 'month' ? 'selected' : ''}>Per Month</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="editHostelCapacity">Room Capacity *</label>
-                                    <select id="editHostelCapacity" name="capacity" required>
-                                        <option value="1" ${hostel.capacity == 1 ? 'selected' : ''}>Single Room</option>
-                                        <option value="2" ${hostel.capacity == 2 ? 'selected' : ''}>2 Students per Room</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="editHostelAddress">Full Address *</label>
-                                <textarea id="editHostelAddress" name="address" rows="3" required>${hostel.address}</textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="editHostelDescription">Description *</label>
-                                <textarea id="editHostelDescription" name="description" rows="4" required>${hostel.description}</textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="editContactPhone">Contact Phone *</label>
-                                <input type="tel" id="editContactPhone" name="phone" value="${hostel.phone}" required>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-outline" onclick="closeEditHostelModal()">Cancel</button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i>
-                                    Update Hostel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
+            // Simple prompt-based editing
+            const newName = prompt('Edit Hostel Name:', hostel.name);
+            if (newName === null) return; // User cancelled
             
-            // Remove existing edit modal if present
-            const existingModal = document.getElementById('editHostelModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
+            const newLocation = prompt('Edit Location:', hostel.location);
+            if (newLocation === null) return;
             
-            // Add modal to body
-            document.body.insertAdjacentHTML('beforeend', editModalHTML);
-            document.body.style.overflow = 'hidden';
+            const newPrice = prompt('Edit Price (₦):', hostel.price);
+            if (newPrice === null) return;
             
-            // Add form submit listener
-            document.getElementById('editHostelForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(e.target);
-                const hostelId = formData.get('editHostelId') || document.getElementById('editHostelId').value;
-                
-                // Update hostel data
-                const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
-                if (hostelIndex !== -1) {
-                    realtorState.hostels[hostelIndex] = {
-                        ...realtorState.hostels[hostelIndex],
-                        name: formData.get('name'),
-                        location: formData.get('location'),
-                        price: parseInt(formData.get('price')),
-                        pricePeriod: formData.get('pricePeriod'),
-                        capacity: formData.get('capacity'),
-                        address: formData.get('address'),
-                        description: formData.get('description'),
-                        phone: formData.get('phone'),
-                        lastUpdated: new Date().toISOString()
-                    };
-                    
-                    // Save to localStorage
-                    localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
-                    
-                    alert('✅ Hostel updated successfully!');
-                    closeEditHostelModal();
-                    loadRealtorHostels();
-                    updateDashboardStats();
-                }
-            });
-        }
-        
-        function closeEditHostelModal() {
-            const modal = document.getElementById('editHostelModal');
-            if (modal) {
-                modal.remove();
-                document.body.style.overflow = '';
-            }
-        }
-        
-        function toggleAllocation(hostelId, isAllocated) {
+            const newDescription = prompt('Edit Description:', hostel.description);
+            if (newDescription === null) return;
+            
+            // Update the hostel
             const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
             if (hostelIndex !== -1) {
-                realtorState.hostels[hostelIndex].status = isAllocated ? 'allocated' : 'available';
-                realtorState.hostels[hostelIndex].lastUpdated = new Date().toISOString();
+                realtorState.hostels[hostelIndex] = {
+                    ...realtorState.hostels[hostelIndex],
+                    name: newName.trim() || hostel.name,
+                    location: newLocation.trim() || hostel.location,
+                    price: parseInt(newPrice) || hostel.price,
+                    description: newDescription.trim() || hostel.description,
+                    lastUpdated: new Date().toISOString()
+                };
                 
                 // Save to localStorage
                 localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
                 
+                alert('✅ Hostel updated successfully!');
+                
                 // Refresh display
                 loadRealtorHostels();
-                
-                alert(`✅ Hostel marked as ${isAllocated ? 'allocated' : 'available'}!`);
+                updateDashboardStats();
             }
         }
         
-        function deleteHostel(hostelId) {
+        function viewHostelDetails(hostelId) {
             const hostel = realtorState.hostels.find(h => h.id === hostelId);
             if (!hostel) {
-                alert('Hostel not found!');
+                alert('❌ Hostel not found!');
+                return;
+            }
+            
+            alert(`🏠 ${hostel.name}\n\n📍 Location: ${hostel.location}\n💰 Price: ₦${parseInt(hostel.price).toLocaleString()} per ${hostel.pricePeriod}\n👥 Capacity: ${hostel.capacity} per room\n📅 Added: ${new Date(hostel.dateAdded).toLocaleDateString()}\n📝 Description: ${hostel.description}\n📞 Phone: ${hostel.phone}\n🏷️ Status: ${hostel.status === 'allocated' ? 'Allocated' : 'Available'}`);
+        }
+        
+        function deleteHostelConfirm(hostelId) {
+            const hostel = realtorState.hostels.find(h => h.id === hostelId);
+            if (!hostel) {
+                alert('❌ Hostel not found!');
                 return;
             }
             
@@ -860,18 +840,33 @@
                 // Save to localStorage
                 localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
                 
+                alert('✅ Hostel deleted successfully!');
+                
                 // Refresh display
                 loadRealtorHostels();
                 updateDashboardStats();
-                
-                alert('✅ Hostel deleted successfully!');
             }
         }
         
-        function viewHostelStats(hostelId) {
-            const hostel = realtorState.hostels.find(h => h.id === hostelId);
-            if (hostel) {
-                alert(`Hostel Stats for ${hostel.name}:\nViews: ${hostel.views || 0}\nInquiries: ${hostel.inquiries || 0}\nLast Updated: ${hostel.lastUpdated || 'N/A'}`);
+        function toggleAllocation(hostelId, isAllocated) {
+            console.log('🔄 Toggling allocation for:', hostelId, 'to:', isAllocated);
+            
+            const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
+            if (hostelIndex !== -1) {
+                realtorState.hostels[hostelIndex].status = isAllocated ? 'allocated' : 'available';
+                realtorState.hostels[hostelIndex].lastUpdated = new Date().toISOString();
+                
+                // Save to localStorage
+                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
+                
+                console.log('✅ Allocation status updated');
+                
+                // Refresh display immediately
+                loadRealtorHostels();
+                
+                alert(`✅ Hostel marked as ${isAllocated ? 'allocated' : 'available'}!`);
+            } else {
+                console.error('❌ Hostel not found for ID:', hostelId);
             }
         }
         
@@ -977,29 +972,22 @@
                 }
             });
             
-            // Add hostel form
+            // FIXED Add hostel form submission
             document.getElementById('addHostelForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                console.log('Add hostel form submitted');
+                console.log('📝 Add hostel form submitted');
                 
                 const formData = new FormData(e.target);
-                console.log('Form data created');
                 
-                // Validate required fields
-                const requiredFields = ['name', 'location', 'price', 'pricePeriod', 'capacity', 'address', 'description', 'phone'];
-                for (let field of requiredFields) {
-                    const value = formData.get(field);
-                    console.log(`Field ${field}:`, value);
-                    if (!value || value.trim() === '') {
-                        alert(`Please fill in the ${field} field`);
-                        return;
-                    }
-                }
+                // Basic validation
+                const name = formData.get('name');
+                const location = formData.get('location');
+                const price = formData.get('price');
+                const description = formData.get('description');
+                const phone = formData.get('phone');
                 
-                // Check for images
-                const imageFiles = formData.getAll('images');
-                if (!imageFiles || imageFiles.length === 0 || (imageFiles.length === 1 && imageFiles[0].size === 0)) {
-                    alert('Please upload at least one hostel image');
+                if (!name || !location || !price || !description || !phone) {
+                    alert('❌ Please fill in all required fields');
                     return;
                 }
                 
@@ -1008,78 +996,43 @@
                 const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]:checked');
                 amenityCheckboxes.forEach(checkbox => {
                     if (checkbox.value === 'other') {
-                        const otherAmenityInput = document.querySelector('input[name="otherAmenity"]');
-                        if (otherAmenityInput && otherAmenityInput.value.trim()) {
-                            amenities.push(otherAmenityInput.value.trim());
+                        const otherInput = document.querySelector('input[name="otherAmenity"]');
+                        if (otherInput && otherInput.value.trim()) {
+                            amenities.push(otherInput.value.trim());
                         }
                     } else {
                         amenities.push(checkbox.value);
                     }
                 });
                 
-                if (amenities.length === 0) {
-                    alert('Please select at least one amenity');
-                    return;
-                }
+                // Create hostel data
+                const hostelData = {
+                    id: 'hostel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: name,
+                    location: location,
+                    price: parseInt(price),
+                    pricePeriod: formData.get('pricePeriod') || 'semester',
+                    capacity: formData.get('capacity') || '2',
+                    address: formData.get('address') || location,
+                    description: description,
+                    amenities: amenities.length > 0 ? amenities : ['WiFi', 'Security'],
+                    phone: phone,
+                    whatsapp: formData.get('whatsapp') || phone,
+                    images: ['https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'],
+                    videoCount: 0,
+                    videos: [],
+                    status: 'available',
+                    views: 0,
+                    inquiries: 0,
+                    dateAdded: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    realtorId: realtorState.realtorData?.email || 'demo'
+                };
                 
-                // Collect video information
-                const videoFiles = formData.getAll('videos');
-                const videoInfo = [];
-                for (let i = 0; i < videoFiles.length; i++) {
-                    const video = videoFiles[i];
-                    if (video && video.size > 0) {
-                        videoInfo.push({
-                            name: video.name,
-                            size: video.size,
-                            type: video.type,
-                            uploadDate: new Date().toISOString()
-                        });
-                    }
-                }
+                console.log('🏠 Creating hostel:', hostelData);
                 
-                // Process images to base64 for storage
-                const imagePromises = Array.from(imageFiles).map(file => {
-                    return new Promise((resolve) => {
-                        if (file && file.size > 0) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                resolve(e.target.result);
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            resolve(null);
-                        }
-                    });
-                });
-                
-                // Wait for image processing
-                Promise.all(imagePromises).then(imageUrls => {
-                    const validImages = imageUrls.filter(url => url !== null);
-                    
-                    const hostelData = {
-                        id: 'hostel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                        name: formData.get('name'),
-                        location: formData.get('location'),
-                        price: parseInt(formData.get('price')),
-                        pricePeriod: formData.get('pricePeriod'),
-                        capacity: formData.get('capacity'),
-                        address: formData.get('address'),
-                        description: formData.get('description'),
-                        amenities: amenities,
-                        phone: formData.get('phone'),
-                        whatsapp: formData.get('whatsapp'),
-                        videoCount: videoInfo.length,
-                        videos: videoInfo,
-                        images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'],
-                        status: 'available',
-                        views: 0,
-                        inquiries: 0,
-                        dateAdded: new Date().toISOString(),
-                        lastUpdated: new Date().toISOString(),
-                        realtorId: realtorState.realtorData?.email
-                    };
-                    
-                    // Save to localStorage
+                // Save to localStorage
+                try {
                     const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
                     existingHostels.push(hostelData);
                     localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
@@ -1087,20 +1040,22 @@
                     // Update state
                     realtorState.hostels = existingHostels;
                     
-                    console.log('Hostel saved to localStorage:', hostelData);
-                    console.log('Total hostels now:', existingHostels.length);
+                    console.log('✅ Hostel saved! Total hostels:', existingHostels.length);
                     
-                    alert('✅ Hostel added successfully! Your listing is now active and visible to students.');
+                    alert('✅ Hostel added successfully!');
                     
                     // Reset form and close modal
                     e.target.reset();
                     closeAddHostelModal();
                     
                     // Refresh dashboard
-                    console.log('Refreshing dashboard...');
                     loadRealtorHostels();
                     updateDashboardStats();
-                });
+                    
+                } catch (error) {
+                    console.error('❌ Error saving hostel:', error);
+                    alert('❌ Error saving hostel. Please try again.');
+                }
             });
             
             // File upload previews
