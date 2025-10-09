@@ -710,15 +710,19 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
             try {
                 const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
                 existingHostels.push(testHostel);
-                localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
                 
-                realtorState.hostels = existingHostels;
-                
-                console.log('✅ Test hostel added:', testHostel);
-                alert('✅ Test hostel added successfully!');
-                
-                loadRealtorHostels();
-                updateDashboardStats();
+                // Use sync function to update both storage keys
+                if (syncHostelData(existingHostels)) {
+                    realtorState.hostels = existingHostels;
+                    
+                    console.log('✅ Test hostel added:', testHostel);
+                    alert('✅ Test hostel added successfully!');
+                    
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                } else {
+                    alert('❌ Error syncing hostel data');
+                }
                 
             } catch (error) {
                 console.error('❌ Error adding test hostel:', error);
@@ -726,6 +730,47 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
             }
         }
         
+        // CRITICAL: Sync data to both storage keys for student/realtor compatibility
+        function syncHostelData(hostels) {
+            try {
+                // Save to realtor storage (for realtor dashboard)
+                localStorage.setItem('realtorHostels', JSON.stringify(hostels));
+                
+                // Also save to student-expected format (for demo.html compatibility)
+                const studentFormat = hostels.map(hostel => ({
+                    id: hostel.id,
+                    name: hostel.name,
+                    location: hostel.location,
+                    price: parseInt(hostel.price), // Remove formatting for calculations
+                    images: hostel.images || [],
+                    realtorInfo: hostel.realtorInfo || {
+                        fullName: hostel.realtorInfo?.fullName || "Verified Realtor",
+                        brandName: hostel.realtorInfo?.brandName || "Verified Realtor",
+                        name: hostel.realtorInfo?.fullName || "Verified Realtor"
+                    },
+                    phone: hostel.phone,
+                    whatsapp: hostel.whatsapp,
+                    status: hostel.status === 'available' ? 'active' : 'allocated',
+                    capacity: hostel.capacity,
+                    description: hostel.description,
+                    amenities: hostel.amenities || [],
+                    address: hostel.address,
+                    views: hostel.views || 0,
+                    inquiries: hostel.inquiries || 0,
+                    dateAdded: hostel.dateAdded,
+                    lastUpdated: hostel.lastUpdated
+                }));
+                
+                localStorage.setItem('realtorListings', JSON.stringify(studentFormat));
+                console.log('✅ Data synced to both storage keys:', hostels.length, 'hostels');
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Error syncing hostel data:', error);
+                return false;
+            }
+        }
+
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 realtorState.isLoggedIn = false;
@@ -916,14 +961,16 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                     lastUpdated: new Date().toISOString()
                 };
                 
-                // Save to localStorage
-                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
-                
-                alert('✅ Hostel updated successfully!');
-                
-                // Refresh display
-                loadRealtorHostels();
-                updateDashboardStats();
+                // Save to localStorage using sync function
+                if (syncHostelData(realtorState.hostels)) {
+                    alert('✅ Hostel updated successfully!');
+                    
+                    // Refresh display
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                } else {
+                    alert('❌ Error syncing hostel data');
+                }
             }
         }
         
@@ -948,14 +995,16 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                 // Remove from array
                 realtorState.hostels = realtorState.hostels.filter(h => h.id !== hostelId);
                 
-                // Save to localStorage
-                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
-                
-                alert('✅ Hostel deleted successfully!');
-                
-                // Refresh display
-                loadRealtorHostels();
-                updateDashboardStats();
+                // Save to localStorage using sync function
+                if (syncHostelData(realtorState.hostels)) {
+                    alert('✅ Hostel deleted successfully!');
+                    
+                    // Refresh display
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                } else {
+                    alert('❌ Error syncing hostel data after deletion');
+                }
             }
         }
         
@@ -967,15 +1016,17 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                 realtorState.hostels[hostelIndex].status = isAllocated ? 'allocated' : 'available';
                 realtorState.hostels[hostelIndex].lastUpdated = new Date().toISOString();
                 
-                // Save to localStorage
-                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
-                
-                console.log('✅ Allocation status updated');
-                
-                // Refresh display immediately
-                loadRealtorHostels();
-                
-                alert(`✅ Hostel marked as ${isAllocated ? 'allocated' : 'available'}!`);
+                // Save to localStorage using sync function
+                if (syncHostelData(realtorState.hostels)) {
+                    console.log('✅ Allocation status updated');
+                    
+                    // Refresh display immediately
+                    loadRealtorHostels();
+                    
+                    alert(`✅ Hostel marked as ${isAllocated ? 'allocated' : 'available'}!`);
+                } else {
+                    alert('❌ Error syncing hostel data');
+                }
             } else {
                 console.error('❌ Hostel not found for ID:', hostelId);
             }
@@ -1214,29 +1265,36 @@ Example: 'Modern 2-bedroom apartment with spacious rooms, each with study table 
                 // Simulate processing time
                 setTimeout(() => {
                     try {
-                        // Save to localStorage
+                        // Save to localStorage using sync function
                         const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
                         existingHostels.push(hostelData);
-                        localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
                         
-                        // Update state
-                        realtorState.hostels = existingHostels;
-                        
-                        console.log('✅ Hostel saved! Total hostels:', existingHostels.length);
-                        
-                        // Reset button
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        
-                        alert(`✅ "${name}" has been added successfully!\n\n📍 Location: ${location}\n💰 Price: ₦${parseInt(price).toLocaleString()} per ${pricePeriod}\n👥 Capacity: ${capacity} per room\n\nYour hostel is now visible to students!`);
-                        
-                        // Reset form and close modal
-                        e.target.reset();
-                        closeAddHostelModal();
-                        
-                        // Refresh dashboard
-                        loadRealtorHostels();
-                        updateDashboardStats();
+                        if (syncHostelData(existingHostels)) {
+                            // Update state
+                            realtorState.hostels = existingHostels;
+                            
+                            console.log('✅ Hostel saved and synced! Total hostels:', existingHostels.length);
+                            
+                            // Reset button
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            
+                            alert(`✅ "${name}" has been added successfully!\n\n📍 Location: ${location}\n💰 Price: ₦${parseInt(price).toLocaleString()} per ${pricePeriod}\n👥 Capacity: ${capacity} per room\n\nYour hostel is now visible to students!`);
+                            
+                            // Reset form and close modal
+                            e.target.reset();
+                            closeAddHostelModal();
+                            
+                            // Refresh dashboard
+                            loadRealtorHostels();
+                            updateDashboardStats();
+                        } else {
+                            // Sync failed - reset button and show error
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            
+                            alert('❌ Error syncing hostel data. The hostel was saved but may not appear immediately to students. Please try again.');
+                        }
                         
                     } catch (error) {
                         console.error('❌ Error saving hostel:', error);

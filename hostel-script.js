@@ -239,12 +239,55 @@ function loadHostels() {
     console.log('🏠 Loading hostels from realtor listings...');
     
     // Load hostels from localStorage (uploaded by realtors)
+    // Check both 'realtorHostels' (new format) and 'realtorListings' (old format)
+    const savedHostels = localStorage.getItem('realtorHostels');
     const savedListings = localStorage.getItem('realtorListings');
     let realtorHostels = [];
     
-    if (savedListings) {
+    // Try to load from new format first
+    if (savedHostels) {
+        try {
+            const hostels = JSON.parse(savedHostels);
+            console.log('📋 Found hostels in new format:', hostels.length);
+            
+            // Convert to display format
+            realtorHostels = hostels.map(hostel => ({
+                id: hostel.id,
+                name: hostel.name,
+                location: hostel.location,
+                price: `₦${parseInt(hostel.price).toLocaleString()}`,
+                period: `per ${hostel.pricePeriod || 'semester'}`,
+                image: hostel.images && hostel.images.length > 0 ? hostel.images[0] : "https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80",
+                realtor: hostel.realtorInfo?.brandName || hostel.realtorInfo?.fullName || "Verified Realtor",
+                realtorFullName: hostel.realtorInfo?.fullName || "Verified Realtor",
+                realtorBrandName: hostel.realtorInfo?.brandName || "Verified Realtor",
+                realtorContact: hostel.phone,
+                whatsapp: hostel.whatsapp,
+                rating: (4.5 + Math.random() * 0.5).toFixed(1), // Generate realistic ratings 4.5-5.0
+                available: hostel.status !== 'allocated',
+                verified: true,
+                capacity: hostel.capacity,
+                roomType: hostel.capacity == 1 ? "private" : "shared",
+                description: hostel.description,
+                amenities: hostel.amenities || [],
+                address: hostel.address,
+                views: hostel.views || 0,
+                inquiries: hostel.inquiries || 0,
+                images: hostel.images || [],
+                dateAdded: hostel.dateAdded,
+                lastUpdated: hostel.lastUpdated
+            }));
+        } catch (error) {
+            console.error('Error parsing realtor hostels:', error);
+            realtorHostels = [];
+        }
+    }
+    // Fallback to old format if new format is empty
+    else if (savedListings) {
         try {
             const allListings = JSON.parse(savedListings);
+            console.log('📋 Found hostels in old format:', allListings.length);
+            
             // Convert realtor listings to hostel format
             realtorHostels = allListings.map(listing => ({
                 id: listing.id,
@@ -258,7 +301,7 @@ function loadHostels() {
                 realtorBrandName: listing.realtorInfo?.brandName || listing.realtorInfo?.name || "Verified Realtor",
                 realtorContact: listing.phone,
                 whatsapp: listing.whatsapp,
-                rating: (4.5 + Math.random() * 0.5).toFixed(1), // Generate realistic ratings 4.5-5.0
+                rating: (4.5 + Math.random() * 0.5).toFixed(1),
                 available: listing.status === 'active',
                 verified: true,
                 capacity: listing.capacity,
@@ -280,17 +323,14 @@ function loadHostels() {
     // If no realtor hostels available, show empty state
     if (realtorHostels.length === 0) {
         console.log('📭 No realtor hostels found - showing empty state');
+    } else {
+        console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
     }
     
     state.hostels = realtorHostels;
     state.filteredHostels = realtorHostels;
     renderHostels(realtorHostels);
     updateLiveStats();
-    
-    console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
-    updateLiveStats();
-    
-    console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
 }
 
 // Update Live Statistics
