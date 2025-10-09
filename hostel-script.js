@@ -566,9 +566,14 @@ function viewHostelDetails(hostelId) {
 }
 
 function contactRealtor(hostelId) {
+    console.log('🔍 contactRealtor called with ID:', hostelId);
+    console.log('🔍 Current state.hostels:', state.hostels?.length || 0, 'hostels');
+    
     const hostel = state.hostels.find(h => h.id === hostelId);
     if (!hostel) {
-        showNotification('Hostel not found', 'error');
+        console.error('❌ Hostel not found for ID:', hostelId);
+        console.log('Available hostel IDs:', state.hostels.map(h => h.id));
+        showNotification('Hostel not found. Please try again.', 'error');
         return;
     }
     
@@ -758,7 +763,16 @@ function submitInquiry(event, hostelId) {
         showNotification('Error submitting inquiry. Please try contacting the realtor directly.', 'error');
     }
 }
+
+// Make contactRealtor globally accessible
+window.contactRealtor = contactRealtor;
+
+// Debug function for testing
+function testContactButton() {
+    console.log('🧪 Test contact button clicked');
+    alert('Contact button is working! contactRealtor function is accessible.');
 }
+window.testContactButton = testContactButton;
 
 // Utility Functions
 function scrollToSection(sectionId) {
@@ -1188,8 +1202,11 @@ function generateEnhancedHostelCard(hostel) {
                     <button class="btn btn-success btn-sm" data-action="apply-hostel" data-hostel-id="${hostel.id}">
                         <i class="fas fa-paper-plane"></i> Apply Now
                     </button>
-                    <button class="btn btn-primary btn-sm" onclick="contactRealtor('${hostel.id}')">
+                    <button class="btn btn-primary btn-sm" onclick="console.log('Button clicked for hostel:', '${hostel.id}'); contactRealtor('${hostel.id}')">
                         <i class="fas fa-phone"></i> Contact
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="alert('Test button clicked! Hostel ID: ${hostel.id}')">
+                        <i class="fas fa-bug"></i> Test
                     </button>
                 </div>
             </div>
