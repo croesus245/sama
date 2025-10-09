@@ -458,9 +458,9 @@
                     <i class="fas fa-home"></i>
                     Browse Hostels Now
                 </button>
-                <button class="cta-button secondary" onclick="console.log('Realtor registration button clicked'); openModal('realtorModal')">
+                <button class="cta-button secondary" onclick="console.log('Realtor contact button clicked'); contactForRealtorAccess()">
                     <i class="fas fa-building"></i>
-                    Register as Realtor
+                    Apply for Realtor Account
                 </button>
                 <button class="cta-button tertiary" onclick="openModal('loginModal')">
                     <i class="fas fa-sign-in-alt"></i>
@@ -858,10 +858,10 @@
                 <div class="access-card">
                     <i class="fas fa-building fa-3x access-card-icon"></i>
                     <h3>List Property</h3>
-                    <p>Property owners and realtors - register to list your hostels</p>
+                    <p>Property owners and realtors - contact us to get your account credentials</p>
                     <div class="button-group">
-                        <button class="btn btn-primary" onclick="openModal('realtorModal')">
-                            <i class="fas fa-user-plus"></i> Register Now
+                        <button class="btn btn-primary" onclick="contactForRealtorAccess()">
+                            <i class="fas fa-user-plus"></i> Apply Now
                         </button>
                         <a href="realtor-login.html" class="btn btn-secondary">
                             <i class="fas fa-sign-in-alt"></i> Login
@@ -964,6 +964,29 @@
                 console.log('Modal closed successfully');
             } else {
                 console.error('Modal not found for closing:', modalId);
+            }
+        }
+        
+        // WhatsApp contact function for realtor application
+        function contactForRealtorAccess() {
+            const whatsappNumber = "2348145653433"; // Updated number for new realtor applications
+            const message = encodeURIComponent("Hello! I would like to apply for a realtor account on MWG Hostels platform. Please provide me with login credentials. Thank you!");
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            // Show confirmation dialog with detailed information
+            const userConfirmed = confirm(
+                "🏢 REALTOR ACCOUNT APPLICATION\n\n" +
+                "To become a realtor on MWG Hostels platform:\n\n" +
+                "✅ Contact us via WhatsApp for account setup\n" +
+                "✅ We'll verify your credentials and provide login access\n" +
+                "✅ Secure account management with admin approval\n" +
+                "✅ Professional support for your hostel business\n\n" +
+                "📱 Click OK to open WhatsApp and send your application message.\n" +
+                "📞 Alternative contact: 08069928533"
+            );
+            
+            if (userConfirmed) {
+                window.open(whatsappUrl, '_blank');
             }
         }
         

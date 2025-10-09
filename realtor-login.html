@@ -87,7 +87,15 @@
                         </form>
                         
                         <div class="login-footer">
-                            <p>Don't have an account? <a href="#" onclick="showRegistrationForm()">Register as Realtor</a></p>
+                            <p>Don't have an account? <a href="#" onclick="contactForRealtorAccess()" class="realtor-apply-link">Apply for Realtor Account</a></p>
+                            
+                            <div class="realtor-info-box">
+                                <h4>📞 Need Realtor Access?</h4>
+                                <p>Contact us via WhatsApp for instant account setup:</p>
+                                <p><strong>New Applications:</strong> +234 814 565 3433</p>
+                                <p><strong>Support & Issues:</strong> +234 806 992 8533</p>
+                                <small>🔐 Secure credential management • Fast approval process</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -214,8 +222,6 @@
                                     <option value="">Select Capacity</option>
                                     <option value="1">Single Room</option>
                                     <option value="2">2 Students per Room</option>
-                                    <option value="4">4 Students per Room</option>
-                                    <option value="6">6 Students per Room</option>
                                 </select>
                             </div>
                         </div>
@@ -267,7 +273,7 @@
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="amenities" value="Parking">
-                                    <span>Parking Space</span>
+                                    <span>Running water</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="amenities" value="Study Room">
@@ -355,6 +361,49 @@
         .other-amenity-group.show {
             display: block;
         }
+        
+        /* Realtor Apply Link */
+        .realtor-apply-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .realtor-apply-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        
+        /* Realtor Info Box */
+        .realtor-info-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 100%);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .realtor-info-box h4 {
+            margin: 0 0 10px 0;
+            color: #0f172a;
+            font-size: 1.1em;
+        }
+        
+        .realtor-info-box p {
+            margin: 5px 0;
+            color: #334155;
+        }
+        
+        .realtor-info-box strong {
+            color: #0ea5e9;
+        }
+        
+        .realtor-info-box small {
+            color: #64748b;
+            font-style: italic;
+        }
     </style>
     
     <script>
@@ -399,21 +448,24 @@
             }
         }
         
-        // Login functionality
-        function showRegistrationForm() {
-            // Redirect to main page registration
-            window.location.href = 'index.html#realtor-registration';
-            setTimeout(() => {
-                if (typeof openModal === 'function') {
-                    openModal('realtorModal');
-                } else {
-                    // Fallback if openModal not available
-                    const modal = document.getElementById('realtorModal');
-                    if (modal) {
-                        modal.style.display = 'flex';
-                    }
-                }
-            }, 500);
+        // WhatsApp contact function for realtor application
+        function contactForRealtorAccess() {
+            const whatsappNumber = "2348145653433"; // Updated number for new realtor applications
+            const message = encodeURIComponent("Hello! I would like to apply for a realtor account on MWG Hostels platform. Please provide me with login credentials. Thank you!");
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            // Show confirmation dialog
+            const userConfirmed = confirm(
+                "To become a realtor on MWG Hostels platform:\n\n" +
+                "• Contact us via WhatsApp for account setup\n" +
+                "• We'll verify your credentials and provide login access\n" +
+                "• This ensures secure account management\n\n" +
+                "Click OK to open WhatsApp and send your application message."
+            );
+            
+            if (userConfirmed) {
+                window.open(whatsappUrl, '_blank');
+            }
         }
         
         function refreshDashboard() {
@@ -510,13 +562,75 @@
                     return;
                 }
                 
-                // Demo login (in real app, this would call API)
-                if (email === 'demo@realtor.com' && password === 'demo123') {
+                // Realtor authentication with all available credentials
+                const realtorCredentials = [
+                    {
+                        email: 'admin@mwghostels.com',
+                        password: 'sama2024',
+                        name: 'Administrator',
+                        businessName: 'MWG Premium Properties'
+                    },
+                    {
+                        email: 'demo@realtor.com',
+                        password: 'demo123',
+                        name: 'Demo Realtor',
+                        businessName: 'Demo Properties Ltd'
+                    },
+                    {
+                        email: 'realtor@mwghostels.com',
+                        password: 'futarian',
+                        name: 'John Smith',
+                        businessName: 'FUTA Student Housing Co.'
+                    },
+                    {
+                        email: 'manager@mwghostels.com',
+                        password: 'mwgrealtor',
+                        name: 'Sarah Johnson',
+                        businessName: 'Campus Living Solutions'
+                    },
+                    {
+                        email: 'sama@mwghostels.com',
+                        password: 'sama2024',
+                        name: 'Oluwaseun Great Sama',
+                        businessName: 'SAMA Properties'
+                    },
+                    {
+                        email: 'michael@mwghostels.com',
+                        password: 'michael2024',
+                        name: 'Michael Adebayo',
+                        businessName: 'Elite Student Homes'
+                    },
+                    {
+                        email: 'funmi@mwghostels.com',
+                        password: 'funmi2024',
+                        name: 'Funmilayo Ogundimu',
+                        businessName: 'Comfort Lodge Properties'
+                    },
+                    {
+                        email: 'david@mwghostels.com',
+                        password: 'david2024',
+                        name: 'David Oluwaseun',
+                        businessName: 'Premium Campus Residence'
+                    },
+                    {
+                        email: 'blessing@mwghostels.com',
+                        password: 'blessing2024',
+                        name: 'Blessing Adeyemi',
+                        businessName: 'Student Haven Properties'
+                    }
+                ];
+
+                // Find matching credentials
+                const validRealtor = realtorCredentials.find(cred => 
+                    cred.email === email && cred.password === password
+                );
+
+                if (validRealtor) {
                     realtorState.isLoggedIn = true;
                     realtorState.realtorData = {
-                        name: 'Demo Realtor',
-                        email: email,
-                        businessName: 'Demo Properties Ltd'
+                        name: validRealtor.name,
+                        email: validRealtor.email,
+                        businessName: validRealtor.businessName
                     };
                     
                     localStorage.setItem('realtorSession', JSON.stringify(realtorState.realtorData));
@@ -528,9 +642,10 @@
                     loadRealtorHostels();
                     updateDashboardStats();
                     
-                    alert('Login successful! Welcome to your dashboard.');
+                    alert(`Login successful! Welcome ${validRealtor.name} from ${validRealtor.businessName}.`);
                 } else {
-                    alert('Invalid credentials. Demo login: demo@realtor.com / demo123');
+                    // Secure error message - never reveals actual credentials
+                    alert('🔐 Access Denied\n\nInvalid login credentials. Please check your email and password.\n\n📞 Need Help?\n• Account Issues: +234 806 992 8533\n• New Account: +234 814 565 3433\n\n⚠️ For security, we cannot display or hint at actual passwords.');
                 }
             });
             
