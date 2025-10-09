@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MWG Hostels - Student Accommodation Made Easy</title>
+    <link rel="icon" type="image/png" href="MWG logo@300x.png">
     <meta name="description" content="Find the perfect hostel accommodation near campus gates. Browse verified listings, connect with realtors, and discover student-friendly spaces.">
     
     <!-- Fonts -->
@@ -764,7 +765,7 @@
         }
         
         // Registration form submission
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
@@ -783,11 +784,23 @@
                 return;
             }
             
-            // Store user data
-            localStorage.setItem('userRegistered', 'true');
-            localStorage.setItem('userData', JSON.stringify(userData));
+            // Register user via API with localStorage fallback
+            try {
+                const result = await registerUserAPI(userData);
+                if (result.success) {
+                    const message = result.offline ? 
+                        'Registration successful (offline mode)! Welcome to MWG Hostels Platform.' :
+                        'Registration successful! Welcome to MWG Hostels Platform.';
+                    alert(message);
+                } else {
+                    throw new Error('Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+                return;
+            }
             
-            alert('Registration successful! Welcome to MWG Hostels Platform.');
             closeRegistrationModal();
             
             // Refresh hostel listings to show new data
@@ -796,6 +809,10 @@
             }
         });
     </script>
+    
+    <!-- API Integration -->
+    <script src="api-integration.js"></script>
+    <script src="api-connector.js"></script>
     
     <!-- Theme System -->
     <script src="theme-toggle.js"></script>

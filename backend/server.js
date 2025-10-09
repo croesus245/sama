@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mwg_hostels')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mwg_hostels')
 .then(() => {
     console.log('✅ Connected to MongoDB');
 })

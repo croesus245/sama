@@ -231,6 +231,227 @@
                 min-width: 250px;
             }
         }
+
+        /* My Posts Management Styles */
+        .my-posts-container {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .my-post-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .post-header h4 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 1.2rem;
+        }
+
+        .post-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .post-status.available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .post-status.shared {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .post-content {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-details p {
+            margin: 0.5rem 0;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+
+        .post-details strong {
+            color: #1f2937;
+        }
+
+        .post-images {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-danger {
+            color: #dc2626 !important;
+            border-color: #dc2626 !important;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626 !important;
+            color: white !important;
+        }
+
+        .no-posts-message {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .no-posts-message h3 {
+            margin: 1rem 0;
+            color: #374151;
+        }
+
+        /* Security and Verification Styles */
+        .verification-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .verification-badge.student-sharing {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #0ea5e9;
+        }
+
+        .security-notice {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .security-notice i {
+            color: #0ea5e9;
+            font-size: 1rem;
+        }
+
+        .security-notice small {
+            color: #475569;
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        /* Anti-spam notice in form */
+        .anti-spam-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .anti-spam-notice h4 {
+            margin: 0 0 0.5rem 0;
+            color: #92400e;
+            font-size: 1rem;
+        }
+
+        .anti-spam-notice ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .anti-spam-notice li {
+            margin: 0.25rem 0;
+        }
+
+        /* Post Actions and Reporting */
+        .post-actions-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .report-btn {
+            background: transparent;
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .report-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .contact-btn {
+            flex: 1;
+        }
+        
+        /* Fix for inline styles */
+        .session-current {
+            background: #6b7280;
+        }
+        
+        .image-upload-hidden {
+            display: none;
+        }
+        
+        .image-upload-label {
+            cursor: pointer;
+        }
+        
+        .image-upload-icon {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .image-upload-text {
+            font-weight: 600;
+        }
+        
+        .image-upload-hint {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -296,6 +517,15 @@
                         Find Room
                     </button>
                 </div>
+                
+                <div class="action-card" onclick="showMyPostsModal()">
+                    <i class="fas fa-list hero-action-icon"></i>
+                    <h3>Manage My Posts</h3>
+                    <p>View, edit, or delete your room sharing posts</p>
+                    <button class="btn btn-outline hero-action-btn">
+                        My Posts
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -351,7 +581,7 @@
                     <div class="roommate-content">
                         <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=200&fit=crop" alt="Shared room" class="room-image">
                         
-                        <div class="session-badge" style="background: #6b7280;">
+                        <div class="session-badge session-current">
                             <i class="fas fa-check"></i> Room Shared
                         </div>
                         
@@ -376,6 +606,17 @@
             <div class="modal-header">
                 <h3><i class="fas fa-share"></i> Share Your Room This Session</h3>
                 <button class="modal-close" onclick="closeShareRoomModal()">&times;</button>
+            </div>
+            
+            <div class="anti-spam-notice">
+                <h4>🛡️ Student Room Sharing Guidelines</h4>
+                <ul>
+                    <li><strong>For Students Only:</strong> Personal room sharing between FUTA students</li>
+                    <li><strong>Not for Business:</strong> Commercial hostels must use verified Realtor Portal</li>
+                    <li><strong>Fair Usage:</strong> Maximum 3 posts per person to prevent spam</li>
+                    <li><strong>Current Session Only:</strong> Posts are for ongoing academic session</li>
+                </ul>
+                <small>📞 Business Listings: Contact +234 814 565 3433 for Realtor verification</small>
             </div>
             
             <form class="simple-form" id="shareRoomForm">
@@ -433,13 +674,13 @@
                 <div class="form-group">
                     <label for="roomImages">Upload Room Images *</label>
                     <div class="image-upload-area">
-                        <input type="file" id="roomImages" name="roomImages" multiple accept="image/*" style="display: none;">
-                        <label for="roomImages" style="cursor: pointer;">
-                            <i class="fas fa-camera" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                        <input type="file" id="roomImages" name="roomImages" multiple accept="image/*" class="image-upload-hidden">
+                        <label for="roomImages" class="image-upload-label">
+                            <i class="fas fa-camera image-upload-icon"></i>
                             <br>
-                            <span style="font-weight: 600;">Click to upload room photos</span>
+                            <span class="image-upload-text">Click to upload room photos</span>
                             <br>
-                            <small style="color: #666;">Upload 1-4 clear photos of your room</small>
+                            <small class="image-upload-hint">Upload 1-4 clear photos of your room</small>
                         </label>
                         <div class="image-preview" id="imagePreview"></div>
                     </div>
@@ -498,6 +739,22 @@
         </div>
     </div>
 
+    <!-- My Posts Modal -->
+    <div class="modal" id="myPostsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>My Room Sharing Posts</h3>
+                <button class="modal-close" onclick="closeMyPostsModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="my-posts-container" id="myPostsContainer">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
         // Simplified Room Sharing System - Session-based
@@ -548,6 +805,42 @@
                 
                 const formData = new FormData(e.target);
                 
+                // Security Check: Prevent hostel-like posts in roommate sharing
+                const suspiciousKeywords = [
+                    'hostel', 'hotel', 'lodge', 'accommodation center', 'student housing',
+                    'rent per semester', 'rent per year', 'monthly rent', 'booking fee',
+                    'management', 'caretaker', 'front desk', 'reception', 'business',
+                    'company', 'enterprise', 'estate', 'property', 'facility'
+                ];
+                
+                const description = formData.get('roomDescription').toLowerCase();
+                const posterName = formData.get('posterName').toLowerCase();
+                
+                const containsSuspiciousContent = suspiciousKeywords.some(keyword => 
+                    description.includes(keyword) || posterName.includes(keyword)
+                );
+                
+                if (containsSuspiciousContent) {
+                    alert('⚠️ Commercial/Business Listings Not Allowed\n\nRoommate Finder is for student-to-student room sharing only.\n\nFor professional hostel listings:\n• Use the Realtor Portal\n• Contact +234 814 565 3433 for verification\n\nThis helps ensure safety and authenticity for all users.');
+                    return;
+                }
+                
+                // Additional security: Check for business-like contact patterns
+                const phone = formData.get('contactPhone');
+                const whatsapp = formData.get('whatsappNumber');
+                
+                // Check for multiple similar posts (potential spam/business)
+                const existingPosts = this.posts.filter(post => 
+                    post.contactPhone === phone || 
+                    post.whatsappNumber === whatsapp ||
+                    post.posterName.toLowerCase() === posterName
+                );
+                
+                if (existingPosts.length >= 3) {
+                    alert('⚠️ Multiple Posts Detected\n\nTo prevent spam and ensure fair usage:\n• Maximum 3 posts per person\n• For multiple properties, use Realtor Portal\n• Contact support: +234 806 992 8533\n\nThis maintains quality for genuine student room sharing.');
+                    return;
+                }
+                
                 // Validate required fields
                 const requiredFields = ['posterName', 'posterGender', 'lookingForGender', 'location', 'contactPhone', 'roomDescription'];
                 for (let field of requiredFields) {
@@ -557,16 +850,21 @@
                     }
                 }
 
-                // Validate images
-                const imageFiles = document.getElementById('roomImages').files;
-                if (imageFiles.length === 0) {
-                    alert('Please upload at least one room image');
-                    return;
+                // Check if editing existing post
+                const isEditing = typeof window.editingPostIndex !== 'undefined';
+                
+                // For new posts, validate images
+                if (!isEditing) {
+                    const imageFiles = document.getElementById('roomImages').files;
+                    if (imageFiles.length === 0) {
+                        alert('Please upload at least one room image');
+                        return;
+                    }
                 }
 
-                // Create new post
-                const newPost = {
-                    id: Date.now().toString(),
+                // Create/update post data with security flags
+                const postData = {
+                    id: isEditing ? this.posts[window.editingPostIndex].id : Date.now().toString(),
                     posterName: formData.get('posterName'),
                     posterGender: formData.get('posterGender'),
                     lookingForGender: formData.get('lookingForGender'),
@@ -574,20 +872,38 @@
                     contactPhone: formData.get('contactPhone'),
                     whatsappNumber: formData.get('whatsappNumber') || formData.get('contactPhone'),
                     roomDescription: formData.get('roomDescription'),
-                    images: this.processImages(imageFiles),
-                    timestamp: new Date().toISOString(),
-                    status: 'available'
+                    images: isEditing ? this.posts[window.editingPostIndex].images : this.processImages(document.getElementById('roomImages').files),
+                    timestamp: isEditing ? this.posts[window.editingPostIndex].timestamp : new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    status: isEditing ? this.posts[window.editingPostIndex].status : 'available',
+                    verified: false, // Student posts are not verified like realtor posts
+                    postType: 'student_sharing' // Clear distinction from business listings
                 };
 
-                // Add to posts array
-                this.posts.push(newPost);
+                if (isEditing) {
+                    // Update existing post
+                    this.posts[window.editingPostIndex] = postData;
+                    delete window.editingPostIndex;
+                    alert('✅ Room sharing post updated successfully!\n\n💡 Remember: This is for genuine student room sharing only.');
+                } else {
+                    // Add new post
+                    this.posts.push(postData);
+                    alert('✅ Room sharing post created successfully!\n\n🛡️ Your listing is live for current session student room sharing.\n\n⚠️ Note: Commercial/business listings must use the verified Realtor Portal.');
+                }
+
                 this.savePosts();
                 this.displayPosts();
 
-                // Success feedback
-                alert('Room sharing post created successfully! Your listing is now live for this session.');
+                // Reset form
                 e.target.reset();
                 this.clearImagePreview();
+                
+                // Reset submit button text
+                const submitButton = e.target.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-share"></i> Share My Room';
+                }
+                
                 closeShareRoomModal();
             }
 
@@ -700,6 +1016,9 @@
                 card.innerHTML = `
                     <div class="roommate-header">
                         <div class="roommate-status">${post.status === 'available' ? 'Available' : 'Shared'}</div>
+                        <div class="verification-badge student-sharing">
+                            <i class="fas fa-users"></i> Student Room Sharing
+                        </div>
                         <h3>Room Available for Sharing</h3>
                         <p><i class="fas fa-map-marker-alt"></i> ${locationName}</p>
                     </div>
@@ -725,14 +1044,24 @@
                         
                         <p>${post.roomDescription}</p>
                         
+                        <div class="security-notice">
+                            <i class="fas fa-shield-alt"></i>
+                            <small>Student-to-student sharing • For verified hostels, visit Realtor Portal</small>
+                        </div>
+                        
                         <div style="margin: 1rem 0; padding: 0.5rem; background: #f1f5f9; border-radius: 8px; font-size: 0.9rem;">
                             <i class="fas fa-clock"></i> Posted ${new Date(post.timestamp).toLocaleDateString()}
                         </div>
                         
                         ${post.status === 'available' ? `
-                            <button class="contact-btn" onclick="sessionRoomSharing.contactForRoom('${index}')">
-                                <i class="fas fa-phone"></i> Contact to Share Room
-                            </button>
+                            <div class="post-actions-row">
+                                <button class="contact-btn" onclick="sessionRoomSharing.contactForRoom('${index}')">
+                                    <i class="fas fa-phone"></i> Contact to Share Room
+                                </button>
+                                <button class="report-btn" onclick="sessionRoomSharing.reportPost('${index}')" title="Report suspicious post">
+                                    <i class="fas fa-flag"></i> Report
+                                </button>
+                            </div>
                         ` : `
                             <div style="text-align: center; padding: 1rem; background: #f3f4f6; border-radius: 8px; color: #6b7280;">
                                 <i class="fas fa-check-circle"></i> Room has been shared
@@ -781,6 +1110,154 @@
                     this.savePosts();
                     this.displayPosts();
                     alert('Room marked as shared! The post has been updated.');
+                }
+            }
+
+            deletePost(postIndex) {
+                if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                    this.posts.splice(postIndex, 1);
+                    this.savePosts();
+                    this.displayPosts();
+                    this.loadMyPosts(); // Refresh my posts modal if open
+                    alert('Post deleted successfully!');
+                }
+            }
+
+            editPost(postIndex) {
+                const post = this.posts[postIndex];
+                if (!post) return;
+
+                // Pre-fill the share room form with existing data
+                document.getElementById('posterName').value = post.posterName;
+                document.getElementById('posterGender').value = post.posterGender;
+                document.getElementById('lookingForGender').value = post.lookingForGender;
+                document.getElementById('location').value = post.location;
+                document.getElementById('contactPhone').value = post.contactPhone;
+                document.getElementById('whatsappNumber').value = post.whatsappNumber || '';
+                document.getElementById('roomDescription').value = post.roomDescription;
+
+                // Store the index being edited
+                window.editingPostIndex = postIndex;
+
+                // Show the share room modal
+                showShareRoomModal();
+                
+                // Update submit button text
+                const submitButton = document.querySelector('#shareRoomForm button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> Update Post';
+                }
+
+                alert('Form pre-filled with your existing data. Make changes and submit to update.');
+            }
+
+            loadMyPosts() {
+                const container = document.getElementById('myPostsContainer');
+                if (!container) return;
+
+                if (this.posts.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-posts-message">
+                            <i class="fas fa-home" style="font-size: 3rem; color: #6b7280; margin-bottom: 1rem;"></i>
+                            <h3>No Posts Yet</h3>
+                            <p>You haven't shared any rooms yet. Click "Share My Room" to create your first post!</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = this.posts.map((post, index) => `
+                        <div class="my-post-card">
+                            <div class="post-header">
+                                <h4>Room at ${this.getLocationName(post.location)}</h4>
+                                <span class="post-status ${post.status}">${post.status === 'available' ? 'Available' : 'Shared'}</span>
+                            </div>
+                            
+                            <div class="post-content">
+                                <div class="post-details">
+                                    <p><strong>Posted by:</strong> ${post.posterName}</p>
+                                    <p><strong>Looking for:</strong> ${this.getGenderPreference(post.lookingForGender)}</p>
+                                    <p><strong>Contact:</strong> ${post.contactPhone}</p>
+                                    <p><strong>Description:</strong> ${post.roomDescription}</p>
+                                    <p><strong>Posted:</strong> ${new Date(post.timestamp).toLocaleDateString()}</p>
+                                </div>
+                                
+                                ${post.images && post.images.length > 0 ? `
+                                    <div class="post-images">
+                                        <img src="${post.images[0]}" alt="Room photo" style="width: 100px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                        ${post.images.length > 1 ? `<span>+${post.images.length - 1} more</span>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="post-actions">
+                                <button class="btn btn-outline btn-sm" onclick="sessionRoomSharing.editPost(${index})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                
+                                ${post.status === 'available' ? `
+                                    <button class="btn btn-outline btn-sm" onclick="sessionRoomSharing.markRoomAsShared(${index})">
+                                        <i class="fas fa-check"></i> Mark as Shared
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-outline btn-sm" onclick="sessionRoomSharing.reopenPost(${index})">
+                                        <i class="fas fa-undo"></i> Reopen
+                                    </button>
+                                `}
+                                
+                                <button class="btn btn-outline btn-sm btn-danger" onclick="sessionRoomSharing.deletePost(${index})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            reopenPost(postIndex) {
+                if (confirm('Reopen this room for sharing?')) {
+                    this.posts[postIndex].status = 'available';
+                    this.savePosts();
+                    this.displayPosts();
+                    this.loadMyPosts();
+                    alert('Room reopened for sharing!');
+                }
+            }
+
+            reportPost(postIndex) {
+                const post = this.posts[postIndex];
+                if (!post) return;
+
+                const reasons = [
+                    'Commercial/business listing (should use Realtor Portal)',
+                    'Spam or duplicate posts',
+                    'Fake or misleading information',
+                    'Inappropriate content',
+                    'Suspected scam or fraud',
+                    'Other (specify in description)'
+                ];
+
+                let reasonsList = reasons.map((reason, index) => `${index + 1}. ${reason}`).join('\n');
+                
+                const reportReason = prompt(
+                    `🚨 Report Post - Why are you reporting this?\n\n${reasonsList}\n\nEnter the number (1-6) or describe the issue:`
+                );
+
+                if (reportReason) {
+                    // Store report (in a real app, this would go to moderation)
+                    const reportData = {
+                        postId: post.id,
+                        reportedAt: new Date().toISOString(),
+                        reason: reportReason,
+                        postData: post
+                    };
+
+                    // Save to localStorage for demonstration
+                    const reports = JSON.parse(localStorage.getItem('roommate_reports') || '[]');
+                    reports.push(reportData);
+                    localStorage.setItem('roommate_reports', JSON.stringify(reports));
+
+                    alert('✅ Report submitted successfully!\n\nThank you for helping maintain platform integrity.\n\nReports are reviewed to ensure only genuine student room sharing is allowed.');
+                    
+                    console.log('Post reported:', reportData);
                 }
             }
         }
@@ -837,9 +1314,28 @@
                     closeShareRoomModal();
                 } else if (event.target.id === 'contactModal') {
                     closeContactModal();
+                } else if (event.target.id === 'myPostsModal') {
+                    closeMyPostsModal();
                 }
             }
         });
+
+        function showMyPostsModal() {
+            const modal = document.getElementById('myPostsModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                sessionRoomSharing.loadMyPosts();
+            }
+        }
+
+        function closeMyPostsModal() {
+            const modal = document.getElementById('myPostsModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
 
         // Initialize the system
         let sessionRoomSharing;
@@ -853,445 +1349,6 @@
     <script src="fixed-error-handler.js"></script>
     
     <!-- Theme System -->
-    <script src="theme-toggle.js"></script>
-    
-    <!-- Advanced Features -->
-    <script src="environment-config.js"></script>
-    <script src="advanced-features.js"></script>
-</body>
-</html>
-        // Modal functions
-        function showPostRoomModal() {
-            document.getElementById('postRoomModal').style.display = 'flex';
-        }
-
-        function closePostRoomModal() {
-            document.getElementById('postRoomModal').style.display = 'none';
-        }
-
-        function showFindRoommateModal() {
-            alert('Find Roommate feature - browse through available posts above!');
-        }
-
-        function contactRoommate(roomId) {
-            // Pre-fill the message with platform attribution
-            const messageField = document.getElementById('message');
-            messageField.value = "Hi! I saw your roommate post on the MWG by SAMA d'GREAT platform. I'm interested in sharing the room. Can we discuss?";
-            document.getElementById('contactModal').style.display = 'flex';
-        }
-
-        function closeContactModal() {
-            document.getElementById('contactModal').style.display = 'none';
-        }
-
-        function markAsFound(roomId) {
-            if (confirm('Mark this room as "Roommate Found"? This will close the post and notify interested parties.')) {
-                // Update the UI
-                const card = event.target.closest('.roommate-card');
-                const status = card.querySelector('.roommate-status');
-                status.textContent = 'Found';
-                status.classList.add('found');
-                
-                // Hide the "Found" button
-                event.target.style.display = 'none';
-                
-                // Add completion message
-                const content = card.querySelector('.roommate-content p:last-of-type');
-                content.innerHTML += ' <em>Roommate found - post closed.</em>';
-                
-                alert('Room marked as "Roommate Found"! The post has been closed and interested parties will be notified.');
-            }
-        }
-
-        // Form submissions with enhanced validation
-        document.getElementById('postRoomForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const formData = new FormData(form);
-            
-            // Validate required fields
-            const requiredFields = ['roomTitle', 'location', 'rent', 'rentPeriod', 'posterGender', 'roommateGender', 'fullAddress', 'description'];
-            for (let field of requiredFields) {
-                if (!formData.get(field)) {
-                    alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
-                    return;
-                }
-            }
-            
-            // Collect amenities including "other" option
-            const amenities = [];
-            const amenityCheckboxes = form.querySelectorAll('input[name="amenities"]:checked');
-            amenityCheckboxes.forEach(checkbox => {
-                if (checkbox.value === 'other') {
-                    // Get the "other" amenity text
-                    const otherAmenityInput = form.querySelector('input[name="otherAmenity"]');
-                    if (otherAmenityInput && otherAmenityInput.value.trim()) {
-                        amenities.push(otherAmenityInput.value.trim());
-                    }
-                } else {
-                    amenities.push(checkbox.value);
-                }
-            });
-            
-            const roomData = {
-                roomTitle: formData.get('roomTitle'),
-                location: formData.get('location'),
-                rent: formData.get('rent'),
-                rentPeriod: formData.get('rentPeriod'),
-                posterGender: formData.get('posterGender'),
-                roommateGender: formData.get('roommateGender'),
-                fullAddress: formData.get('fullAddress'),
-                description: formData.get('description'),
-                amenities: amenities,
-                timestamp: new Date().toISOString()
-            };
-            
-            console.log('Room data with amenities:', roomData);
-            
-            // Store in localStorage for demo
-            const existingPosts = JSON.parse(localStorage.getItem('roommatePosts') || '[]');
-            existingPosts.push(roomData);
-            localStorage.setItem('roommatePosts', JSON.stringify(existingPosts));
-            
-            alert('Room posted successfully! Your listing will appear after verification.');
-            form.reset();
-            closePostRoomModal();
-            
-            // Refresh the display
-            displayRoommatePosts(existingPosts);
-        });
-
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const contactData = {
-                senderName: formData.get('senderName'),
-                senderPhone: formData.get('senderPhone'),
-                message: formData.get('message'),
-                timestamp: new Date().toISOString()
-            };
-            
-            // Validate required fields
-            if (!contactData.senderName || !contactData.senderPhone || !contactData.message) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-            
-            console.log('Contact message:', contactData);
-            alert('Message sent successfully! The room owner will contact you soon via phone or WhatsApp.');
-            e.target.reset();
-            closeContactModal();
-        });
-
-        // File upload previews with enhanced handling
-        document.getElementById('roomPhotos').addEventListener('change', function(e) {
-            const files = e.target.files;
-            console.log(`${files.length} photos selected for upload`);
-            
-            if (files.length > 6) {
-                alert('Please select a maximum of 6 photos');
-                e.target.value = '';
-                return;
-            }
-            
-            // Show preview count
-            const label = document.querySelector('label[for="roomPhotos"] span');
-            if (label && files.length > 0) {
-                label.textContent = `${files.length} photos selected`;
-            }
-        });
-
-        document.getElementById('roomVideos').addEventListener('change', function(e) {
-            const files = e.target.files;
-            console.log(`${files.length} videos selected for upload`);
-            
-            if (files.length > 2) {
-                alert('Please select a maximum of 2 videos');
-                e.target.value = '';
-                return;
-            }
-            
-            // Check file sizes
-            let totalSize = 0;
-            for (let file of files) {
-                totalSize += file.size;
-                if (file.size > 25 * 1024 * 1024) { // 25MB
-                    alert('Each video must be under 25MB');
-                    e.target.value = '';
-                    return;
-                }
-            }
-            
-            // Show preview count
-            const label = document.querySelector('label[for="roomVideos"] span');
-            if (label && files.length > 0) {
-                label.textContent = `${files.length} videos selected (${Math.round(totalSize / 1024 / 1024)}MB)`;
-            }
-        });
-        
-        // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                if (event.target.id === 'postRoomModal') {
-                    closePostRoomModal();
-                } else if (event.target.id === 'contactModal') {
-                    closeContactModal();
-                }
-            }
-        });
-        
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Roommate Finder page loaded');
-            
-            // Load any saved roommate posts
-            const savedPosts = JSON.parse(localStorage.getItem('roommatePosts') || '[]');
-            console.log(`${savedPosts.length} saved roommate posts found`);
-            
-            // Display the saved posts
-            displayRoommatePosts(savedPosts);
-        });
-        
-        // Function to display roommate posts
-        function displayRoommatePosts(posts) {
-            const roommateGrid = document.getElementById('roommateGrid');
-            if (!roommateGrid) return;
-            
-            // Clear existing content except for any sample posts
-            const existingCards = roommateGrid.querySelectorAll('.roommate-card');
-            
-            // Add new posts
-            posts.forEach((post, index) => {
-                const postCard = createRoommateCard(post, index);
-                roommateGrid.appendChild(postCard);
-            });
-        }
-        
-        // Function to create a roommate card
-        function createRoommateCard(post, index) {
-            const card = document.createElement('div');
-            card.className = 'roommate-card';
-            card.innerHTML = `
-                <div class="roommate-header">
-                    <div class="roommate-status">Looking</div>
-                    <h3>${post.roomTitle}</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> FUTA ${post.location.charAt(0).toUpperCase() + post.location.slice(1)} Gate</p>
-                </div>
-                
-                <div class="roommate-content">
-                    <div class="rent-info">
-                        <span class="rent-amount">₦${parseInt(post.rent).toLocaleString()}</span>
-                        <span class="rent-period">per ${post.rentPeriod}</span>
-                    </div>
-                    
-                    <div class="gender-preference">
-                        <span><strong>Poster:</strong> ${post.posterGender}</span>
-                        <span><strong>Looking for:</strong> ${post.roommateGender}</span>
-                    </div>
-                    
-                    <div class="description">
-                        <p>${post.description}</p>
-                    </div>
-                    
-                    <div class="amenities">
-                        <strong>Amenities:</strong>
-                        ${post.amenities.map(amenity => `<span class="amenity-tag">${amenity}</span>`).join('')}
-                    </div>
-                    
-                    <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> ${post.fullAddress}</p>
-                        <small><i class="fas fa-clock"></i> Posted ${new Date(post.timestamp).toLocaleDateString()}</small>
-                    </div>
-                </div>
-                
-                <div class="roommate-actions">
-                    <button class="btn btn-primary" onclick="contactRoommate('${index}')">
-                        <i class="fas fa-comment"></i> Contact
-                    </button>
-                    <button class="btn btn-success hidden-found-btn" onclick="markAsFound('${index}')">
-                        <i class="fas fa-check"></i> Found
-                    </button>
-                </div>
-            `;
-            return card;
-        }
-        
-        // Toggle other amenity field for roommate
-        function toggleOtherAmenityRoommate() {
-            const checkbox = document.getElementById('otherAmenityCheckRoommate');
-            const otherGroup = document.getElementById('otherAmenityGroupRoommate');
-            const otherInput = document.getElementById('otherAmenityRoommate');
-            
-            if (checkbox && otherGroup && otherInput) {
-                if (checkbox.checked) {
-                    otherGroup.classList.add('show');
-                    otherInput.focus();
-                } else {
-                    otherGroup.classList.remove('show');
-                    otherInput.value = '';
-                }
-            }
-        }
-        
-        // Enhanced modal functions
-        function showPostRoomModal() {
-            const modal = document.getElementById('postRoomModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closePostRoomModal() {
-            const modal = document.getElementById('postRoomModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        }
-
-        function showFindRoommateModal() {
-            alert('Find Roommate feature - browse through available posts above! Use the contact buttons to reach out to room posters.');
-        }
-
-        function contactRoommate(roomId) {
-            // Pre-fill the message with platform attribution
-            const messageField = document.getElementById('message');
-            if (messageField) {
-                messageField.value = "Hi! I saw your roommate post on the MWG by SAMA d'GREAT platform. I'm interested in sharing the room. Can we discuss the details?";
-            }
-            
-            const modal = document.getElementById('contactModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeContactModal() {
-            const modal = document.getElementById('contactModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        }
-
-        function markAsFound(roomId) {
-            if (confirm('Mark this room as "Roommate Found"? This will close the post and notify interested parties.')) {
-                // Update the UI
-                const card = event.target.closest('.roommate-card');
-                if (card) {
-                    const status = card.querySelector('.roommate-status');
-                    if (status) {
-                        status.textContent = 'Found';
-                        status.classList.add('found');
-                    }
-                    
-                    // Hide the "Found" button
-                    if (event.target) {
-                        event.target.style.display = 'none';
-                    }
-                    
-                    // Add completion message
-                    const content = card.querySelector('.roommate-content p:last-of-type');
-                    if (content) {
-                        content.innerHTML += ' <em>Roommate found - post closed.</em>';
-                    }
-                }
-                
-                alert('Room marked as "Roommate Found"! The post has been closed and interested parties will be notified.');
-            }
-        }
-    </script>
-    
-    <style>
-        /* Other Amenity Styles */
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-        }
-        
-        .checkbox-item:hover {
-            background: var(--gray-50);
-        }
-        
-        .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-        }
-        
-        .other-amenity-group {
-            display: none;
-            margin-top: 1rem;
-        }
-        
-        .other-amenity-group.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .file-upload-area {
-            border: 2px dashed var(--border-primary);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            margin-top: 0.5rem;
-        }
-        
-        .file-upload-area:hover {
-            border-color: var(--primary-blue);
-            background: var(--gray-50);
-        }
-        
-        .file-upload-label {
-            cursor: pointer;
-            display: block;
-        }
-        
-        .file-upload-label i {
-            font-size: 2rem;
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-        }
-        
-        .file-upload-label span {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .file-upload-label small {
-            color: var(--text-secondary);
-        }
-    </style>
-    
-    <!-- Theme System -->
-    <script src="form-enhancements.js"></script>
     <script src="theme-toggle.js"></script>
     
     <!-- Advanced Features -->
