@@ -572,79 +572,192 @@ function contactRealtor(hostelId) {
         return;
     }
     
-    console.log(`📞 Contacting realtor for: ${hostel.name}`);
+    console.log(`📞 Showing inquiry form for: ${hostel.name}`);
     
-    // Safe ENV access with fallbacks
-    const platformName = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('PLATFORM_NAME', 'MWG Hostels') : 'MWG Hostels';
-    const platformTagline = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('PLATFORM_TAGLINE', 'Powered by SAMA') : 'Powered by SAMA';
-    const defaultMessage = `Hi! I saw your hostel listing for "${hostel.name}" on the ${platformName} platform ${platformTagline}. I'm interested in learning more about the accommodation. Can we discuss the details?`;
-    
-    // Generate realistic contact info based on realtor data
-    const supportPhone = (typeof ENV !== 'undefined' && ENV.get) ? ENV.get('SUPPORT_PHONE', '+234 801 234 5678') : '+234 801 234 5678';
-    const phoneNumber = hostel.realtorContact || supportPhone;
-    const whatsappNumber = hostel.whatsapp || phoneNumber;
-    
-    // Generate email with fallback
-    let email;
-    if (typeof ENV !== 'undefined' && ENV.generateSecureEmail) {
-        email = ENV.generateSecureEmail((hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, ''));
-    } else {
-        // Fallback email generation
-        const sanitizedName = (hostel.realtorBrandName || hostel.realtor).toLowerCase().replace(/[^a-z0-9]/g, '');
-        email = `${sanitizedName}@mwghostels.com`;
-    }
-    
+    // Show inquiry form instead of direct contact
     showModal('Contact Realtor', `
-        <div class="contact-realtor">
+        <div class="inquiry-form">
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                ${hostel.bannerUrl ? `
-                    <img src="${hostel.bannerUrl}" alt="Realtor Banner" style="width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
-                ` : ''}
-                <h3>${hostel.realtorBrandName || hostel.realtor}</h3>
-                ${hostel.realtorFullName && hostel.realtorFullName !== hostel.realtorBrandName ? 
-                    `<p style="color: var(--gray-600); margin: 0;">Managed by ${hostel.realtorFullName}</p>` : ''
-                }
+                <h3>${hostel.name}</h3>
+                <p style="color: var(--gray-600);">Managed by ${hostel.realtorBrandName || hostel.realtor}</p>
+                <p style="color: var(--primary-blue); font-weight: 600;">₦${hostel.price} per ${hostel.period}</p>
             </div>
             
-            <p>For inquiries about <strong>${hostel.name}</strong></p>
-            
-            <div style="background: var(--gray-50); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <div style="display: grid; gap: 0.75rem; font-size: 0.95rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-phone" style="color: var(--primary-blue); width: 20px;"></i>
-                        <strong>Phone:</strong> ${phoneNumber}
+            <form id="inquiryForm" onsubmit="submitInquiry(event, '${hostelId}')">
+                <div style="display: grid; gap: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Your Name *</label>
+                        <input type="text" name="studentName" required 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px;" 
+                               placeholder="Enter your full name">
                     </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-envelope" style="color: var(--primary-blue); width: 20px;"></i>
-                        <strong>Email:</strong> ${email}
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Phone Number *</label>
+                        <input type="tel" name="studentPhone" required 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px;" 
+                               placeholder="e.g., 08012345678">
                     </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fab fa-whatsapp" style="color: #25D366; width: 20px;"></i>
-                        <strong>WhatsApp:</strong> ${whatsappNumber}
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email Address *</label>
+                        <input type="email" name="studentEmail" required 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px;" 
+                               placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Course/Department</label>
+                        <input type="text" name="studentCourse" 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px;" 
+                               placeholder="e.g., Computer Science, Mechanical Engineering">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Level</label>
+                        <select name="studentLevel" 
+                                style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="">Select your level</option>
+                            <option value="100L">100 Level</option>
+                            <option value="200L">200 Level</option>
+                            <option value="300L">300 Level</option>
+                            <option value="400L">400 Level</option>
+                            <option value="500L">500 Level</option>
+                            <option value="Graduate">Graduate Student</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Message/Questions</label>
+                        <textarea name="inquiryMessage" rows="4" 
+                                  style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; resize: vertical;" 
+                                  placeholder="Ask about availability, facilities, payment terms, or any other questions..."></textarea>
                     </div>
                 </div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
-                <button class="btn btn-outline" onclick="window.open('tel:${phoneNumber}', '_self'); closeModal();" style="justify-content: center;">
-                    <i class="fas fa-phone"></i> Call Now
-                </button>
-                <button class="btn btn-primary" onclick="window.open('https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </button>
-                <button class="btn btn-outline" onclick="window.open('mailto:${email}?subject=${encodeURIComponent('Inquiry about ' + hostel.name + ' - ' + platformName)}&body=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" style="justify-content: center;">
-                    <i class="fas fa-envelope"></i> Email
-                </button>
-            </div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="button" onclick="closeModal()" 
+                            style="flex: 1; padding: 0.75rem; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            style="flex: 2; padding: 0.75rem; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-paper-plane"></i> Send Inquiry
+                    </button>
+                </div>
+            </form>
             
             <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
                 <p style="margin: 0; font-size: 0.9rem; color: var(--primary-blue);">
                     <i class="fas fa-shield-check"></i> 
-                    This is a verified realtor on the ${platformName} platform
+                    Your information will be shared with the realtor for this inquiry only
                 </p>
             </div>
         </div>
     `);
+}
+
+// Function to handle inquiry form submission
+function submitInquiry(event, hostelId) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const hostel = state.hostels.find(h => h.id === hostelId);
+    
+    const inquiryData = {
+        id: 'inquiry_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        hostelId: hostelId,
+        hostelName: hostel?.name,
+        realtorContact: hostel?.realtorContact,
+        realtorWhatsApp: hostel?.whatsapp,
+        studentName: formData.get('studentName'),
+        studentPhone: formData.get('studentPhone'),
+        studentEmail: formData.get('studentEmail'),
+        studentCourse: formData.get('studentCourse'),
+        studentLevel: formData.get('studentLevel'),
+        inquiryMessage: formData.get('inquiryMessage'),
+        timestamp: new Date().toISOString(),
+        status: 'new'
+    };
+    
+    // Save inquiry to localStorage
+    try {
+        const existingInquiries = JSON.parse(localStorage.getItem('studentInquiries') || '[]');
+        existingInquiries.push(inquiryData);
+        localStorage.setItem('studentInquiries', JSON.stringify(existingInquiries));
+        
+        console.log('✅ Inquiry saved:', inquiryData);
+        
+        // Show success message with contact details
+        const phoneNumber = hostel?.realtorContact || '+234 806 992 8533';
+        const whatsappNumber = hostel?.whatsapp || phoneNumber;
+        const defaultMessage = `Hi! I just submitted an inquiry for "${hostel?.name}" through MWG Hostels. My name is ${inquiryData.studentName}. ${inquiryData.inquiryMessage || 'I\'m interested in learning more about this accommodation.'}`;
+        
+        closeModal();
+        
+        showModal('Inquiry Submitted Successfully! 🎉', `
+            <div style="text-align: center;">
+                <div style="color: #10b981; font-size: 3rem; margin-bottom: 1rem;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h3 style="color: #10b981; margin-bottom: 1rem;">Thank you, ${inquiryData.studentName}!</h3>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--gray-600);">
+                    Your inquiry for <strong>${hostel?.name}</strong> has been submitted successfully.
+                </p>
+                
+                <div style="background: var(--light-blue); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <h4 style="margin-bottom: 1rem; color: var(--primary-blue);">Contact the Realtor Directly:</h4>
+                    
+                    <div style="display: grid; gap: 1rem;">
+                        <button onclick="window.open('tel:${phoneNumber}', '_self'); closeModal();" 
+                                style="width: 100%; padding: 0.75rem; background: white; border: 2px solid var(--primary-blue); color: var(--primary-blue); border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-phone"></i> Call: ${phoneNumber}
+                        </button>
+                        
+                        <button onclick="window.open('https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(defaultMessage)}', '_blank'); closeModal();" 
+                                style="width: 100%; padding: 0.75rem; background: #25D366; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp: ${whatsappNumber}
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                    <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
+                        <i class="fas fa-lightbulb"></i> 
+                        <strong>Tip:</strong> For faster response, contact the realtor directly via WhatsApp or phone.
+                    </p>
+                </div>
+                
+                <button onclick="closeModal()" 
+                        style="width: 100%; padding: 0.75rem; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 1rem;">
+                    Continue Browsing
+                </button>
+            </div>
+        `);
+        
+        // Update hostel inquiry count
+        if (hostel) {
+            hostel.inquiries = (hostel.inquiries || 0) + 1;
+            // Update localStorage if hostels are stored there
+            const storedHostels = localStorage.getItem('realtorHostels');
+            if (storedHostels) {
+                const hostels = JSON.parse(storedHostels);
+                const hostelIndex = hostels.findIndex(h => h.id === hostelId);
+                if (hostelIndex !== -1) {
+                    hostels[hostelIndex].inquiries = hostel.inquiries;
+                    localStorage.setItem('realtorHostels', JSON.stringify(hostels));
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ Error saving inquiry:', error);
+        showNotification('Error submitting inquiry. Please try contacting the realtor directly.', 'error');
+    }
+}
 }
 
 // Utility Functions

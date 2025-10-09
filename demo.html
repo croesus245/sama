@@ -218,11 +218,11 @@
                 
                 <!-- PROMINENT REGISTRATION BUTTON -->
                 <div class="hero-cta">
-                    <button class="btn-register-main" onclick="showRegistrationModal()">
-                        <i class="fas fa-rocket"></i>
+                    <button class="btn-register-main" onclick="scrollToSection('hostelsSection')">
+                        <i class="fas fa-search"></i>
                         <span class="btn-text">
-                            <strong>START YOUR SEARCH NOW</strong>
-                            <small>Join 2,000+ students • Free Registration</small>
+                            <strong>BROWSE HOSTELS NOW</strong>
+                            <small>No registration required • Contact realtors directly</small>
                         </span>
                     </button>
                 </div>
@@ -614,11 +614,11 @@
                     </div>
                 </div>
                 <div class="cta-actions">
-                    <button class="btn btn-register-cta" onclick="showRegistrationModal()">
-                        <i class="fas fa-rocket"></i>
-                        GET STARTED NOW
+                    <button class="btn btn-register-cta" onclick="scrollToSection('hostelsSection')">
+                        <i class="fas fa-home"></i>
+                        BROWSE HOSTELS NOW
                     </button>
-                    <p class="cta-note">✨ No hidden fees • Quick setup • Instant access</p>
+                    <p class="cta-note">✨ No registration required • Contact realtors directly • Free to browse</p>
                 </div>
             </div>
         </div>
@@ -711,16 +711,9 @@
                 initializeApp();
             }
             
-            // Check if user is already registered
-            const isRegistered = localStorage.getItem('userRegistered');
-            if (!isRegistered) {
-                // Show registration modal after a short delay
-                setTimeout(() => {
-                    showRegistrationModal();
-                }, 1500);
-            } else {
-                console.log('User already registered, skipping registration modal');
-            }
+            // Removed automatic registration modal
+            // Students can browse and contact realtors without registration
+            console.log('✅ Page loaded - no registration required for browsing and contacting realtors');
         });
         
         // Registration modal functions
