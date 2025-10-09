@@ -1188,7 +1188,7 @@ function generateEnhancedHostelCard(hostel) {
                     <button class="btn btn-success btn-sm" data-action="apply-hostel" data-hostel-id="${hostel.id}">
                         <i class="fas fa-paper-plane"></i> Apply Now
                     </button>
-                    <button class="btn btn-primary btn-sm" onclick="checkLoginAndContact('${hostel.id}')">
+                    <button class="btn btn-primary btn-sm" onclick="contactRealtor('${hostel.id}')">
                         <i class="fas fa-phone"></i> Contact
                     </button>
                 </div>
@@ -1254,15 +1254,7 @@ function showHostelGallery(hostelId) {
 // MANDATORY REGISTRATION SYSTEM
 // ===========================================
 
-function checkLoginAndContact(hostelId) {
-    const userRegistered = localStorage.getItem('userRegistered');
-    const userData = localStorage.getItem('userData');
-    if (!userRegistered || userRegistered !== 'true') {
-        showRegistrationRequiredModal('contact a realtor');
-        return;
-    }
-    contactRealtor(hostelId);
-}
+// Removed old checkLoginAndContact function - no login required for contacting realtors
 
 function checkLoginAndApply(hostelId) {
     const userRegistered = localStorage.getItem('userRegistered');
@@ -1974,35 +1966,9 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-function showModal(title, content) {
-    // Remove existing modals
-    document.querySelectorAll('.custom-modal').forEach(m => m.remove());
-    
-    const modal = document.createElement('div');
-    modal.className = 'modal custom-modal active';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="margin: 0;">${title}</h3>
-                <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-500);">&times;</button>
-            </div>
-            ${content}
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Close on backdrop click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-}
+// Duplicate showModal function removed - using the first definition
 
-function closeModal() {
-    document.querySelectorAll('.custom-modal').forEach(m => m.remove());
-}
+// Duplicate closeModal function removed - using the comprehensive version above
 
 // Add CSS for new features
 const additionalStyles = document.createElement('style');
