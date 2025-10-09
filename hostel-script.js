@@ -1202,10 +1202,10 @@ function generateEnhancedHostelCard(hostel) {
                     <button class="btn btn-success btn-sm" data-action="apply-hostel" data-hostel-id="${hostel.id}">
                         <i class="fas fa-paper-plane"></i> Apply Now
                     </button>
-                    <button class="btn btn-primary btn-sm" onclick="console.log('Button clicked for hostel:', '${hostel.id}'); contactRealtor('${hostel.id}')">
+                    <button class="btn btn-primary btn-sm" onclick="try { console.log('Button clicked for hostel:', '${hostel.id}'); contactRealtor('${hostel.id}'); } catch(e) { console.error('Contact error:', e); alert('Error: ' + e.message); }">
                         <i class="fas fa-phone"></i> Contact
                     </button>
-                    <button class="btn btn-outline btn-sm" onclick="alert('Test button clicked! Hostel ID: ${hostel.id}')">
+                    <button class="btn btn-outline btn-sm" onclick="alert('Test button clicked! Hostel ID: ${hostel.id}. Contact function exists: ' + (typeof contactRealtor !== 'undefined'))">
                         <i class="fas fa-bug"></i> Test
                     </button>
                 </div>
@@ -2203,3 +2203,42 @@ setInterval(() => {
         showNotification(`${newCount - currentCount} new hostel${newCount - currentCount > 1 ? 's' : ''} added!`, 'success');
     }
 }, 30000); // Check every 30 seconds
+
+// 🔧 COMPREHENSIVE INITIALIZATION AND DEBUG SYSTEM
+console.log('🚀 Initializing MWG Hostels Platform...');
+
+// Ensure global functions are available
+window.contactRealtor = contactRealtor;
+window.submitInquiry = submitInquiry;
+window.testContactButton = testContactButton;
+
+// Debug function to check system status
+function checkSystemStatus() {
+    console.log('📋 SYSTEM STATUS CHECK:');
+    console.log('- contactRealtor function:', typeof contactRealtor);
+    console.log('- submitInquiry function:', typeof submitInquiry);
+    console.log('- showModal function:', typeof showModal);
+    console.log('- closeModal function:', typeof closeModal);
+    console.log('- hostels loaded:', state.hostels.length);
+    console.log('- hostel container:', document.getElementById('hostelsGrid') ? 'found' : 'not found');
+    
+    return {
+        contactFunction: typeof contactRealtor !== 'undefined',
+        hostelsLoaded: state.hostels.length > 0,
+        containerExists: !!document.getElementById('hostelsGrid'),
+        modalSystem: typeof showModal !== 'undefined'
+    };
+}
+
+window.checkSystemStatus = checkSystemStatus;
+
+// Run system check on load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM loaded, running system check...');
+    setTimeout(() => {
+        const status = checkSystemStatus();
+        console.log('✅ System check complete:', status);
+    }, 1000);
+});
+
+console.log('✅ MWG Hostels Platform initialization complete!');
