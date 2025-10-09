@@ -404,6 +404,151 @@
             color: #64748b;
             font-style: italic;
         }
+        
+        /* Listing Card Enhancements */
+        .listing-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .listing-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .listing-image {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .listing-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .listing-details {
+            padding: 15px;
+        }
+        
+        .listing-details p {
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .listing-details i {
+            color: #3b82f6;
+            margin-right: 8px;
+            width: 16px;
+        }
+        
+        .listing-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .listing-status.available {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .listing-status.allocated {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        /* Allocation Status */
+        .allocation-status {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        
+        .allocation-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #475569;
+        }
+        
+        .allocation-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+            accent-color: #3b82f6;
+        }
+        
+        /* Listing Actions */
+        .listing-actions {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            border: 1px solid #dc2626;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+        
+        /* No Listings State */
+        .no-listings {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        
+        .no-listings i {
+            font-size: 48px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .no-listings h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #334155;
+        }
+        
+        .no-listings p {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+        }
+        
+        /* Modal Enhancements */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex !important;
+        }
     </style>
     
     <script>
@@ -502,15 +647,25 @@
                 } else {
                     grid.innerHTML = hostels.map(hostel => `
                         <div class="listing-card">
+                            <div class="listing-image">
+                                <img src="${hostel.images && hostel.images[0] ? hostel.images[0] : 'https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'}" alt="${hostel.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                            </div>
                             <div class="listing-header">
                                 <h4>${hostel.name}</h4>
-                                <span class="listing-status ${hostel.status || 'active'}">${hostel.status || 'Active'}</span>
+                                <span class="listing-status ${hostel.status || 'available'}">${hostel.status === 'allocated' ? 'Allocated' : 'Available'}</span>
                             </div>
                             <div class="listing-details">
                                 <p><i class="fas fa-map-marker-alt"></i> ${hostel.location}</p>
-                                <p><i class="fas fa-naira-sign"></i> ₦${hostel.price.toLocaleString()} per ${hostel.pricePeriod}</p>
+                                <p><i class="fas fa-naira-sign"></i> ₦${hostel.price.toLocaleString()} per ${hostel.pricePeriod || 'semester'}</p>
                                 <p><i class="fas fa-users"></i> ${hostel.capacity} per room</p>
+                                <p><i class="fas fa-calendar-plus"></i> Added: ${new Date(hostel.dateAdded).toLocaleDateString()}</p>
                                 ${hostel.videoCount > 0 ? `<p><i class="fas fa-video"></i> ${hostel.videoCount} video${hostel.videoCount > 1 ? 's' : ''}</p>` : ''}
+                            </div>
+                            <div class="allocation-status">
+                                <label class="allocation-checkbox">
+                                    <input type="checkbox" ${hostel.status === 'allocated' ? 'checked' : ''} onchange="toggleAllocation('${hostel.id}', this.checked)">
+                                    <span>Mark as Allocated</span>
+                                </label>
                             </div>
                             <div class="listing-actions">
                                 <button class="btn btn-outline btn-sm" onclick="editHostel('${hostel.id}')">
@@ -518,6 +673,9 @@
                                 </button>
                                 <button class="btn btn-outline btn-sm" onclick="viewHostelStats('${hostel.id}')">
                                     <i class="fas fa-chart-bar"></i> Stats
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteHostel('${hostel.id}')">
+                                    <i class="fas fa-trash"></i> Delete
                                 </button>
                             </div>
                         </div>
@@ -537,8 +695,177 @@
         }
         
         function editHostel(hostelId) {
-            alert(`Edit hostel functionality - ID: ${hostelId}`);
-            // This would open the edit modal with pre-filled data
+            const hostel = realtorState.hostels.find(h => h.id === hostelId);
+            if (!hostel) {
+                alert('Hostel not found!');
+                return;
+            }
+            
+            // Create edit modal HTML
+            const editModalHTML = `
+                <div class="modal" id="editHostelModal" style="display: flex;">
+                    <div class="modal-content modal-large">
+                        <div class="modal-header">
+                            <h3>Edit Hostel - ${hostel.name}</h3>
+                            <button class="modal-close" onclick="closeEditHostelModal()">&times;</button>
+                        </div>
+                        
+                        <form class="edit-hostel-form" id="editHostelForm">
+                            <input type="hidden" id="editHostelId" value="${hostel.id}">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editHostelName">Hostel Name *</label>
+                                    <input type="text" id="editHostelName" name="name" value="${hostel.name}" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="editHostelLocation">Campus Location *</label>
+                                    <input type="text" id="editHostelLocation" name="location" value="${hostel.location}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editHostelPrice">Price (₦) *</label>
+                                    <input type="number" id="editHostelPrice" name="price" value="${hostel.price}" min="10000" max="500000" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="editPricePeriod">Price Period *</label>
+                                    <select id="editPricePeriod" name="pricePeriod" required>
+                                        <option value="semester" ${hostel.pricePeriod === 'semester' ? 'selected' : ''}>Per Semester</option>
+                                        <option value="year" ${hostel.pricePeriod === 'year' ? 'selected' : ''}>Per Year</option>
+                                        <option value="month" ${hostel.pricePeriod === 'month' ? 'selected' : ''}>Per Month</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editHostelCapacity">Room Capacity *</label>
+                                    <select id="editHostelCapacity" name="capacity" required>
+                                        <option value="1" ${hostel.capacity == 1 ? 'selected' : ''}>Single Room</option>
+                                        <option value="2" ${hostel.capacity == 2 ? 'selected' : ''}>2 Students per Room</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="editHostelAddress">Full Address *</label>
+                                <textarea id="editHostelAddress" name="address" rows="3" required>${hostel.address}</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="editHostelDescription">Description *</label>
+                                <textarea id="editHostelDescription" name="description" rows="4" required>${hostel.description}</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="editContactPhone">Contact Phone *</label>
+                                <input type="tel" id="editContactPhone" name="phone" value="${hostel.phone}" required>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" onclick="closeEditHostelModal()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Update Hostel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing edit modal if present
+            const existingModal = document.getElementById('editHostelModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', editModalHTML);
+            document.body.style.overflow = 'hidden';
+            
+            // Add form submit listener
+            document.getElementById('editHostelForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const hostelId = formData.get('editHostelId') || document.getElementById('editHostelId').value;
+                
+                // Update hostel data
+                const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
+                if (hostelIndex !== -1) {
+                    realtorState.hostels[hostelIndex] = {
+                        ...realtorState.hostels[hostelIndex],
+                        name: formData.get('name'),
+                        location: formData.get('location'),
+                        price: parseInt(formData.get('price')),
+                        pricePeriod: formData.get('pricePeriod'),
+                        capacity: formData.get('capacity'),
+                        address: formData.get('address'),
+                        description: formData.get('description'),
+                        phone: formData.get('phone'),
+                        lastUpdated: new Date().toISOString()
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
+                    
+                    alert('✅ Hostel updated successfully!');
+                    closeEditHostelModal();
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                }
+            });
+        }
+        
+        function closeEditHostelModal() {
+            const modal = document.getElementById('editHostelModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function toggleAllocation(hostelId, isAllocated) {
+            const hostelIndex = realtorState.hostels.findIndex(h => h.id === hostelId);
+            if (hostelIndex !== -1) {
+                realtorState.hostels[hostelIndex].status = isAllocated ? 'allocated' : 'available';
+                realtorState.hostels[hostelIndex].lastUpdated = new Date().toISOString();
+                
+                // Save to localStorage
+                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
+                
+                // Refresh display
+                loadRealtorHostels();
+                
+                alert(`✅ Hostel marked as ${isAllocated ? 'allocated' : 'available'}!`);
+            }
+        }
+        
+        function deleteHostel(hostelId) {
+            const hostel = realtorState.hostels.find(h => h.id === hostelId);
+            if (!hostel) {
+                alert('Hostel not found!');
+                return;
+            }
+            
+            if (confirm(`⚠️ Are you sure you want to delete "${hostel.name}"?\n\nThis action cannot be undone.`)) {
+                // Remove from array
+                realtorState.hostels = realtorState.hostels.filter(h => h.id !== hostelId);
+                
+                // Save to localStorage
+                localStorage.setItem('realtorHostels', JSON.stringify(realtorState.hostels));
+                
+                // Refresh display
+                loadRealtorHostels();
+                updateDashboardStats();
+                
+                alert('✅ Hostel deleted successfully!');
+            }
         }
         
         function viewHostelStats(hostelId) {
@@ -710,45 +1037,70 @@
                     }
                 }
                 
-                const hostelData = {
-                    id: 'hostel_' + Date.now(),
-                    name: formData.get('name'),
-                    location: formData.get('location'),
-                    price: parseInt(formData.get('price')),
-                    pricePeriod: formData.get('pricePeriod'),
-                    capacity: formData.get('capacity'),
-                    address: formData.get('address'),
-                    description: formData.get('description'),
-                    amenities: amenities,
-                    phone: formData.get('phone'),
-                    whatsapp: formData.get('whatsapp'),
-                    videoCount: videoInfo.length,
-                    videos: videoInfo,
-                    status: 'active',
-                    views: 0,
-                    inquiries: 0,
-                    dateAdded: new Date().toISOString(),
-                    lastUpdated: new Date().toISOString(),
-                    realtorId: realtorState.realtorData?.email
-                };
+                // Process images to base64 for storage
+                const imagePromises = Array.from(imageFiles).map(file => {
+                    return new Promise((resolve) => {
+                        if (file && file.size > 0) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                resolve(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            resolve(null);
+                        }
+                    });
+                });
                 
-                // Save to localStorage for demo
-                const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
-                existingHostels.push(hostelData);
-                localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
-                console.log('Hostel saved to localStorage:', hostelData);
-                console.log('Total hostels now:', existingHostels.length);
-                
-                alert('✅ Hostel added successfully! Your listing is now active and visible to students.');
-                
-                // Reset form and close modal
-                e.target.reset();
-                closeAddHostelModal();
-                
-                // Refresh dashboard
-                console.log('Refreshing dashboard...');
-                loadRealtorHostels();
-                updateDashboardStats();
+                // Wait for image processing
+                Promise.all(imagePromises).then(imageUrls => {
+                    const validImages = imageUrls.filter(url => url !== null);
+                    
+                    const hostelData = {
+                        id: 'hostel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        name: formData.get('name'),
+                        location: formData.get('location'),
+                        price: parseInt(formData.get('price')),
+                        pricePeriod: formData.get('pricePeriod'),
+                        capacity: formData.get('capacity'),
+                        address: formData.get('address'),
+                        description: formData.get('description'),
+                        amenities: amenities,
+                        phone: formData.get('phone'),
+                        whatsapp: formData.get('whatsapp'),
+                        videoCount: videoInfo.length,
+                        videos: videoInfo,
+                        images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1555854877-bab0e921b58d?auto=format&fit=crop&w=800&q=80'],
+                        status: 'available',
+                        views: 0,
+                        inquiries: 0,
+                        dateAdded: new Date().toISOString(),
+                        lastUpdated: new Date().toISOString(),
+                        realtorId: realtorState.realtorData?.email
+                    };
+                    
+                    // Save to localStorage
+                    const existingHostels = JSON.parse(localStorage.getItem('realtorHostels') || '[]');
+                    existingHostels.push(hostelData);
+                    localStorage.setItem('realtorHostels', JSON.stringify(existingHostels));
+                    
+                    // Update state
+                    realtorState.hostels = existingHostels;
+                    
+                    console.log('Hostel saved to localStorage:', hostelData);
+                    console.log('Total hostels now:', existingHostels.length);
+                    
+                    alert('✅ Hostel added successfully! Your listing is now active and visible to students.');
+                    
+                    // Reset form and close modal
+                    e.target.reset();
+                    closeAddHostelModal();
+                    
+                    // Refresh dashboard
+                    console.log('Refreshing dashboard...');
+                    loadRealtorHostels();
+                    updateDashboardStats();
+                });
             });
             
             // File upload previews
