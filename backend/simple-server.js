@@ -7,7 +7,30 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors());
+// CORS Configuration - Allow both local and production frontend
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:8000',
+      'http://localhost:3000',
+      'http://127.0.0.1:8000',
+      'https://mwgbysama.vercel.app',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+    
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins in development
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Database connection
@@ -25,11 +48,13 @@ mongoose.connect(process.env.MONGODB_URI)
 const hostelRoutes = require('./routes/hostels');
 const realtorAuthRoutes = require('./routes/realtorAuth');
 const adminPanelRoutes = require('./routes/adminPanel');
+const studentAuthRoutes = require('./routes/studentAuth');
 
 // Routes
 app.use('/api/hostels', hostelRoutes);
 app.use('/api/realtor-auth', realtorAuthRoutes);
 app.use('/api/admin-panel', adminPanelRoutes);
+app.use('/api/students', studentAuthRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -45,7 +70,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api', (req, res) => {
   res.json({
     message: 'Welcome to MWG Hostels API',
-    version: '2.0.0',
+    version: '2.1.0',
     endpoints: {
       health: '/api/health',
       hostels: '/api/hostels',
@@ -64,7 +89,13 @@ app.get('/api', (req, res) => {
       adminApproveRealtor: '/api/admin-panel/realtors/:id/approve',
       adminSuspendRealtor: '/api/admin-panel/realtors/:id/suspend',
       adminRejectRealtor: '/api/admin-panel/realtors/:id/reject',
-      adminHostels: '/api/admin-panel/hostels'
+      adminHostels: '/api/admin-panel/hostels',
+      // Student Authentication
+      studentRegister: '/api/students/register',
+      studentLogin: '/api/students/login',
+      studentProfile: '/api/students/profile',
+      studentSaveHostel: '/api/students/save-hostel/:hostelId',
+      studentSavedHostels: '/api/students/saved-hostels'
     }
   });
 });

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Hostels - MWG by SAMA</title>
+    <link rel="icon" type="image/png" href="MWG logo@300x.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="hostel-style.css">
+    <script src="hostel-api.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Gate Filter Section */
+        .gate-filter-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gate-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .gate-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .gate-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gate-card:hover .gate-image {
+            transform: scale(1.1);
+        }
+
+        .gate-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .gate-name {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .gate-info {
+            padding: 1.5rem;
+        }
+
+        .gate-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .hostel-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-hostels-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-hostels-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hostels Display Section */
+        .hostels-section {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .hostels-section.active {
+            display: block;
+        }
+
+        .back-button {
+            background: white;
+            color: #667eea;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #f0f0f0;
+            transform: translateX(-5px);
+        }
+
+        .hostels-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .hostels-header h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hostels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .hostel-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hostel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .hostel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .hostel-content {
+            padding: 1.5rem;
+        }
+
+        .hostel-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .hostel-location {
+            color: #666;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hostel-price {
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .hostel-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            background: #f0f0f0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .availability-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .availability-badge.available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .availability-badge.unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .contact-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: #20ba5a;
+            transform: translateY(-2px);
+        }
+
+        .no-hostels {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .no-hostels i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .no-hostels h3 {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .gates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hostels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="MWG logo@300x.png" alt="MWG Logo" class="logo" onerror="this.style.display='none'">
+                <h1 class="site-title">MWG Hostels</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="student-register.html"><i class="fas fa-user-plus"></i> Register</a>
+                <a href="roommate-finder.html"><i class="fas fa-users"></i> Find Roommate</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Gate Filter Section -->
+    <section class="gate-filter-section" id="gateFilterSection">
+        <h1 class="section-title">Choose Your Preferred Gate</h1>
+        <p class="section-subtitle">Find hostels near your convenient FUTA gate location</p>
+
+        <div class="gates-grid">
+            <!-- North Gate -->
+            <div class="gate-card" onclick="showHostelsByGate('North Gate')">
+                <div class="gate-image-container">
+                    <img src="images/North gate.jpg" alt="North Gate" class="gate-image" onerror="this.src='background.jpg'">
+                    <div class="gate-overlay">
+                        <h3 class="gate-name">North Gate</h3>
+                    </div>
+                </div>
+                <div class="gate-info">
+                    <p class="gate-description">
+                        Hostels located near FUTA North Gate. Perfect for students who prefer the northern campus entrance.
+                    </p>
+                    <div class="hostel-count">
+                        <i class="fas fa-home"></i>
+                        <span id="northCount">Loading...</span>
+                    </div>
+                    <button class="view-hostels-btn">
+                        <i class="fas fa-arrow-right"></i> View Hostels
+                    </button>
+                </div>
+            </div>
+
+            <!-- South Gate -->
+            <div class="gate-card" onclick="showHostelsByGate('South Gate')">
+                <div class="gate-image-container">
+                    <img src="images/south gate.jpeg" alt="South Gate" class="gate-image" onerror="this.src='background.jpg'">
+                    <div class="gate-overlay">
+                        <h3 class="gate-name">South Gate</h3>
+                    </div>
+                </div>
+                <div class="gate-info">
+                    <p class="gate-description">
+                        Hostels near FUTA South Gate. Convenient access to main campus facilities and departments.
+                    </p>
+                    <div class="hostel-count">
+                        <i class="fas fa-home"></i>
+                        <span id="southCount">Loading...</span>
+                    </div>
+                    <button class="view-hostels-btn">
+                        <i class="fas fa-arrow-right"></i> View Hostels
+                    </button>
+                </div>
+            </div>
+
+            <!-- West Gate -->
+            <div class="gate-card" onclick="showHostelsByGate('West Gate')">
+                <div class="gate-image-container">
+                    <img src="background.jpg" alt="West Gate" class="gate-image">
+                    <div class="gate-overlay">
+                        <h3 class="gate-name">West Gate</h3>
+                    </div>
+                </div>
+                <div class="gate-info">
+                    <p class="gate-description">
+                        Hostels around FUTA West Gate area. Great location with easy access to commercial areas.
+                    </p>
+                    <div class="hostel-count">
+                        <i class="fas fa-home"></i>
+                        <span id="westCount">Loading...</span>
+                    </div>
+                    <button class="view-hostels-btn">
+                        <i class="fas fa-arrow-right"></i> View Hostels
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hostels Display Section -->
+    <section class="hostels-section" id="hostelsSection">
+        <button class="back-button" onclick="backToGates()">
+            <i class="fas fa-arrow-left"></i> Back to Gates
+        </button>
+
+        <div class="hostels-header">
+            <h2 id="selectedGate">Hostels</h2>
+            <p id="hostelCount">Loading hostels...</p>
+        </div>
+
+        <div id="hostelsGrid" class="hostels-grid">
+            <!-- Hostels will be loaded here -->
+        </div>
+    </section>
+
+    <script>
+        let allHostels = [];
+        let currentGate = null;
+
+        // Load hostels on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadAllHostels();
+        });
+
+        // Load all hostels from API
+        async function loadAllHostels() {
+            try {
+                console.log('🔄 Loading hostels from API...');
+                allHostels = await HostelAPI.getAllHostels();
+                console.log(`✅ Loaded ${allHostels.length} hostels`);
+                
+                // Update gate counts
+                updateGateCounts();
+            } catch (error) {
+                console.error('❌ Error loading hostels:', error);
+                document.getElementById('northCount').textContent = 'Error loading';
+                document.getElementById('southCount').textContent = 'Error loading';
+                document.getElementById('westCount').textContent = 'Error loading';
+            }
+        }
+
+        // Update hostel counts for each gate
+        function updateGateCounts() {
+            const northHostels = allHostels.filter(h => 
+                h.location && h.location.toLowerCase().includes('north')
+            );
+            const southHostels = allHostels.filter(h => 
+                h.location && h.location.toLowerCase().includes('south')
+            );
+            const westHostels = allHostels.filter(h => 
+                h.location && h.location.toLowerCase().includes('west')
+            );
+
+            document.getElementById('northCount').textContent = `${northHostels.length} hostels available`;
+            document.getElementById('southCount').textContent = `${southHostels.length} hostels available`;
+            document.getElementById('westCount').textContent = `${westHostels.length} hostels available`;
+        }
+
+        // Show hostels by gate
+        function showHostelsByGate(gate) {
+            currentGate = gate;
+            
+            // Hide gate filter section
+            document.getElementById('gateFilterSection').style.display = 'none';
+            
+            // Show hostels section
+            const hostelsSection = document.getElementById('hostelsSection');
+            hostelsSection.classList.add('active');
+            
+            // Update header
+            document.getElementById('selectedGate').textContent = `${gate} Hostels`;
+            
+            // Filter hostels by gate
+            const gateKeyword = gate.split(' ')[0].toLowerCase(); // "north", "south", "west"
+            const filteredHostels = allHostels.filter(h => 
+                h.location && h.location.toLowerCase().includes(gateKeyword)
+            );
+            
+            document.getElementById('hostelCount').textContent = 
+                `${filteredHostels.length} hostels found near ${gate}`;
+            
+            // Display hostels
+            displayHostels(filteredHostels);
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Display hostels
+        function displayHostels(hostels) {
+            const grid = document.getElementById('hostelsGrid');
+            
+            if (hostels.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-hostels">
+                        <i class="fas fa-home"></i>
+                        <h3>No hostels found</h3>
+                        <p>There are currently no hostels available in this area.</p>
+                        <p>Please check other gates or try again later.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = hostels.map(hostel => `
+                <div class="hostel-card">
+                    <img src="${hostel.image || 'background.jpg'}" 
+                         alt="${hostel.name}" 
+                         class="hostel-image"
+                         onerror="this.src='background.jpg'">
+                    
+                    <div class="hostel-content">
+                        <h3 class="hostel-name">${hostel.name}</h3>
+                        
+                        <div class="hostel-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${hostel.location}</span>
+                        </div>
+                        
+                        <div class="hostel-price">
+                            ₦${hostel.price ? hostel.price.toLocaleString() : 'N/A'}/year
+                        </div>
+                        
+                        <div class="availability-badge ${hostel.available ? 'available' : 'unavailable'}">
+                            ${hostel.available ? '✅ Available' : '❌ Unavailable'}
+                        </div>
+                        
+                        ${hostel.features && hostel.features.length > 0 ? `
+                            <div class="hostel-features">
+                                ${hostel.features.slice(0, 3).map(feature => `
+                                    <span class="feature-tag">
+                                        <i class="fas fa-check"></i> ${feature}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${hostel.whatsapp ? `
+                            <button class="contact-btn" onclick="contactRealtor('${hostel.whatsapp}', '${hostel.name}')">
+                                <i class="fab fa-whatsapp"></i> Contact via WhatsApp
+                            </button>
+                        ` : `
+                            <button class="contact-btn" disabled style="background: #ccc;">
+                                <i class="fas fa-phone-slash"></i> Contact Not Available
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Back to gates view
+        function backToGates() {
+            document.getElementById('gateFilterSection').style.display = 'block';
+            document.getElementById('hostelsSection').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Contact realtor via WhatsApp
+        function contactRealtor(whatsapp, hostelName) {
+            const message = encodeURIComponent(
+                `Hello! I'm interested in ${hostelName}. Can you provide more information?`
+            );
+            const whatsappUrl = `https://wa.me/${whatsapp}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - MWG Hostels</title>
+    <link rel="icon" type="image/png" href="MWG logo@300x.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 3rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-requirements {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .password-requirements h4 {
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.3rem 0;
+            color: #666;
+        }
+
+        .requirement i {
+            font-size: 0.8rem;
+        }
+
+        .requirement.valid {
+            color: #27ae60;
+        }
+
+        .requirement.valid i {
+            color: #27ae60;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .info-box i {
+            color: #667eea;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="header">
+            <img src="MWG logo@300x.png" alt="MWG Logo" class="logo" onerror="this.style.display='none'">
+            <h1>Student Registration</h1>
+            <p>Join MWG Hostels Platform</p>
+        </div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <strong>Why Register?</strong><br>
+            Save favorite hostels, track applications, and get personalized recommendations
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="studentRegisterForm">
+            <div class="form-group">
+                <label for="fullName">
+                    Full Name <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="fullName" name="fullName" class="form-control" 
+                           placeholder="Enter your full name" required>
+                </div>
+                <div class="error-message" id="fullNameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    Email Address <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" class="form-control" 
+                           placeholder="your.email@student.futa.edu.ng" required>
+                </div>
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="matric">
+                    Matric Number <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="matric" name="matric" class="form-control" 
+                           placeholder="e.g., CSC/2022/001" required pattern="[A-Z]{3}/[0-9]{4}/[0-9]{3}">
+                </div>
+                <div class="error-message" id="matricError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">
+                    Phone Number <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phone" name="phone" class="form-control" 
+                           placeholder="08012345678" required pattern="[0-9]{11}">
+                </div>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="whatsapp">
+                    WhatsApp Number <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fab fa-whatsapp"></i>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-control" 
+                           placeholder="2348012345678" required pattern="[0-9]{13}">
+                </div>
+                <div class="error-message" id="whatsappError"></div>
+                <small style="color: #666; font-size: 0.85rem; margin-top: 0.3rem; display: block;">
+                    Format: 2348012345678 (country code + number)
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="department">
+                    Department
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-graduation-cap"></i>
+                    <input type="text" id="department" name="department" class="form-control" 
+                           placeholder="e.g., Computer Science">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Password <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" class="form-control" 
+                           placeholder="Create a strong password" required>
+                </div>
+                <div class="password-requirements">
+                    <h4>Password Requirements:</h4>
+                    <div class="requirement" id="req-length">
+                        <i class="fas fa-circle"></i>
+                        <span>At least 8 characters</span>
+                    </div>
+                    <div class="requirement" id="req-uppercase">
+                        <i class="fas fa-circle"></i>
+                        <span>One uppercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-lowercase">
+                        <i class="fas fa-circle"></i>
+                        <span>One lowercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <i class="fas fa-circle"></i>
+                        <span>One number</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">
+                    Confirm Password <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" 
+                           placeholder="Confirm your password" required>
+                </div>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">
+                <div class="spinner"></div>
+                <span class="btn-text">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </span>
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script src="hostel-api.js"></script>
+    <script>
+        // Password validation
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        password.addEventListener('input', function() {
+            const value = this.value;
+            
+            // Check length
+            const reqLength = document.getElementById('req-length');
+            if (value.length >= 8) {
+                reqLength.classList.add('valid');
+                reqLength.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                reqLength.classList.remove('valid');
+                reqLength.querySelector('i').className = 'fas fa-circle';
+            }
+            
+            // Check uppercase
+            const reqUppercase = document.getElementById('req-uppercase');
+            if (/[A-Z]/.test(value)) {
+                reqUppercase.classList.add('valid');
+                reqUppercase.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                reqUppercase.classList.remove('valid');
+                reqUppercase.querySelector('i').className = 'fas fa-circle';
+            }
+            
+            // Check lowercase
+            const reqLowercase = document.getElementById('req-lowercase');
+            if (/[a-z]/.test(value)) {
+                reqLowercase.classList.add('valid');
+                reqLowercase.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                reqLowercase.classList.remove('valid');
+                reqLowercase.querySelector('i').className = 'fas fa-circle';
+            }
+            
+            // Check number
+            const reqNumber = document.getElementById('req-number');
+            if (/[0-9]/.test(value)) {
+                reqNumber.classList.add('valid');
+                reqNumber.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                reqNumber.classList.remove('valid');
+                reqNumber.querySelector('i').className = 'fas fa-circle';
+            }
+        });
+
+        // Form submission
+        document.getElementById('studentRegisterForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.classList.remove('show');
+            });
+            
+            // Get form data
+            const formData = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                matric: document.getElementById('matric').value.trim().toUpperCase(),
+                phone: document.getElementById('phone').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                department: document.getElementById('department').value.trim(),
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                role: 'student',
+                createdAt: new Date().toISOString()
+            };
+            
+            // Validate passwords match
+            if (formData.password !== formData.confirmPassword) {
+                showError('confirmPassword', 'Passwords do not match');
+                return;
+            }
+            
+            // Validate password strength
+            if (formData.password.length < 8 || 
+                !/[A-Z]/.test(formData.password) || 
+                !/[a-z]/.test(formData.password) || 
+                !/[0-9]/.test(formData.password)) {
+                showAlert('Please meet all password requirements', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            try {
+                // Send registration request to backend
+                const response = await fetch('http://localhost:5000/api/students/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showAlert('✅ Registration successful! You can now browse hostels.', 'success');
+                    
+                    // Store student data in localStorage
+                    localStorage.setItem('studentToken', data.token);
+                    localStorage.setItem('studentData', JSON.stringify(data.data));
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'hostels.html';
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert('⚠️ Could not connect to server. Your data has been saved locally and you can browse hostels.', 'error');
+                
+                // Save locally for offline mode
+                const students = JSON.parse(localStorage.getItem('students') || '[]');
+                students.push(formData);
+                localStorage.setItem('students', JSON.stringify(students));
+                
+                // Still allow access
+                setTimeout(() => {
+                    window.location.href = 'hostels.html';
+                }, 2000);
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorMsg = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('error');
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type} show`;
+            
+            // Scroll to top to see alert
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Auto-fill WhatsApp from phone
+        document.getElementById('phone').addEventListener('blur', function() {
+            const phone = this.value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            
+            if (phone && !whatsapp) {
+                // Convert 08012345678 to 2348012345678
+                if (phone.startsWith('0') && phone.length === 11) {
+                    document.getElementById('whatsapp').value = '234' + phone.substring(1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
