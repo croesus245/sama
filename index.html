@@ -1112,6 +1112,141 @@
     <!-- Student Application System -->
     <script src="student-application-system.js"></script>
 
+    <!-- Load and Display Hostels from Realtor Dashboard -->
+    <script>
+        // Load hostels from localStorage and display on main site
+        function loadAndDisplayHostels() {
+            const hostelsGrid = document.getElementById('hostelsGrid');
+            
+            if (!hostelsGrid) {
+                console.log('Hostels grid not found');
+                return;
+            }
+            
+            // Get hostels from localStorage (saved by realtors)
+            const hostels = JSON.parse(localStorage.getItem('realtorHostels')) || [];
+            
+            // Filter to only show available hostels
+            const availableHostels = hostels.filter(h => h.available === true);
+            
+            if (availableHostels.length === 0) {
+                hostelsGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b;">
+                        <i class="fas fa-home" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 0.5rem;">No Hostels Available Yet</h3>
+                        <p>Realtors will add verified hostel listings soon. Check back later!</p>
+                        <p style="margin-top: 1rem;">
+                            <strong>Are you a realtor?</strong> 
+                            <a href="realtor-login.html" style="color: #1e40af;">Login here</a> to add your hostels.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display hostels as cards
+            hostelsGrid.innerHTML = availableHostels.map(hostel => `
+                <div class="hostel-card" data-hostel-id="${hostel.id}">
+                    <img src="${hostel.image}" alt="${hostel.name}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
+                         style="width: 100%; height: 200px; object-fit: cover;">
+                    
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">
+                            ${hostel.name}
+                        </h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; color: #64748b;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-map-marker-alt" style="color: #1e40af;"></i>
+                                <span>${hostel.location}</span>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-naira-sign" style="color: #1e40af;"></i>
+                                <span style="font-weight: 600; font-size: 1.125rem; color: #1e40af;">
+                                    ${formatCurrency(hostel.price)}/year
+                                </span>
+                            </div>
+                            
+                            ${hostel.features && hostel.features.length > 0 ? `
+                                <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.5rem;">
+                                    <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem;"></i>
+                                    <span style="font-size: 0.875rem;">${hostel.features.join(' • ')}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button onclick="contactRealtorViaWhatsApp('${hostel.name}', '${hostel.whatsapp}')" 
+                                    style="flex: 1; padding: 0.75rem; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <i class="fab fa-whatsapp" style="font-size: 1.25rem;"></i>
+                                Contact via WhatsApp
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0; text-align: center;">
+                            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #dcfce7; color: #16a34a; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">
+                                <i class="fas fa-check-circle"></i>
+                                Available Now
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log(`✅ Loaded ${availableHostels.length} hostels from realtor dashboard`);
+        }
+        
+        // Format currency helper
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-NG', {
+                style: 'currency',
+                currency: 'NGN',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount).replace('NGN', '₦');
+        }
+        
+        // Contact realtor via WhatsApp
+        function contactRealtorViaWhatsApp(hostelName, whatsappNumber) {
+            if (!whatsappNumber) {
+                alert('WhatsApp contact not available for this hostel. Please try contacting through other means.');
+                return;
+            }
+            
+            const message = encodeURIComponent(`Hello! I'm interested in ${hostelName}. Is it still available?`);
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            // Track the contact attempt
+            if (typeof Analytics !== 'undefined') {
+                Analytics.track('whatsapp_contact', { hostelName, whatsappNumber });
+            }
+            
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+            
+            console.log(`📱 Opening WhatsApp for ${hostelName} - ${whatsappNumber}`);
+        }
+        
+        // Load hostels when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAndDisplayHostels);
+        } else {
+            loadAndDisplayHostels();
+        }
+        
+        // Also reload hostels when localStorage changes (if realtor adds/edits)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'realtorHostels') {
+                console.log('Hostels updated in localStorage, reloading...');
+                loadAndDisplayHostels();
+            }
+        });
+        
+        console.log('✅ Hostel display system loaded - showing hostels from realtor dashboard');
+    </script>
+
     <script>
         window.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
