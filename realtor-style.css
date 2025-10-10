@@ -1076,144 +1076,116 @@
 
 .image-preview-item {
     position: relative;
+    width: 150px;
+    height: 150px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .image-preview-item img {
     width: 100%;
-    height: 120px;
+    height: 100%;
     object-fit: cover;
 }
 
-.image-remove-btn {
+.preview-badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(220, 38, 38, 0.9);
+    top: 8px;
+    left: 8px;
+    background: #ff9800;
     color: white;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Amenities Grid */
-.amenities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.amenity-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border: 2px solid rgba(37, 99, 235, 0.1);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: rgba(255, 255, 255, 0.7);
-}
-
-.amenity-item:hover {
-    border-color: #3b82f6;
-    background: rgba(37, 99, 235, 0.05);
-}
-
-.amenity-item input {
-    margin-right: 10px;
-}
-
-.amenity-icon {
-    margin-right: 10px;
-    color: #3b82f6;
-    font-size: 1.1rem;
-}
-
-.amenity-item span:last-child {
-    font-weight: 500;
-    color: #374151;
-}
-
-/* Enhanced Form Actions */
-.hostel-form .form-actions {
-    padding: 20px;
-    border-top: 2px solid rgba(37, 99, 235, 0.1);
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    background: rgba(249, 250, 251, 0.8);
-    margin: 0;
-}
-
-.hostel-form .btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
     font-weight: 600;
+}
+
+.hostel-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.hostel-card-actions button {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.875rem;
+}
+
+.btn-danger {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background 0.3s;
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+}
+
+.notification {
+    position: fixed;
+    top: -100px;
+    right: 20px;
+    background: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1rem;
+    gap: 12px;
+    z-index: 10000;
+    transition: top 0.3s ease;
 }
 
-.hostel-form .btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
+.notification.show {
+    top: 20px;
 }
 
-.hostel-form .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+.notification-success { border-left: 4px solid #4caf50; }
+.notification-error { border-left: 4px solid #f44336; }
+.notification-info { border-left: 4px solid #2196f3; }
+
+/* Authorization Notice */
+.auth-notice {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+    border-left: 4px solid #2196F3;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    text-align: center;
 }
 
-.hostel-form .btn-secondary {
-    background: #f3f4f6;
-    color: #6b7280;
-    border: 2px solid #e5e7eb;
+.auth-notice i {
+    font-size: 2rem;
+    color: #2196F3;
+    margin-bottom: 8px;
 }
 
-.hostel-form .btn-secondary:hover {
-    background: #e5e7eb;
-    color: #374151;
+.auth-notice strong {
+    color: #1976D2;
+    display: block;
+    margin-bottom: 4px;
 }
 
-/* Responsive Design for Enhanced Modal */
-@media (max-width: 768px) {
-    .modal-large .modal-content {
-        width: 98%;
-        max-height: 95vh;
-    }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .amenities-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .hostel-form .form-actions {
-        flex-direction: column;
-    }
-    
-    .image-preview-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    }
+/* Demo Credentials Box */
+.demo-credentials {
+    margin-top: 24px;
+    padding: 16px;
+    background: #FFF3CD;
+    border-left: 4px solid #FFC107;
+    border-radius: 8px;
+    font-size: 0.875rem;
 }
 
-/* Utility Classes */
-.hidden-file-input {
-    display: none !important;
+.demo-credentials strong {
+    color: #856404;
+}
+
+.demo-credentials p {
+    margin: 4px 0;
+    color: #856404;
 }

@@ -395,6 +395,7 @@
             flex: 1;
         }
     </style>
+    <script src="asset-path-fix.js" defer></script>
 </head>
 <body>
     <!-- Skip Link for Accessibility -->
@@ -1176,5 +1177,18 @@
     
     <!-- Student Application System -->
     <script src="student-application-system.js"></script>
+
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                console.warn('Image failed:', e.target.src);
+                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+            }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promise rejection:', e.reason);
+        });
+    </script>
 </body>
 </html>

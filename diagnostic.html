@@ -52,6 +52,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
     </style>
+    <script src="asset-path-fix.js" defer></script>
 </head>
 <body>
     <h1>🔍 MWG Hostels - Landing Page Diagnostic</h1>
@@ -163,6 +164,19 @@
 
         // Auto-validate files on load
         setTimeout(validateFiles, 1000);
+    </script>
+
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                console.warn('Image failed:', e.target.src);
+                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+            }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promise rejection:', e.reason);
+        });
     </script>
 </body>
 </html>

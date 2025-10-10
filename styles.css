@@ -1,0 +1,185 @@
+/* Provider/Seeker Badge Colors */
+.provider-card {
+    border-left: 4px solid #4caf50;
+}
+
+.seeker-card {
+    border-left: 4px solid #2196f3;
+}
+
+.profile-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* Room Gallery */
+.room-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.room-gallery img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Room Image Preview */
+.room-image-preview {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    margin: 8px;
+}
+
+.room-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hostel Detail Modal */
+.hostel-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.hostel-detail-header {
+    position: relative;
+    height: 300px;
+}
+
+.hostel-detail-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+
+.hostel-detail-body {
+    padding: 24px;
+}
+
+.hostel-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.amenity-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #e3f2fd;
+    color: #1976d2;
+    border-radius: 20px;
+    font-size: 0.875rem;
+}
+
+.btn-whatsapp-large {
+    width: 100%;
+    padding: 16px;
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: background 0.3s;
+    margin-bottom: 12px;
+}
+
+.btn-whatsapp-large:hover {
+    background: #20ba5a;
+}
+
+.info-note {
+    margin-top: 16px;
+    padding: 12px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #856404;
+    display: flex;
+    gap: 8px;
+}

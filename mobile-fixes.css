@@ -1,0 +1,41 @@
+/* Prevent horizontal scroll */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Fix images overflowing */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Touch-friendly buttons */
+button, a {
+    min-height: 44px; /* iOS minimum touch target */
+    min-width: 44px;
+}
+
+/* Modal fix for mobile */
+.modal-content {
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+}
+
+/* Fix viewport on iOS */
+@supports (-webkit-touch-callout: none) {
+    .modal-content {
+        max-height: -webkit-fill-available;
+    }
+}
+
+/* Fix input zoom on iOS */
+input, select, textarea {
+    font-size: 16px !important; /* Prevents zoom */
+}

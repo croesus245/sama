@@ -71,6 +71,7 @@
             background: #eff6ff;
         }
     </style>
+    <script src="asset-path-fix.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -211,6 +212,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Load data on page load
         document.addEventListener('DOMContentLoaded', loadLocalData);
+    </script>
+
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                console.warn('Image failed:', e.target.src);
+                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+            }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promise rejection:', e.reason);
+        });
     </script>
 </body>
 </html>

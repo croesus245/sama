@@ -1,5 +1,6 @@
 // MWG Hostels Service Worker - Enhanced PWA Features
-const CACHE_NAME = 'mwg-hostels-v1.2';
+const CACHE_VERSION = 'v1.4'; // Increment this with each deploy
+const CACHE_NAME = `mwg-hostels-${CACHE_VERSION}`;
 const STATIC_CACHE = 'mwg-static-v1.2';
 const DYNAMIC_CACHE = 'mwg-dynamic-v1.2';
 const IMAGE_CACHE = 'mwg-images-v1.2';
@@ -53,17 +54,15 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== STATIC_CACHE && 
-              cacheName !== DYNAMIC_CACHE && 
-              cacheName !== IMAGE_CACHE) {
-            console.log('🗑️ Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+        cacheNames
+          .filter(name => name.startsWith('mwg-hostels-') && name !== CACHE_NAME)
+          .map(name => {
+            console.log('🗑️ Deleting old cache:', name);
+            return caches.delete(name);
+          })
       );
     }).then(() => {
-      // Take control of all pages
+      // Force immediate control of all clients
       return self.clients.claim();
     })
   );
@@ -456,6 +455,13 @@ self.addEventListener('quotaexceeded', event => {
       });
     })
   );
+});
+
+// Add update notification
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
 
 console.log('🚀 MWG Hostels Service Worker loaded successfully');
