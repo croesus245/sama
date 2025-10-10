@@ -8,7 +8,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="dashboard-container">
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-building"></i>
+                <h2>Realtor Login</h2>
+                <p>Access your property dashboard</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-primary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboardSection" class="dashboard-container" style="display: none;">
         <!-- Header -->
         <header class="dashboard-header">
             <div class="header-left">
@@ -76,8 +101,21 @@
                             <input type="text" id="propertyName" placeholder="e.g., Green Valley Hostel" required>
                         </div>
                         <div class="form-group">
-                            <label>Location *</label>
-                            <input type="text" id="propertyLocation" placeholder="e.g., Ekosodin, Benin City" required>
+                            <label>Location (Gate) *</label>
+                            <select id="propertyLocation" required onchange="toggleOtherLocation()">
+                                <option value="">Select gate location</option>
+                                <option value="North Gate">North Gate</option>
+                                <option value="West Gate">West Gate</option>
+                                <option value="South Gate">South Gate</option>
+                                <option value="Other">Other (Specify)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row" id="otherLocationRow" style="display: none;">
+                        <div class="form-group">
+                            <label>Specify Other Location *</label>
+                            <input type="text" id="otherLocation" placeholder="e.g., Ekosodin, Usiefrun, etc.">
                         </div>
                     </div>
                     
@@ -103,21 +141,48 @@
                         <textarea id="propertyDescription" rows="4" placeholder="Describe the property, amenities, nearby facilities..." required></textarea>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="hasWifi"> WiFi Available
-                            </label>
+                    <!-- Amenities Section -->
+                    <div class="amenities-section">
+                        <label><strong>Available Amenities</strong></label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasWifi"> 📶 WiFi Available
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasParking"> 🅿️ Parking Space
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasSecurity"> 🔒 24/7 Security
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="hasParking"> Parking Space
-                            </label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasRunningWater"> 💧 Running Water
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasSolar"> ☀️ Solar/Power Supply
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="hasOtherAmenities" onchange="toggleOtherAmenities()"> ➕ Other Amenities
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="hasSecurity"> 24/7 Security
-                            </label>
+                        <div class="form-row" id="otherAmenitiesRow" style="display: none;">
+                            <div class="form-group">
+                                <label>Specify Other Amenities</label>
+                                <input type="text" id="otherAmenitiesText" placeholder="e.g., Generator, Kitchen, Laundry, etc.">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,5 +216,77 @@
     
     <script src="realtor-auth-simple.js"></script>
     <script src="realtor-dashboard-simple.js"></script>
+    <script>
+        // Correct realtor password
+        const REALTOR_PASSWORD = 'MWG@2025';
+
+        // Check if already logged in
+        if (localStorage.getItem('realtorLoggedIn') === 'true') {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+        }
+
+        // Toggle other location input
+        function toggleOtherLocation() {
+            const locationSelect = document.getElementById('propertyLocation');
+            const otherLocationRow = document.getElementById('otherLocationRow');
+            const otherLocationInput = document.getElementById('otherLocation');
+            
+            if (locationSelect.value === 'Other') {
+                otherLocationRow.style.display = 'flex';
+                otherLocationInput.required = true;
+            } else {
+                otherLocationRow.style.display = 'none';
+                otherLocationInput.required = false;
+                otherLocationInput.value = '';
+            }
+        }
+
+        // Toggle other amenities input
+        function toggleOtherAmenities() {
+            const otherAmenitiesCheckbox = document.getElementById('hasOtherAmenities');
+            const otherAmenitiesRow = document.getElementById('otherAmenitiesRow');
+            
+            if (otherAmenitiesCheckbox.checked) {
+                otherAmenitiesRow.style.display = 'flex';
+            } else {
+                otherAmenitiesRow.style.display = 'none';
+                document.getElementById('otherAmenitiesText').value = '';
+            }
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (password === REALTOR_PASSWORD) {
+                localStorage.setItem('realtorLoggedIn', 'true');
+                localStorage.setItem('realtorUsername', username);
+                
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                
+                alert('Login successful! Welcome, ' + username);
+            } else {
+                alert('Incorrect password. Please try again.');
+            }
+        });
+
+        // Logout function
+        function realtorLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('realtorLoggedIn');
+                localStorage.removeItem('realtorUsername');
+                
+                document.getElementById('loginSection').style.display = 'flex';
+                document.getElementById('dashboardSection').style.display = 'none';
+                
+                document.getElementById('loginForm').reset();
+            }
+        }
+    </script>
 </body>
 </html>
