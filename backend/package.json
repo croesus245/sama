@@ -2,12 +2,12 @@
   "name": "mwg-hostels-backend",
   "version": "1.0.0",
   "description": "Backend API for MWG Hostels Platform - Student accommodation and roommate finder",
-  "main": "server.js",
+  "main": "simple-server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node simple-server.js",
+    "dev": "nodemon simple-server.js",
     "test": "jest",
-    "build": "npm install",
+    "build": "echo 'Build complete'",
     "setup": "node scripts/setup.js"
   },
   "keywords": [
