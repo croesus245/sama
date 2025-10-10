@@ -85,10 +85,6 @@
                 <label><i class="fas fa-lock"></i> Access Password</label>
                 <input type="password" id="realtorPassword" placeholder="Enter the realtor password" required autocomplete="current-password">
             </div>
-            <div class="password-info">
-                <strong>🔑 Use This Password</strong>
-                <code>MWG@2025</code>
-            </div>
             <button type="submit" class="btn-login" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i> Access Dashboard
             </button>
@@ -146,7 +142,7 @@
                 setTimeout(() => { window.location.href = 'enhanced-realtor-dashboard.html'; }, 1000);
             } else {
                 console.log('❌ Wrong password');
-                showNotification('❌ Incorrect password! Use: MWG@2025', 'error');
+                showNotification('❌ Incorrect password! contact the management', 'error');
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Dashboard';
                 document.getElementById('realtorPassword').value = '';
@@ -156,7 +152,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             console.log('═══════════════════════════════════════════════════════');
             console.log('🔐 MWG HOSTELS - Realtor Login');
-            console.log('Password for all realtors: MWG@2025');
+            console.log('Password for all realtors: contact the management');
             console.log('═══════════════════════════════════════════════════════');
             checkExistingLogin();
         });
