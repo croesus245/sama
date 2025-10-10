@@ -631,11 +631,11 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
     
     <!-- Connection Status Indicator -->
-    <div id="connection-status" class="connection-status demo">🟡 Demo Mode</div>
+    <div id="connection-status" class="connection-status online">� Browse Mode</div>
     
-    <!-- Offline Banner -->
+    <!-- Browse Banner -->
     <div id="offline-banner" class="offline-banner">
-        Browse mode active - All hostels available for viewing
+        📶 Browse mode active - All hostels available for viewing
     </div>
 
     <!-- Dynamic Background System -->
@@ -823,72 +823,6 @@
             margin-top: 10px;
             font-size: 12px;
             padding: 8px 16px;
-        }
-    </style>
-
-    <!-- Demo Mode Banner -->
-    <div id="demo-banner" class="demo-banner">
-        <div class="container">
-            <div class="demo-content">
-                <h4><i class="fas fa-info-circle"></i> Demo Mode Active</h4>
-                <p>Backend server is offline. Registration and login work in demo mode for testing purposes.</p>
-                <button onclick="hideDemoBanner()" class="demo-close">×</button>
-            </div>
-        </div>
-    </div>
-    
-    <style>
-        .demo-banner {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        .demo-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .demo-content h4 {
-            margin: 0;
-            font-size: 16px;
-        }
-        
-        .demo-content p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .demo-close {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .demo-close:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        body {
-            padding-top: 60px;
         }
     </style>
 
@@ -1362,15 +1296,6 @@
             console.log('🏠 Browsing hostels - direct access');
             // Direct navigation to browse page
             window.location.href = 'demo.html';
-        }
-        
-        // Hide demo banner function
-        function hideDemoBanner() {
-            const banner = document.getElementById('demo-banner');
-            if (banner) {
-                banner.style.display = 'none';
-                document.body.style.paddingTop = '0';
-            }
         }
     </script>
     
