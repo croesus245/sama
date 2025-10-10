@@ -1,7 +1,10 @@
 // MWG Hostels API Connector
 // Handles all API calls to the backend
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Auto-detect environment and use appropriate API URL
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'  // Local development
+    : 'https://sama-production-9e28.up.railway.app/api';  // Production (Railway)
 
 const HostelAPI = {
     // Helper function to get auth headers
