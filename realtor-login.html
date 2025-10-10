@@ -1,221 +1,165 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realtor Dashboard - MWG Hostels</title>
-    <link rel="stylesheet" href="realtor-style.css">
+    <title>Realtor Login - MWG Hostels</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
         }
-
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
-            padding: 20px;
+        .login-card {
+            background: white; border-radius: 20px; padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 480px;
+            animation: slideUp 0.5s ease;
         }
-
-        .login-box {
-            background: white;
-            border-radius: 16px;
-            padding: 48px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .login-header i {
-            font-size: 56px;
-            color: #4169E1;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .login-header h2 {
-            color: #1a1a1a;
-            margin-bottom: 8px;
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 15px;
-        }
-
-        .form-group label i {
-            margin-right: 8px;
-            color: #4169E1;
-        }
-
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .logo { text-align: center; margin-bottom: 32px; }
+        .logo i { font-size: 64px; color: #667eea; margin-bottom: 16px; display: block; }
+        .logo h1 { color: #1a1a1a; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .logo p { color: #666; font-size: 16px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; color: #333; font-weight: 600; margin-bottom: 10px; font-size: 15px; }
+        .form-group label i { margin-right: 8px; color: #667eea; }
         .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px;
+            font-size: 16px; transition: all 0.3s ease; font-family: inherit;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #4169E1;
-            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.1);
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(65, 105, 225, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .demo-credentials {
-            margin-top: 24px;
-            padding: 16px;
+        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1); }
+        .password-info {
             background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
-            border-radius: 10px;
-            text-align: center;
-            border: 2px dashed #4169E1;
+            border: 2px dashed #667eea; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;
         }
-
-        .demo-credentials strong {
-            display: block;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-            font-size: 15px;
+        .password-info strong { display: block; color: #1a1a1a; margin-bottom: 12px; font-size: 16px; }
+        .password-info code {
+            background: white; padding: 12px 24px; border-radius: 8px; font-family: 'Courier New', monospace;
+            color: #667eea; font-weight: bold; font-size: 24px; display: inline-block;
+            border: 2px solid #667eea; letter-spacing: 2px;
         }
-
-        .demo-credentials code {
-            background: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            color: #4169E1;
-            font-weight: bold;
-            font-size: 18px;
-            display: inline-block;
-            border: 2px solid #4169E1;
+        .btn-login {
+            width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; padding: 16px 24px; border-radius: 12px;
+            font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .footer-links { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .footer-links a { color: #667eea; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-links a:hover { color: #764ba2; text-decoration: underline; }
+        .notification {
+            position: fixed; top: 20px; right: 20px; background: white; padding: 16px 24px;
+            border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); z-index: 10000;
+            display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 500;
+            animation: slideInRight 0.3s ease; max-width: 400px;
+        }
+        .notification.success { background: #4CAF50; color: white; }
+        .notification.error { background: #f44336; color: white; }
+        @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
+        @media (max-width: 600px) {
+            .login-card { padding: 32px 24px; }
+            .logo h1 { font-size: 28px; }
+            .password-info code { font-size: 20px; padding: 10px 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Login Section ONLY -->
-    <div id="loginSection" class="login-container">
-        <div class="login-box">
-            <div class="login-header">
-                <i class="fas fa-building"></i>
-                <h2>Realtor Portal</h2>
-                <p>MWG Hostels • FUTA Student Housing</p>
+    <div class="login-card">
+        <div class="logo">
+            <i class="fas fa-building"></i>
+            <h1>Realtor Portal</h1>
+            <p>MWG Hostels • FUTA Student Housing</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Your Full Name</label>
+                <input type="text" id="realtorName" placeholder="e.g., John Smith" required autocomplete="name">
             </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Your Name</label>
-                    <input type="text" id="username" placeholder="Enter your name" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Access Password</label>
-                    <input type="password" id="password" placeholder="Enter realtor password" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Access Dashboard
-                </button>
-                <div class="demo-credentials">
-                    <strong>🔑 Realtor Access Code</strong>
-                    <code>MWG@2025</code>
-                </div>
-            </form>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Access Password</label>
+                <input type="password" id="realtorPassword" placeholder="Enter the realtor password" required autocomplete="current-password">
+            </div>
+            <div class="password-info">
+                <strong>🔑 Use This Password</strong>
+                <code>MWG@2025</code>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Access Dashboard
+            </button>
+        </form>
+        <div class="footer-links">
+            <a href="index.html"><i class="fas fa-home"></i> Back to Main Site</a>
         </div>
     </div>
-
-    <!-- Dashboard loads on separate page after login -->
-    
-    <!-- Load Fixed Password System -->
-    <script src="realtor-fixed-password-system.js"></script>
-    
     <script>
-        // Check if already logged in - redirect to dashboard
-        redirectIfLoggedIn('realtor-dashboard.html');
-
-        // Handle login form submission
+        const REALTOR_PASSWORD = 'MWG@2025';
+        function showNotification(message, type = 'success') {
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(notification);
+            setTimeout(() => { notification.style.animation = 'slideOutRight 0.3s ease'; setTimeout(() => notification.remove(), 300); }, 4000);
+        }
+        function checkExistingLogin() {
+            const isLoggedIn = localStorage.getItem('realtorLoggedIn');
+            const realtorName = localStorage.getItem('realtorName');
+            if (isLoggedIn === 'true' && realtorName) {
+                console.log('✅ Already logged in as:', realtorName);
+                window.location.href = 'enhanced-realtor-dashboard.html';
+                return true;
+            }
+            return false;
+        }
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const name = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            
+            const loginBtn = document.getElementById('loginBtn');
+            const name = document.getElementById('realtorName').value.trim();
+            const password = document.getElementById('realtorPassword').value;
+            if (!name || name.length < 3) {
+                showNotification('❌ Please enter your full name', 'error');
+                document.getElementById('realtorName').focus();
+                return;
+            }
+            if (!password) {
+                showNotification('❌ Please enter the password', 'error');
+                document.getElementById('realtorPassword').focus();
+                return;
+            }
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
             console.log('🔐 Login attempt by:', name);
-            
-            // Attempt login with fixed password system
-            const result = realtorLogin(name, password);
-            
-            if (result.success) {
-                // Show success notification
-                showRealtorNotification(result.message, 'success');
-                
-                // Redirect to dashboard after short delay
-                setTimeout(() => {
-                    window.location.href = 'realtor-dashboard.html';
-                }, 1000);
-                
+            if (password === REALTOR_PASSWORD) {
+                console.log('✅ Password correct!');
+                const realtorId = 'realtor_' + Date.now();
+                localStorage.setItem('realtorLoggedIn', 'true');
+                localStorage.setItem('realtorName', name);
+                localStorage.setItem('realtorId', realtorId);
+                localStorage.setItem('realtorLoginTime', new Date().toISOString());
+                showNotification(`✅ Welcome back, ${name}!`, 'success');
+                setTimeout(() => { window.location.href = 'enhanced-realtor-dashboard.html'; }, 1000);
             } else {
-                // Show error notification
-                showRealtorNotification(result.message, 'error');
-                
-                // Clear password field and focus
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
+                console.log('❌ Wrong password');
+                showNotification('❌ Incorrect password! Use: MWG@2025', 'error');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Dashboard';
+                document.getElementById('realtorPassword').value = '';
+                document.getElementById('realtorPassword').focus();
             }
         });
-
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('═══════════════════════════════════════════════════════');
+            console.log('🔐 MWG HOSTELS - Realtor Login');
+            console.log('Password for all realtors: MWG@2025');
+            console.log('═══════════════════════════════════════════════════════');
+            checkExistingLogin();
+        });
     </script>
 </body>
 </html>
