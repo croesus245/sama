@@ -4,1177 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Realtor Dashboard - MWG Hostels</title>
-    <link rel="icon" type="image/png" href="MWG logo@300x.png">
-    <link rel="stylesheet" href="theme-system.css">
-    <link rel="stylesheet" href="theme-integration.css">
-    <link rel="stylesheet" href="universal-bg-system.css">
-    <link rel="stylesheet" href="perfect-vibe-theme.css">
-    <link rel="stylesheet" href="glass-morphism-global.css">
-    <link rel="stylesheet" href="hostel-style.css">
     <link rel="stylesheet" href="realtor-style.css">
-    
-    <!-- Environment Configuration -->
-    <script src="env-config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: var(--space-xl);
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: var(--space-xl);
-            min-height: calc(100vh - 160px);
-        }
-
-        .sidebar {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: var(--space-sm);
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-sm) var(--space-md);
-            color: var(--gray-600);
-            text-decoration: none;
-            border-radius: var(--radius-base);
-            transition: all var(--transition-base);
-            font-weight: 500;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: var(--light-blue);
-            color: var(--primary-blue);
-        }
-
-        .main-content {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-md);
-        }
-
-        .content-header {
-            margin-bottom: var(--space-xl);
-            padding-bottom: var(--space-lg);
-            border-bottom: 2px solid var(--gray-100);
-        }
-
-        .content-header h1 {
-            margin: 0 0 var(--space-sm) 0;
-            color: var(--gray-900);
-            font-size: var(--font-size-2xl);
-        }
-
-        .content-header p {
-            margin: 0;
-            color: var(--gray-600);
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            background: var(--gradient-blue);
-            color: var(--white);
-            border: none;
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-base);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .action-btn.secondary {
-            background: var(--white);
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-        }
-
-        .hostels-management {
-            background: var(--gray-50);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-        }
-
-        .hostels-list {
-            display: grid;
-            gap: var(--space-lg);
-        }
-
-        .hostel-item {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            display: grid;
-            grid-template-columns: 100px 1fr auto;
-            gap: var(--space-lg);
-            align-items: center;
-        }
-
-        .hostel-image {
-            width: 100px;
-            height: 80px;
-            border-radius: var(--radius-base);
-            overflow: hidden;
-        }
-
-        .hostel-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .hostel-details h3 {
-            margin: 0 0 var(--space-xs) 0;
-            color: var(--gray-900);
-            font-size: var(--font-size-lg);
-        }
-
-        .hostel-meta {
-            display: flex;
-            gap: var(--space-lg);
-            margin: var(--space-xs) 0;
-            color: var(--gray-600);
-            font-size: var(--font-size-sm);
-        }
-
-        .hostel-status {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-full);
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .hostel-status.active {
-            background: var(--light-green);
-            color: var(--green);
-        }
-
-        .hostel-status.pending {
-            background: var(--light-yellow);
-            color: var(--yellow);
-        }
-
-        .hostel-actions {
-            display: flex;
-            gap: var(--space-sm);
-        }
-
-        .hostel-actions button {
-            background: none;
-            border: 1px solid var(--gray-300);
-            padding: var(--space-sm);
-            border-radius: var(--radius-base);
-            cursor: pointer;
-            transition: all var(--transition-base);
-            color: var(--gray-600);
-        }
-
-        .hostel-actions button:hover {
-            background: var(--gray-100);
-            color: var(--primary-blue);
-        }
-
-        .found-toggle {
-            color: var(--green) !important;
-        }
-
-        .found-toggle:hover {
-            background: var(--light-green) !important;
-            color: var(--green) !important;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: var(--space-3xl);
-            color: var(--gray-500);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: var(--space-lg);
-            color: var(--gray-400);
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: var(--space-lg);
-            }
-
-            .sidebar {
-                position: static;
-            }
-
-            .hostel-item {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .quick-actions {
-                flex-direction: column;
-            }
-        }
-        
-        /* Other Amenity Styles */
-        .other-amenity-group {
-            display: none;
-            margin-top: 1rem;
-        }
-        
-        .other-amenity-group.show {
-            display: block;
-        }
-    </style>
-    <script src="asset-path-fix.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Dynamic Background System -->
-    <div class="dynamic-background"></div>
-    <div class="geometric-overlay"></div>
-    <div class="floating-elements">
-        <div class="floating-book"></div>
-        <div class="floating-graduation"></div>
-        <div class="floating-building"></div>
-    </div>
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-    
-    <!-- Navigation -->
-    <nav class="navbar realtor-nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <img src="MWG logo@300x.png" alt="MWG Logo" class="logo" onerror="this.style.display='none'">
-                <span class="brand-text">MWG Realtor Dashboard</span>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <i class="fas fa-building"></i>
+                <h1>Realtor Dashboard</h1>
             </div>
-            
-            <div class="nav-menu">
-                <span class="nav-text">Welcome, <strong id="realtorName">John Doe</strong></span>
-                <a href="demo.html" class="nav-link">
-                    <i class="fas fa-home"></i> Main Site
-                </a>
-                <button class="btn btn-outline" onclick="logout()">
+            <div class="header-right">
+                <button onclick="realtorLogout()" class="btn-logout">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
-        </div>
-    </nav>
-
-    <!-- Main Dashboard -->
-    <div class="dashboard-container">
-        <div class="dashboard-grid">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <ul class="sidebar-menu">
-                    <li><a href="#" class="active" onclick="showSection('overview')">
-                        <i class="fas fa-chart-line"></i> Overview
-                    </a></li>
-                    <li><a href="#" onclick="showSection('hostels')">
-                        <i class="fas fa-building"></i> My Hostels
-                    </a></li>
-                    <li><a href="#" onclick="showSection('roommate-posts')">
-                        <i class="fas fa-users"></i> Roommate Posts
-                    </a></li>
-                    <li><a href="#" onclick="showSection('inquiries')">
-                        <i class="fas fa-envelope"></i> Inquiries
-                    </a></li>
-                    <li><a href="#" onclick="showSection('analytics')">
-                        <i class="fas fa-chart-bar"></i> Analytics
-                    </a></li>
-                    <li><a href="#" onclick="showSection('settings')">
-                        <i class="fas fa-cog"></i> Settings
-                    </a></li>
-                </ul>
-            </aside>
-
-            <!-- Main Content -->
-            <main class="main-content">
-                <!-- Overview Section -->
-                <div id="overview-section" class="content-section">
-                    <div class="content-header">
-                        <h1>Dashboard Overview</h1>
-                        <p>Welcome back! Here's what's happening with your hostel listings.</p>
-                    </div>
-
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-home"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-number">5</span>
-                                <span class="stat-label">Active Listings</span>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-eye"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-number">247</span>
-                                <span class="stat-label">Total Views</span>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-number">12</span>
-                                <span class="stat-label">New Inquiries</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-naira-sign"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-number">₦450k</span>
-                                <span class="stat-label">Total Value</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="showAddHostelModal()">
-                            <i class="fas fa-plus"></i> Add New Hostel
-                        </button>
-                        <button class="action-btn secondary" onclick="showSection('inquiries')">
-                            <i class="fas fa-envelope"></i> View Inquiries
-                        </button>
-                        <button class="action-btn secondary" onclick="showSection('analytics')">
-                            <i class="fas fa-chart-bar"></i> View Analytics
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Hostels Section -->
-                <div id="hostels-section" class="content-section">
-                    <div class="content-header">
-                        <h1>My Hostels</h1>
-                        <p>Manage your hostel listings and track their performance.</p>
-                    </div>
-
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="showAddHostelModal()">
-                            <i class="fas fa-plus"></i> Add New Hostel
-                        </button>
-                        <button class="action-btn secondary">
-                            <i class="fas fa-filter"></i> Filter
-                        </button>
-                    </div>
-
-                    <div class="hostels-management">
-                        <div class="hostels-list" id="hostelsList">
-                            <!-- Sample Hostel Item -->
-                            <div class="hostel-item">
-                                <div class="hostel-image">
-                                    <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=200&h=150&fit=crop" alt="Hostel">
-                                </div>
-                                <div class="hostel-details">
-                                    <h3>Royal Hostel</h3>
-                                    <div class="hostel-meta">
-                                        <span><i class="fas fa-map-marker-alt"></i> North Gate</span>
-                                        <span><i class="fas fa-naira-sign"></i> 85,000/semester</span>
-                                        <span><i class="fas fa-users"></i> 2 per room</span>
-                                    </div>
-                                    <span class="hostel-status active">Active</span>
-                                </div>
-                                <div class="hostel-actions">
-                                    <button title="Edit" onclick="editHostel(this)"><i class="fas fa-edit"></i></button>
-                                    <button title="View Analytics"><i class="fas fa-chart-bar"></i></button>
-                                    <button title="Toggle Status"><i class="fas fa-toggle-on"></i></button>
-                                    <button title="Delete" onclick="deleteHostel(this)"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-
-                            <div class="hostel-item">
-                                <div class="hostel-image">
-                                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop" alt="Hostel">
-                                </div>
-                                <div class="hostel-details">
-                                    <h3>Paradise Lodge</h3>
-                                    <div class="hostel-meta">
-                                        <span><i class="fas fa-map-marker-alt"></i> South Gate</span>
-                                        <span><i class="fas fa-naira-sign"></i> 120,000/semester</span>
-                                        <span><i class="fas fa-users"></i> 1 per room</span>
-                                    </div>
-                                    <span class="hostel-status pending">Pending Review</span>
-                                </div>
-                                <div class="hostel-actions">
-                                    <button title="Edit" onclick="editHostel(this)"><i class="fas fa-edit"></i></button>
-                                    <button title="View Analytics"><i class="fas fa-chart-bar"></i></button>
-                                    <button title="Toggle Status"><i class="fas fa-toggle-off"></i></button>
-                                    <button title="Delete" onclick="deleteHostel(this)"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Roommate Posts Section -->
-                <div id="roommate-posts-section" class="content-section">
-                    <div class="content-header">
-                        <h1>My Roommate Posts</h1>
-                        <p>Manage your roommate finding posts and track responses.</p>
-                    </div>
-
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="window.open('roommate-finder.html', '_blank')">
-                            <i class="fas fa-plus"></i> Post New Room
-                        </button>
-                        <button class="action-btn secondary">
-                            <i class="fas fa-eye"></i> View All Posts
-                        </button>
-                    </div>
-
-                    <div class="hostels-management">
-                        <div class="hostels-list">
-                            <!-- Sample Roommate Post -->
-                            <div class="hostel-item">
-                                <div class="hostel-image">
-                                    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&h=150&fit=crop" alt="Room">
-                                </div>
-                                <div class="hostel-details">
-                                    <h3>Room 14, Embassy Street</h3>
-                                    <div class="hostel-meta">
-                                        <span><i class="fas fa-map-marker-alt"></i> South Gate</span>
-                                        <span><i class="fas fa-naira-sign"></i> 85,000/year</span>
-                                        <span><i class="fas fa-users"></i> Looking for roommate</span>
-                                        <span><i class="fas fa-eye"></i> 23 views</span>
-                                    </div>
-                                    <span class="hostel-status active">Looking</span>
-                                </div>
-                                <div class="hostel-actions">
-                                    <button title="Edit Post"><i class="fas fa-edit"></i></button>
-                                    <button title="View Responses" onclick="showRoommateResponses()"><i class="fas fa-envelope"></i></button>
-                                    <button title="Mark as Found" onclick="markRoommateFound()" class="found-toggle">
-                                        <i class="fas fa-check-circle"></i>
-                                    </button>
-                                    <button title="Delete Post"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-
-                            <div class="hostel-item">
-                                <div class="hostel-image">
-                                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop" alt="Room">
-                                </div>
-                                <div class="hostel-details">
-                                    <h3>Paradise Lodge, Room 8</h3>
-                                    <div class="hostel-meta">
-                                        <span><i class="fas fa-map-marker-alt"></i> North Gate</span>
-                                        <span><i class="fas fa-naira-sign"></i> 120,000/year</span>
-                                        <span><i class="fas fa-check-circle"></i> Roommate found</span>
-                                        <span><i class="fas fa-calendar"></i> Closed 2 days ago</span>
-                                    </div>
-                                    <span class="hostel-status found">Found</span>
-                                </div>
-                                <div class="hostel-actions">
-                                    <button title="View Details"><i class="fas fa-eye"></i></button>
-                                    <button title="Repost" onclick="repostRoom()"><i class="fas fa-redo"></i></button>
-                                    <button title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Inquiries Section -->
-                <div id="inquiries-section" class="content-section">
-                    <div class="content-header">
-                        <h1>Student Inquiries</h1>
-                        <p>Respond to student questions and booking requests.</p>
-                    </div>
-
-                    <div class="empty-state">
-                        <i class="fas fa-envelope-open"></i>
-                        <h3>No new inquiries</h3>
-                        <p>You'll see student inquiries and messages here when they contact you about your hostels.</p>
-                    </div>
-                </div>
-
-                <!-- Analytics Section -->
-                <div id="analytics-section" class="content-section">
-                    <div class="content-header">
-                        <h1>Analytics & Reports</h1>
-                        <p>Track the performance of your hostel listings.</p>
-                    </div>
-
-                    <div class="empty-state">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Analytics Coming Soon</h3>
-                        <p>Detailed analytics and performance reports will be available here soon.</p>
-                    </div>
-                </div>
-
-                <!-- Settings Section -->
-                <div id="settings-section" class="content-section">
-                    <div class="content-header">
-                        <h1>Account Settings</h1>
-                        <p>Manage your account information and preferences.</p>
-                    </div>
-
-                    <div class="empty-state">
-                        <i class="fas fa-cog"></i>
-                        <h3>Settings Panel</h3>
-                        <p>Account settings and preferences will be available here.</p>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- Add Hostel Modal (Enhanced) -->
-    <div class="modal" id="addHostelModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle"></i> Add New Hostel</h3>
-                <button class="modal-close" onclick="closeAddHostelModal()">&times;</button>
+        </header>
+        
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <a href="#" onclick="showSection('addListing')" class="nav-link active">
+                <i class="fas fa-plus-circle"></i> Add Property
+            </a>
+            <a href="#" onclick="showSection('myListings')" class="nav-link">
+                <i class="fas fa-list"></i> My Listings
+            </a>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i> View Site
+            </a>
+        </nav>
+        
+        <!-- Add Listing Section -->
+        <section id="addListing" class="dashboard-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-plus-circle"></i> Add New Property</h2>
             </div>
             
-            <form id="addHostelForm" class="hostel-form">
-                <div class="form-sections">
-                    <!-- Basic Information -->
-                    <div class="form-section">
-                        <h4><i class="fas fa-info-circle"></i> Basic Information</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="hostelName">Hostel Name *</label>
-                                <input type="text" id="hostelName" name="hostelName" required placeholder="e.g., Royal Student Lodge">
-                            </div>
-                            <div class="form-group">
-                                <label for="hostelType">Hostel Type *</label>
-                                <select id="hostelType" name="hostelType" required>
-                                    <option value="">Select Type</option>
-                                    <option value="male">Male Only</option>
-                                    <option value="female">Female Only</option>
-                                    <option value="mixed">Mixed Gender</option>
-                                </select>
-                            </div>
-                        </div>
-                        
+            <form id="addListingForm" class="listing-form">
+                <!-- Realtor Details -->
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Your Details</h3>
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="description">Description *</label>
-                            <textarea id="description" name="description" required placeholder="Describe your hostel, its features, and what makes it special..."></textarea>
+                            <label>Your Name *</label>
+                            <input type="text" id="realtorName" placeholder="e.g., Ibitayo Emmanuel" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Business Name *</label>
+                            <input type="text" id="businessName" placeholder="e.g., Hemmy Space" required>
                         </div>
                     </div>
-
-                    <!-- Location & Pricing -->
-                    <div class="form-section">
-                        <h4><i class="fas fa-map-marker-alt"></i> Location & Pricing</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="address">Full Address *</label>
-                                <input type="text" id="address" name="address" required placeholder="e.g., Behind North Gate, FUTA">
-                            </div>
-                            <div class="form-group">
-                                <label for="distance">Distance from Campus</label>
-                                <input type="text" id="distance" name="distance" placeholder="e.g., 5 minutes walk">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>WhatsApp Number *</label>
+                            <input type="tel" id="realtorPhone" placeholder="07042919808" required>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="pricePerSemester">Price per Semester (₦) *</label>
-                                <input type="number" id="pricePerSemester" name="pricePerSemester" required placeholder="85000">
-                            </div>
-                            <div class="form-group">
-                                <label for="roomCapacity">Students per Room *</label>
-                                <select id="roomCapacity" name="roomCapacity" required>
-                                    <option value="">Select Capacity</option>
-                                    <option value="1">1 (Single Room)</option>
-                                    <option value="2">2 (Shared Room)</option>
-                                    <option value="4">4 (Dormitory Style)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Hostel Images -->
-                    <div class="form-section">
-                        <h4><i class="fas fa-camera"></i> Hostel Images</h4>
-                        <div class="image-upload-section">
-                            <div class="upload-area" onclick="triggerImageUpload()">
-                                <div class="upload-icon">
-                                    <i class="fas fa-cloud-upload-alt fa-3x"></i>
-                                </div>
-                                <div class="upload-text">
-                                    <h5>Upload Hostel Images</h5>
-                                    <p>Click to browse or drag and drop images here</p>
-                                    <small>Supported: JPG, PNG, WEBP (Max 5MB each)</small>
-                                </div>
-                            </div>
-                            <label for="imageUpload" class="sr-only">Upload hostel images</label>
-                            <input type="file" id="imageUpload" multiple accept="image/*" class="hidden-file-input" onchange="handleImageUpload(event)" aria-label="Upload hostel images">
-                            
-                            <div class="image-preview-grid" id="imagePreviewGrid">
-                                <!-- Preview images will appear here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Amenities & Features -->
-                    <div class="form-section">
-                        <h4><i class="fas fa-star"></i> Amenities & Features</h4>
-                        <div class="amenities-grid">
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="wifi">
-                                <span class="amenity-icon"><i class="fas fa-wifi"></i></span>
-                                <span>Free WiFi</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="security">
-                                <span class="amenity-icon"><i class="fas fa-shield-alt"></i></span>
-                                <span>24/7 Security</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="parking">
-                                <span class="amenity-icon"><i class="fas fa-car"></i></span>
-                                <span>Parking Space</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="kitchen">
-                                <span class="amenity-icon"><i class="fas fa-utensils"></i></span>
-                                <span>Kitchen Access</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="laundry">
-                                <span class="amenity-icon"><i class="fas fa-tshirt"></i></span>
-                                <span>Laundry</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="generator">
-                                <span class="amenity-icon"><i class="fas fa-bolt"></i></span>
-                                <span>Generator</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="ac">
-                                <span class="amenity-icon"><i class="fas fa-snowflake"></i></span>
-                                <span>Air Conditioning</span>
-                            </label>
-                            <label class="amenity-item">
-                                <input type="checkbox" name="amenities" value="study-room">
-                                <span class="amenity-icon"><i class="fas fa-book"></i></span>
-                                <span>Study Room</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Contact Information -->
-                    <div class="form-section">
-                        <h4><i class="fas fa-phone"></i> Contact Information</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="contactPhone">Contact Phone *</label>
-                                <input type="tel" id="contactPhone" name="contactPhone" required placeholder="+234XXXXXXXXXX">
-                            </div>
-                            <div class="form-group">
-                                <label for="contactEmail">Contact Email</label>
-                                <input type="email" id="contactEmail" name="contactEmail" placeholder="hostel@example.com">
-                            </div>
+                        <div class="form-group">
+                            <label>Email (Optional)</label>
+                            <input type="email" id="realtorEmail" placeholder="contact@business.com">
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeAddHostelModal()">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Add Hostel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit Hostel Modal -->
-    <div class="modal" id="editHostelModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Edit Hostel Details</h3>
-                <button class="modal-close" onclick="closeEditHostelModal()">&times;</button>
-            </div>
-            
-            <form id="editHostelForm" class="edit-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editHostelName">Hostel Name *</label>
-                        <input type="text" id="editHostelName" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editHostelLocation">Location *</label>
-                        <select id="editHostelLocation" name="location" required>
-                            <option value="">Select Campus Area</option>
-                            <option value="north">North Gate</option>
-                            <option value="south">South Gate</option>
-                            <option value="west">West Gate</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editHostelPrice">Price per Semester (₦) *</label>
-                        <input type="number" id="editHostelPrice" name="price" min="10000" max="200000" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editHostelCapacity">Students per Room *</label>
-                        <select id="editHostelCapacity" name="capacity" required>
-                            <option value="">Select Capacity</option>
-                            <option value="1">1 per room</option>
-                            <option value="2">2 per room</option>
-                            <option value="3">3 per room</option>
-                            <option value="4">4 per room</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="editHostelAddress">Address *</label>
-                    <input type="text" id="editHostelAddress" name="address" required placeholder="Full address of the hostel">
-                </div>
-
-                <div class="form-group">
-                    <label for="editHostelDescription">Description *</label>
-                    <textarea id="editHostelDescription" name="description" rows="3" required placeholder="Describe the hostel facilities and environment"></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editHostelPhone">Phone Number *</label>
-                        <input type="tel" id="editHostelPhone" name="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editHostelWhatsapp">WhatsApp (Optional)</label>
-                        <input type="tel" id="editHostelWhatsapp" name="whatsapp">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Available Amenities *</label>
-                    <div class="amenities-grid">
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="wifi">
-                            <span>WiFi</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="power">
-                            <span>24/7 Power</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="water">
-                            <span>Running Water</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="security">
-                            <span>Security</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="parking">
-                            <span>Parking</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="kitchen">
-                            <span>Kitchen</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="laundry">
-                            <span>Laundry</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" name="amenities" value="study">
-                            <span>Study Area</span>
-                        </label>
-                        <label class="amenity-checkbox">
-                            <input type="checkbox" id="otherAmenityCheck" name="amenities" value="other" onchange="toggleOtherAmenity()">
-                            <span>Others</span>
-                        </label>
+                <!-- Property Details -->
+                <div class="form-section">
+                    <h3><i class="fas fa-home"></i> Property Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Property Name *</label>
+                            <input type="text" id="propertyName" placeholder="e.g., Green Valley Hostel" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Location *</label>
+                            <input type="text" id="propertyLocation" placeholder="e.g., Ekosodin, Benin City" required>
+                        </div>
                     </div>
                     
-                    <!-- Others field -->
-                    <div class="form-group other-amenity-group" id="otherAmenityGroup">
-                        <label for="otherAmenity">Specify Other Amenities</label>
-                        <input type="text" id="otherAmenity" name="otherAmenity" placeholder="e.g., Swimming Pool, Gym, etc.">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (₦ per year) *</label>
+                            <input type="number" id="propertyPrice" placeholder="150000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Room Type *</label>
+                            <select id="roomType" required>
+                                <option value="">Select type</option>
+                                <option value="self-contained">Self Contained</option>
+                                <option value="single">Single Room</option>
+                                <option value="shared">Shared Room</option>
+                                <option value="apartment">Apartment</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea id="propertyDescription" rows="4" placeholder="Describe the property, amenities, nearby facilities..." required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="hasWifi"> WiFi Available
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="hasParking"> Parking Space
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="hasSecurity"> 24/7 Security
+                            </label>
+                        </div>
                     </div>
                 </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeEditHostelModal()">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
+                
+                <!-- Images -->
+                <div class="form-section">
+                    <h3><i class="fas fa-images"></i> Property Images</h3>
+                    <div class="form-group">
+                        <label>Upload Images (Max 5)</label>
+                        <input type="file" id="propertyImages" accept="image/*" multiple>
+                        <small>Supported: JPG, PNG, WebP (Max 2MB each)</small>
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
                 </div>
+                
+                <button type="submit" class="btn-primary btn-large">
+                    <i class="fas fa-upload"></i> Publish Property
+                </button>
             </form>
-        </div>
+        </section>
+        
+        <!-- My Listings Section -->
+        <section id="myListings" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-list"></i> All Listings</h2>
+                <p>All properties uploaded by realtors</p>
+            </div>
+            <div id="listingsContainer" class="listings-grid"></div>
+        </section>
     </div>
-
-    <script>
-        // Simple dashboard navigation
-        function showSection(sectionName) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Show selected section
-            const targetSection = document.getElementById(sectionName + '-section');
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-
-            // Update active menu item
-            const menuItems = document.querySelectorAll('.sidebar-menu a');
-            menuItems.forEach(item => item.classList.remove('active'));
-            
-            // Find the clicked menu item and make it active
-            const clickedItem = event.target.closest('a');
-            if (clickedItem) {
-                clickedItem.classList.add('active');
-            }
-        }
-
-        function showAddHostelModal() {
-            document.getElementById('addHostelModal').classList.add('active');
-        }
-
-        function closeAddHostelModal() {
-            document.getElementById('addHostelModal').classList.remove('active');
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = 'realtor-login.html';
-            }
-        }
-
-        // Roommate management functions
-        function showRoommateResponses() {
-            showNotification('3 new messages from interested students! Check your messages section.');
-        }
-
-        function markRoommateFound() {
-            if (confirm('Mark this room as "Roommate Found"? This will close the post and notify interested parties.')) {
-                const button = event.target.closest('button');
-                const card = button.closest('.hostel-item');
-                const status = card.querySelector('.hostel-status');
-                
-                // Update status
-                status.textContent = 'Found';
-                status.style.background = 'var(--green)';
-                status.style.color = 'white';
-                
-                // Update meta info
-                const meta = card.querySelector('.hostel-meta');
-                const lastSpan = meta.querySelector('span:last-child');
-                lastSpan.innerHTML = '<i class="fas fa-calendar"></i> Closed just now';
-                
-                // Change button to repost
-                button.title = 'Repost';
-                button.innerHTML = '<i class="fas fa-redo"></i>';
-                button.onclick = repostRoom;
-                
-                showNotification('Room marked as "Roommate Found"! Interested parties have been notified.');
-            }
-        }
-
-        function repostRoom() {
-            if (confirm('Repost this room for roommate search?')) {
-                const button = event.target.closest('button');
-                const card = button.closest('.hostel-item');
-                const status = card.querySelector('.hostel-status');
-                
-                // Update status back to looking
-                status.textContent = 'Looking';
-                status.style.background = '';
-                status.style.color = '';
-                status.className = 'hostel-status active';
-                
-                // Update meta info
-                const meta = card.querySelector('.hostel-meta');
-                const lastSpan = meta.querySelector('span:last-child');
-                lastSpan.innerHTML = '<i class="fas fa-eye"></i> 0 views';
-                
-                // Change button back to found
-                button.title = 'Mark as Found';
-                button.innerHTML = '<i class="fas fa-check-circle"></i>';
-                button.onclick = markRoommateFound;
-                
-                showNotification('Room reposted successfully! It\'s now live for roommate search.');
-            }
-        }
-
-        // Simple notification for demo
-        function showNotification(message) {
-            alert(message); // In production, use a proper notification system
-        }
-
-        // Edit Hostel Functionality
-        let currentEditingHostel = null;
-
-        function editHostel(button) {
-            // Get hostel data from the card
-            const hostelItem = button.closest('.hostel-item');
-            const hostelName = hostelItem.querySelector('h3').textContent;
-            const hostelMeta = hostelItem.querySelector('.hostel-meta');
-            const metaSpans = hostelMeta.querySelectorAll('span');
-            
-            // Extract data (this is a simplified version - in real app would come from database)
-            const location = metaSpans[0].textContent.replace('North Gate', 'north').replace('South Gate', 'south').replace('West Gate', 'west');
-            const price = metaSpans[1].textContent.replace(/[₦,\/semester]/g, '').trim();
-            const capacity = metaSpans[2].textContent.replace(' per room', '').trim();
-            
-            // Set current editing hostel
-            currentEditingHostel = {
-                name: hostelName,
-                location: location.toLowerCase(),
-                price: price,
-                capacity: capacity,
-                address: 'Sample Address, Campus Road', // Would come from database
-                description: 'A comfortable and affordable hostel for students', // Would come from database
-                phone: '08012345678', // Would come from database
-                whatsapp: '08012345678', // Would come from database
-                amenities: ['wifi', 'power', 'water', 'security'] // Would come from database
-            };
-            
-            // Populate form with current data
-            document.getElementById('editHostelName').value = currentEditingHostel.name;
-            document.getElementById('editHostelLocation').value = currentEditingHostel.location;
-            document.getElementById('editHostelPrice').value = currentEditingHostel.price;
-            document.getElementById('editHostelCapacity').value = currentEditingHostel.capacity;
-            document.getElementById('editHostelAddress').value = currentEditingHostel.address;
-            document.getElementById('editHostelDescription').value = currentEditingHostel.description;
-            document.getElementById('editHostelPhone').value = currentEditingHostel.phone;
-            document.getElementById('editHostelWhatsapp').value = currentEditingHostel.whatsapp || '';
-            
-            // Set amenities checkboxes
-            const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
-            amenityCheckboxes.forEach(checkbox => {
-                checkbox.checked = currentEditingHostel.amenities.includes(checkbox.value);
-            });
-            
-            // Show modal
-            document.getElementById('editHostelModal').classList.add('active');
-        }
-
-        function closeEditHostelModal() {
-            document.getElementById('editHostelModal').classList.remove('active');
-            currentEditingHostel = null;
-        }
-
-        function deleteHostel(button) {
-            const hostelItem = button.closest('.hostel-item');
-            const hostelName = hostelItem.querySelector('h3').textContent;
-            
-            if (confirm(`Are you sure you want to delete "${hostelName}"? This action cannot be undone.`)) {
-                // Animate removal
-                hostelItem.style.transition = 'all 0.3s ease';
-                hostelItem.style.transform = 'translateX(-100%)';
-                hostelItem.style.opacity = '0';
-                
-                setTimeout(() => {
-                    hostelItem.remove();
-                    showNotification(`"${hostelName}" has been deleted successfully.`);
-                }, 300);
-            }
-        }
-
-        // Handle edit form submission
-        document.addEventListener('DOMContentLoaded', function() {
-            const editForm = document.getElementById('editHostelForm');
-            if (editForm) {
-                editForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    handleHostelEdit(this);
-                });
-            }
-        });
-
-        function handleHostelEdit(form) {
-            const formData = new FormData(form);
-            
-            // Get updated data
-            const updatedData = {
-                name: formData.get('name'),
-                location: formData.get('location'),
-                price: formData.get('price'),
-                capacity: formData.get('capacity'),
-                address: formData.get('address'),
-                description: formData.get('description'),
-                phone: formData.get('phone'),
-                whatsapp: formData.get('whatsapp'),
-                amenities: formData.getAll('amenities')
-            };
-            
-            // Validate required fields
-            const requiredFields = ['name', 'location', 'price', 'capacity', 'address', 'description', 'phone'];
-            const missingFields = requiredFields.filter(field => !updatedData[field]);
-            
-            if (missingFields.length > 0) {
-                showNotification(`Please fill in all required fields: ${missingFields.join(', ')}`);
-                return;
-            }
-            
-            if (updatedData.amenities.length === 0) {
-                showNotification('Please select at least one amenity');
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Changes...';
-            submitBtn.disabled = true;
-            
-            // Simulate save process
-            setTimeout(() => {
-                // Update the hostel card in the UI
-                updateHostelCard(updatedData);
-                
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Close modal
-                closeEditHostelModal();
-                
-                // Show success message
-                showNotification(`"${updatedData.name}" has been updated successfully!`);
-                
-                // In a real application, this would also update the database
-                console.log('Updated hostel data:', updatedData);
-            }, 1500);
-        }
-
-        function updateHostelCard(updatedData) {
-            // Find the hostel card that was being edited
-            const allHostelItems = document.querySelectorAll('.hostel-item');
-            let targetCard = null;
-            
-            // Find the card with the original name
-            allHostelItems.forEach(item => {
-                const nameElement = item.querySelector('h3');
-                if (nameElement && currentEditingHostel && nameElement.textContent === currentEditingHostel.name) {
-                    targetCard = item;
-                }
-            });
-            
-            if (targetCard) {
-                // Update name
-                const nameElement = targetCard.querySelector('h3');
-                nameElement.textContent = updatedData.name;
-                
-                // Update meta information
-                const metaElement = targetCard.querySelector('.hostel-meta');
-                const locationText = updatedData.location.charAt(0).toUpperCase() + updatedData.location.slice(1) + ' Gate';
-                const priceText = '₦' + parseInt(updatedData.price).toLocaleString() + '/semester';
-                const capacityText = updatedData.capacity + ' per room';
-                
-                metaElement.innerHTML = `
-                    <span><i class="fas fa-map-marker-alt"></i> ${locationText}</span>
-                    <span><i class="fas fa-naira-sign"></i> ${priceText}</span>
-                    <span><i class="fas fa-users"></i> ${capacityText}</span>
-                `;
-                
-                // Add visual feedback
-                targetCard.style.background = '#e8f5e8';
-                setTimeout(() => {
-                    targetCard.style.background = '';
-                }, 2000);
-            }
-        }
-        
-        // Toggle other amenity field
-        function toggleOtherAmenity() {
-            const checkbox = document.getElementById('otherAmenityCheck');
-            const otherGroup = document.getElementById('otherAmenityGroup');
-            const otherInput = document.getElementById('otherAmenity');
-            
-            if (checkbox.checked) {
-                otherGroup.classList.add('show');
-                otherInput.focus();
-            } else {
-                otherGroup.classList.remove('show');
-                otherInput.value = '';
-            }
-        }
-
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Realtor Dashboard Loaded');
-        });
-    </script>
-
-    <script>
-        window.addEventListener('error', function(e) {
-            if (e.target.tagName === 'IMG') {
-                console.warn('Image failed:', e.target.src);
-                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
-            }
-        }, true);
-        
-        window.addEventListener('unhandledrejection', function(e) {
-            console.error('Promise rejection:', e.reason);
-        });
-    </script>
-
-    <!-- Admin Script -->
-    <script src="view-realtor-accounts.js"></script>
     
-    <!-- Existing scripts -->
-    <script src="realtor-script.js"></script>
+    <script src="realtor-auth-simple.js"></script>
+    <script src="realtor-dashboard-simple.js"></script>
 </body>
 </html>

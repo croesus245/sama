@@ -13,90 +13,34 @@
             <div class="login-header">
                 <i class="fas fa-building"></i>
                 <h1>Realtor Portal</h1>
-                <p>MWG Hostels Management System</p>
+                <p>MWG Hostels - Add Your Properties</p>
             </div>
             
-            <!-- Authorization Notice -->
             <div class="auth-notice">
                 <i class="fas fa-shield-alt"></i>
-                <p><strong>Authorized Access Only</strong></p>
+                <p><strong>Realtor Access</strong></p>
                 <p style="font-size: 0.875rem; margin-top: 8px;">
-                    Only pre-approved realtors can access this portal. 
-                    Contact <a href="mailto:admin@mwghostels.com" style="color: #2196F3;">admin@mwghostels.com</a> for authorization.
+                    Enter the master password to access the portal. 
+                    Contact <a href="mailto:admin@mwghostels.com" style="color: #2196F3;">admin@mwghostels.com</a> for the password.
                 </p>
             </div>
             
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="login">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <button class="tab-btn" data-tab="register">
-                    <i class="fas fa-user-plus"></i> Register
-                </button>
-            </div>
-            
-            <!-- Login Tab -->
-            <div id="loginTab" class="tab-content active">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="loginEmail" placeholder="your@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter password" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                </form>
-                
-                <div class="demo-credentials">
-                    <p><strong>Demo Credentials:</strong></p>
-                    <p>Email: admin@mwghostels.com</p>
-                    <p>Password: Admin@2025</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Master Password</label>
+                    <input type="password" id="masterPassword" placeholder="Enter master password" required autofocus>
                 </div>
-            </div>
+                
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Access Portal
+                </button>
+            </form>
             
-            <!-- Register Tab -->
-            <div id="registerTab" class="tab-content">
-                <form id="registerForm">
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Full Name</label>
-                        <input type="text" id="regName" placeholder="John Doe" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email (Must be authorized)</label>
-                        <input type="email" id="regEmail" placeholder="your@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-phone"></i> Phone</label>
-                        <input type="tel" id="regPhone" placeholder="08012345678" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-building"></i> Company Name</label>
-                        <input type="text" id="regCompany" placeholder="ABC Properties Ltd">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password (8+ chars, uppercase, number)</label>
-                        <input type="password" id="regPassword" placeholder="Strong password" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Confirm Password</label>
-                        <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-user-plus"></i> Register
-                    </button>
-                </form>
+            <div class="demo-credentials">
+                <p><strong>📌 Master Password:</strong> MWG@2025</p>
+                <p style="font-size: 0.875rem; color: #666; margin-top: 8px;">
+                    All realtors use the same password. You'll enter your business details when uploading properties.
+                </p>
             </div>
             
             <div class="login-footer">
@@ -107,8 +51,23 @@
         </div>
     </div>
     
-    <!-- Load configuration first, then main script -->
-    <script src="realtor-auth-config.js"></script>
-    <script src="realtor-script.js"></script>
+    <script src="realtor-auth-simple.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('masterPassword').value;
+            
+            if (realtorLogin(password)) {
+                showNotification('✅ Access granted! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'realtor-dashboard.html';
+                }, 1000);
+            } else {
+                showNotification('❌ Invalid password. Contact admin for access.', 'error');
+                document.getElementById('masterPassword').value = '';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,189 +1,418 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+/* Provider/Seeker Badge Colors */
+.provider-card {
+    border-left: 4px solid #4caf50;
+}   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAMA - MWG Hostels Platform</title>
-    <link rel="icon" type="image/png" href="MWG logo@300x.png">
-    <meta name="description" content="SAMA - Structurally solving common student challenges with sustainable and innovative solutions">
+.seeker-card {A - MWG Hostels Platform</title>
+    border-left: 4px solid #2196f3;g" href="MWG logo@300x.png">
+}   <meta name="description" content="SAMA - Structurally solving common student challenges with sustainable and innovative solutions">
     <meta name="theme-color" content="#3b82f6" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+.profile-badge {theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
+    position: absolute;obile-web-app-capable" content="yes">
+    top: 12px;="apple-mobile-web-app-status-bar-style" content="default">
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6px 12px;t" href="manifest.json">
+    border-radius: 20px;
+    font-size: 0.875rem;n -->
+    font-weight: 600;touch-icon" href="sama.png">
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;Colors -->
+}   <meta name="theme-color" content="#1a365d">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="sama.png">
-    
-    <!-- Theme Colors -->
-    <meta name="theme-color" content="#1a365d">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="SAMA MWG Hostels">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="MWG Hostels">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+/* Room Gallery */ple-mobile-web-app-capable" content="yes">
+.room-gallery {"apple-mobile-web-app-title" content="SAMA MWG Hostels">
+    display: grid;bile-web-app-capable" content="yes">
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    gap: 12px;
+    margin-bottom: 24px;
+}   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Enhanced Styles -->
-    <link rel="stylesheet" href="universal-bg-system.css">
-    <link rel="stylesheet" href="perfect-vibe-theme.css">
-    <link rel="stylesheet" href="glass-morphism-global.css">
-    <link rel="stylesheet" href="theme-enhanced.css">
+.room-gallery img {
+    width: 100%;d Styles -->
+    height: 200px;lesheet" href="universal-bg-system.css">
+    object-fit: cover;eet" href="perfect-vibe-theme.css">
+    border-radius: 8px;et" href="glass-morphism-global.css">
+}   <link rel="stylesheet" href="theme-enhanced.css">
     <link rel="stylesheet" href="landing-improved.css">
-    <link rel="stylesheet" href="landing-complete.css">
-    <link rel="stylesheet" href="quick-access.css">
-    <link rel="stylesheet" href="modal-styles.css">
-    <link rel="stylesheet" href="realtor-verification-styles.css">
-    <link rel="stylesheet" href="realtor-form-enhancements.css">
-    <link rel="stylesheet" href="password-validation.css">
-    <link rel="stylesheet" href="responsive-fixes.css">
-    <link rel="stylesheet" href="student-accessibility.css">
+/* Room Image Preview */t" href="landing-complete.css">
+.room-image-preview {heet" href="quick-access.css">
+    position: relative;et" href="modal-styles.css">
+    width: 150px;ylesheet" href="realtor-verification-styles.css">
+    height: 150px;lesheet" href="realtor-form-enhancements.css">
+    display: inline-block; href="password-validation.css">
+    margin: 8px;tylesheet" href="responsive-fixes.css">
+}   <link rel="stylesheet" href="student-accessibility.css">
     <link rel="stylesheet" href="inline-styles-cleanup.css">
-    <link rel="stylesheet" href="production-enhancements.css">
-    <link rel="stylesheet" href="student-application-system.css">
-    
-    <style>
-        
-        .landing-container {
+.room-image-preview img {" href="production-enhancements.css">
+    width: 100%;tylesheet" href="student-application-system.css">
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}       .landing-container {
             text-align: center;
-            color: white;
-            z-index: 2;
-            position: relative;
-            max-width: 800px;
-            padding: 2rem;
-            margin: 0 auto;
-        }
-        
-        .sama-logo {
-            max-width: 400px;
-            width: 90%;
-            height: auto;
-            margin-bottom: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+.remove-image-btn {white;
+    position: absolute;
+    top: 8px;osition: relative;
+    right: 8px;-width: 800px;
+    background: #f44336;m;
+    color: white;n: 0 auto;
+    border: none;
+    border-radius: 50%;
+    width: 28px;go {
+    height: 28px;idth: 400px;
+    cursor: pointer;0%;
+    display: flex;: auto;
+    align-items: center;m: 2rem;
+    justify-content: center;0px;
+}           box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             animation: glow 3s ease-in-out infinite alternate;
-            background: rgba(255,255,255,0.1);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-        }
-        
-        @keyframes glow {
-            from { box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); }
-            to { box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.4); }
-        }
-        
-        .landing-title {
+/* Hostel Detail Modal */gba(255,255,255,0.1);
+.hostel-detail-modal {ckdrop-filter: blur(10px);
+    position: fixed;-filter: blur(10px);
+    top: 0; padding: 1rem;
+    left: 0;
+    right: 0;
+    bottom: 0;ames glow {
+    z-index: 10000;box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); }
+    display: flex;ox-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.4); }
+    align-items: center;
+    justify-content: center;
+}       .landing-title {
             font-size: 3.5rem;
-            font-weight: 800;
+.modal-overlay {-weight: 800;
+    position: absolute;om: 1rem;
+    top: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    left: 0;
+    right: 0;
+    bottom: 0;ng-subtitle {
+    background: rgba(0, 0, 0, 0.7);
+}           font-weight: 300;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .landing-subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-        
-        .landing-description {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
+.modal-content {ity: 0.9;
+    position: relative;
+    background: white;
+    border-radius: 12px;tion {
+    max-width: 700px;: 1.2rem;
+    max-height: 90vh;ttom: 2rem;
+    overflow-y: auto;0.8;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}       
         .registration-notice {
-            background: rgba(255,255,255,0.15);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin: 2rem 0;
+.hostel-detail-header { rgba(255,255,255,0.15);
+    position: relative;5rem;
+    height: 300px;-radius: 15px;
+}           margin: 2rem 0;
             -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: pulse 2s infinite;
-        }
-        
-        .registration-notice p {
+.hostel-detail-header img {: blur(10px);
+    width: 100%;er: 1px solid rgba(255,255,255,0.3);
+    height: 100%;tion: pulse 2s infinite;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}       .registration-notice p {
             margin: 0.5rem 0;
-            font-weight: 500;
-        }
-        
+.hostel-detail-body {ht: 500;
+    padding: 24px;
+}       
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-        
-        .landing-cta {
-            display: flex;
+.hostel-features-grid {transform: scale(1); }
+    display: grid;transform: scale(1.02); }
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;a {
+}           display: flex;
             gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-        
-        .cta-button {
-            background: rgba(255,255,255,0.9);
-            color: #667eea;
+.feature {  justify-content: center;
+    display: flex;rap: wrap;
+    align-items: center;m: 3rem;
+    gap: 12px;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px; rgba(255,255,255,0.9);
+}           color: #667eea;
             padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
+.amenities-list {r: none;
+    display: flex;-radius: 50px;
+    flex-wrap: wrap;e: 1.1rem;
+    gap: 8px;ont-weight: 600;
+    margin-top: 12px;ration: none;
+}           display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
+.amenity-tag {p: 0.5rem;
+    display: inline-flex;ll 0.3s ease;
+    align-items: center;0 10px 20px rgba(0,0,0,0.2);
+    gap: 6px;ursor: pointer;
+    padding: 6px 12px;
+    background: #e3f2fd;
+    color: #1976d2;:hover {
+    border-radius: 20px;white;
+    font-size: 0.875rem;ranslateY(-3px);
+}           box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
-        
-        .cta-button:hover {
-            background: white;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+.btn-whatsapp-large {
+    width: 100%;ton.secondary {
+    padding: 16px;ound: transparent;
+    background: #25d366;;
+    color: white;r: 2px solid rgba(255,255,255,0.5);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;condary:hover {
+    font-weight: 600;d: rgba(255,255,255,0.1);
+    cursor: pointer;olor: white;
+    display: flex;
+    align-items: center;
+    justify-content: center; {
+    gap: 12px;ckground: rgba(255,255,255,0.1);
+    transition: background 0.3s;
+    margin-bottom: 12px;solid rgba(255,255,255,0.3);
+}           font-size: 0.9rem;
         }
-        
-        .cta-button.secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255,255,255,0.5);
-        }
-        
-        .cta-button.secondary:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-        }
-        
-        .cta-button.tertiary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            font-size: 0.9rem;
-        }
-        
-        .cta-button.tertiary:hover {
-            background: rgba(255,255,255,0.2);
+.btn-whatsapp-large:hover {
+    background: #20ba5a;iary:hover {
+}           background: rgba(255,255,255,0.2);
             border-color: rgba(255,255,255,0.6);
-        }
-        
-        .landing-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            background: rgba(255,255,255,0.1);
-            padding: 1.5rem;
+.info-note {
+    margin-top: 16px;
+    padding: 12px;eatures {
+    background: #fff3cd;d;
+    border-left: 4px solid #ffc107;repeat(auto-fit, minmax(250px, 1fr));
+    border-radius: 4px;
+    font-size: 0.875rem;3rem;
+    color: #856404;
+    display: flex;
+    gap: 8px;ure-card {
+}           background: rgba(255,255,255,0.1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}    }        padding: 20px;    .modal-body {    .modal-header,        }        height: 250px;    .main-image {        }        max-height: 100vh;        border-radius: 0;        margin: 0;    .modal-content {@media (max-width: 768px) {/* Responsive */}    color: #2196F3;.hostel-realtor i {}    gap: 8px;    align-items: center;    display: flex;    color: #666;.hostel-realtor p {}    font-size: 0.875rem;    border-top: 1px solid #e0e0e0;    padding-top: 12px;    margin-top: 12px;.hostel-realtor {}    box-shadow: 0 8px 24px rgba(0,0,0,0.15);    transform: translateY(-8px);.hostel-card:hover {}    transition: all 0.3s;    cursor: pointer;.hostel-card {/* Hostel Card Updates */}    color: #2196F3;.realtor-info strong {}    color: #333;    margin: 8px 0;.realtor-info p {}    margin-bottom: 16px;    border-radius: 8px;    padding: 16px;    background: white;.realtor-info {}    border-radius: 12px;    padding: 24px;    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);.realtor-contact {}    color: #2196F3;.amenities-list i {}    color: #1976D2;    border-radius: 8px;    background: #E3F2FD;    padding: 12px;    gap: 8px;    align-items: center;    display: flex;.amenities-list span {}    gap: 12px;    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));    display: grid;.amenities-list {}    font-size: 1.2rem;    color: #2196F3;.detail-item i {}    border-radius: 8px;    background: #f5f5f5;    padding: 12px;    gap: 12px;    align-items: center;    display: flex;.detail-item {}    gap: 16px;    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));    display: grid;.detail-grid {}    gap: 12px;    align-items: center;    display: flex;    margin-bottom: 16px;    color: #2196F3;.modal-section h3 {}    margin-bottom: 32px;.modal-section {}    padding: 32px;.modal-body {}    box-shadow: 0 2px 8px rgba(0,0,0,0.2);    transform: scale(1.05);.thumbnail-images img:hover {}    transition: transform 0.3s;    cursor: pointer;    border-radius: 8px;    object-fit: cover;    height: 80px;    width: 100%;.thumbnail-images img {}    gap: 12px;    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));    display: grid;.thumbnail-images {}    object-fit: cover;    height: 100%;    width: 100%;.main-image img {}    margin-bottom: 16px;    overflow: hidden;    border-radius: 12px;    height: 400px;    width: 100%;.main-image {}    padding: 24px;.modal-images {}    gap: 8px;    align-items: center;    display: flex;    color: #666;.modal-location {}    margin-bottom: 8px;    color: #2196F3;.modal-header h2 {}    border-bottom: 1px solid #e0e0e0;    padding: 32px;.modal-header {}    transform: rotate(90deg);    color: white;    background: #f44336;.modal-close:hover {}    transition: all 0.3s;    z-index: 10;    box-shadow: 0 2px 8px rgba(0,0,0,0.2);    color: #666;    font-size: 1.2rem;    cursor: pointer;    border-radius: 50%;    height: 40px;    width: 40px;    border: none;    background: white;    right: 20px;    top: 20px;    position: absolute;.modal-close {}    position: relative;    overflow-y: auto;    max-height: 90vh;    width: 100%;    max-width: 900px;    border-radius: 16px;    background: white;.modal-content {}    overflow-y: auto;    padding: 20px;    z-index: 10000;    justify-content: center;    align-items: center;    display: flex;    background: rgba(0, 0, 0, 0.8);    height: 100%;    width: 100%;    left: 0;    top: 0;    position: fixed;.hostel-modal {/* Hostel Modal Styles */            padding: 1.5rem;
             border-radius: 15px;
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
