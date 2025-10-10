@@ -677,5 +677,17 @@
             console.error('Promise rejection:', e.reason);
         });
     </script>
+    
+    <!-- Load Fixed Password System -->
+    <script src="realtor-fixed-password-system.js"></script>
+    <script>
+        // Protect this dashboard - require authentication
+        requireRealtorAuth();
+        
+        // Update UI with realtor name
+        updateRealtorDashboardUI();
+        
+        console.log('✅ Enhanced Realtor Dashboard with Fixed Password System Loaded');
+    </script>
 </body>
 </html>

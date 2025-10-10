@@ -178,51 +178,44 @@
 
     <!-- Dashboard loads on separate page after login -->
     
+    <!-- Load Fixed Password System -->
+    <script src="realtor-fixed-password-system.js"></script>
+    
     <script>
-        // SIMPLE PASSWORD SYSTEM - Original Plan
-        const REALTOR_PASSWORD = 'MWG@2025';
+        // Check if already logged in - redirect to dashboard
+        redirectIfLoggedIn('realtor-dashboard.html');
 
-        // Check if already logged in
-        if (localStorage.getItem('realtorLoggedIn') === 'true') {
-            // Redirect to dashboard page
-            window.location.href = 'realtor-dashboard.html';
-        }
-
-        // Handle login
+        // Handle login form submission
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value.trim();
+            const name = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             
-            console.log('🔐 Login attempt by:', username);
+            console.log('🔐 Login attempt by:', name);
             
-            if (password === REALTOR_PASSWORD) {
-                console.log('✅ Password correct!');
+            // Attempt login with fixed password system
+            const result = realtorLogin(name, password);
+            
+            if (result.success) {
+                // Show success notification
+                showRealtorNotification(result.message, 'success');
                 
-                // Save login state
-                localStorage.setItem('realtorLoggedIn', 'true');
-                localStorage.setItem('realtorUsername', username);
-                localStorage.setItem('loginTime', new Date().toISOString());
-                
-                // Success message
-                alert('✅ Login successful! Welcome, ' + username);
-                
-                // Redirect to dashboard
-                window.location.href = 'realtor-dashboard.html';
+                // Redirect to dashboard after short delay
+                setTimeout(() => {
+                    window.location.href = 'realtor-dashboard.html';
+                }, 1000);
                 
             } else {
-                console.log('❌ Wrong password');
-                alert('❌ Incorrect password!\n\nPlease use: MWG@2025');
+                // Show error notification
+                showRealtorNotification(result.message, 'error');
+                
+                // Clear password field and focus
                 document.getElementById('password').value = '';
                 document.getElementById('password').focus();
             }
         });
 
-        // Show password hint on focus
-        document.getElementById('password').addEventListener('focus', function() {
-            console.log('💡 Password hint: MWG@2025');
-        });
     </script>
 </body>
 </html>
