@@ -28,6 +28,10 @@
                 <button type="submit" class="btn-primary btn-large">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
+                <div class="demo-credentials" style="margin-top: 20px;">
+                    <strong>Demo Login:</strong>
+                    <p>Password: <code>MWG@2025</code></p>
+                </div>
             </form>
         </div>
     </div>
@@ -40,6 +44,7 @@
                 <h1>Realtor Dashboard</h1>
             </div>
             <div class="header-right">
+                <span id="welcomeUser" style="margin-right: 20px; color: #667eea; font-weight: 600;"></span>
                 <button onclick="realtorLogout()" class="btn-logout">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
@@ -173,7 +178,7 @@
                     <h3><i class="fas fa-images"></i> Property Images</h3>
                     <div class="form-group">
                         <label>Upload Images (Max 5)</label>
-                        <input type="file" id="propertyImages" accept="image/*" multiple>
+                        <input type="file" id="propertyImages" accept="image/*" multiple onchange="previewImages(event)">
                         <small>Supported: JPG, PNG, WebP (Max 2MB each)</small>
                     </div>
                     <div id="imagePreview" class="image-preview"></div>
@@ -199,11 +204,17 @@
     <script>
         const REALTOR_PASSWORD = 'MWG@2025';
 
-        if (localStorage.getItem('realtorLoggedIn') === 'true') {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
-        }
+        // Check login on load
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('realtorLoggedIn') === 'true') {
+                const username = localStorage.getItem('realtorUsername') || 'Realtor';
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
+            }
+        });
 
+        // Toggle other location
         function toggleOtherLocation() {
             const locationSelect = document.getElementById('propertyLocation');
             const otherLocationRow = document.getElementById('otherLocationRow');
@@ -219,6 +230,7 @@
             }
         }
 
+        // Toggle other amenities
         function toggleOtherAmenities() {
             const checkbox = document.getElementById('hasOtherAmenities');
             const row = document.getElementById('otherAmenitiesRow');
@@ -231,6 +243,28 @@
             }
         }
 
+        // Preview images
+        function previewImages(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            const files = event.target.files;
+            
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'position:relative;width:150px;height:150px;border-radius:8px;overflow:hidden;';
+                    div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    preview.appendChild(div);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Login form
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -243,13 +277,15 @@
                 
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
                 
-                alert('Login successful! Welcome, ' + username);
+                alert('✅ Login successful! Welcome, ' + username);
             } else {
-                alert('Incorrect password. Please try again.');
+                alert('❌ Incorrect password. Try: MWG@2025');
             }
         });
 
+        // Logout
         function realtorLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('realtorLoggedIn');
@@ -259,9 +295,11 @@
                 document.getElementById('dashboardSection').style.display = 'none';
                 
                 document.getElementById('loginForm').reset();
+                location.reload();
             }
         }
 
+        // Show section
         function showSection(sectionId) {
             document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
