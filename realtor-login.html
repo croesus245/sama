@@ -6,6 +6,130 @@
     <title>Realtor Dashboard - MWG Hostels</title>
     <link rel="stylesheet" href="realtor-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ensure styles are loaded */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 48px;
+            color: #4169E1;
+            margin-bottom: 15px;
+        }
+
+        .login-header h2 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(65, 105, 225, 0.4);
+        }
+
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .demo-credentials code {
+            background: #e0e7ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #4169E1;
+            font-weight: bold;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+    </style>
 </head>
 <body>
     <!-- Login Section -->
@@ -19,16 +143,16 @@
             <form id="loginForm" class="login-form">
                 <div class="form-group">
                     <label><i class="fas fa-user"></i> Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" required>
+                    <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required>
+                    <input type="password" id="password" placeholder="Enter password" required autocomplete="current-password">
                 </div>
-                <button type="submit" class="btn-primary btn-large">
+                <button type="submit" class="btn-primary">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
-                <div class="demo-credentials" style="margin-top: 20px;">
+                <div class="demo-credentials">
                     <strong>Demo Login:</strong>
                     <p>Password: <code>MWG@2025</code></p>
                 </div>
@@ -44,7 +168,7 @@
                 <h1>Realtor Dashboard</h1>
             </div>
             <div class="header-right">
-                <span id="welcomeUser" style="margin-right: 20px; color: #667eea; font-weight: 600;"></span>
+                <span id="welcomeUser" style="margin-right: 20px; color: #4169E1; font-weight: 600;"></span>
                 <button onclick="realtorLogout()" class="btn-logout">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
@@ -69,6 +193,7 @@
             </div>
             
             <form id="addListingForm" class="listing-form">
+                <!-- Form content stays the same -->
                 <div class="form-section">
                     <h3><i class="fas fa-user"></i> Your Details</h3>
                     <div class="form-row">
@@ -184,7 +309,7 @@
                     <div id="imagePreview" class="image-preview"></div>
                 </div>
                 
-                <button type="submit" class="btn-primary btn-large">
+                <button type="submit" class="btn-primary">
                     <i class="fas fa-upload"></i> Publish Property
                 </button>
             </form>
@@ -199,20 +324,58 @@
         </section>
     </div>
     
-    <script src="realtor-auth-simple.js"></script>
-    <script src="realtor-dashboard-simple.js"></script>
+    <!-- Consolidated JavaScript -->
     <script>
+        console.log('🔧 Realtor login page loaded');
+        
         const REALTOR_PASSWORD = 'MWG@2025';
 
         // Check login on load
         window.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM loaded, checking login status...');
+            
             if (localStorage.getItem('realtorLoggedIn') === 'true') {
                 const username = localStorage.getItem('realtorUsername') || 'Realtor';
+                console.log('✅ User already logged in:', username);
+                
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
                 document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
+            } else {
+                console.log('ℹ️ No active session found');
             }
         });
+
+        // Login form handler
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('🔐 Login attempt...');
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                console.log('Username:', username);
+                console.log('Password length:', password.length);
+                
+                if (password === REALTOR_PASSWORD) {
+                    console.log('✅ Password correct!');
+                    
+                    localStorage.setItem('realtorLoggedIn', 'true');
+                    localStorage.setItem('realtorUsername', username);
+                    
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('dashboardSection').style.display = 'block';
+                    document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
+                    
+                    alert('✅ Login successful! Welcome, ' + username);
+                } else {
+                    console.log('❌ Password incorrect');
+                    alert('❌ Incorrect password. Try: MWG@2025');
+                }
+            });
+        }
 
         // Toggle other location
         function toggleOtherLocation() {
@@ -255,7 +418,7 @@
                 
                 reader.onload = function(e) {
                     const div = document.createElement('div');
-                    div.style.cssText = 'position:relative;width:150px;height:150px;border-radius:8px;overflow:hidden;';
+                    div.style.cssText = 'position:relative;width:150px;height:150px;border-radius:8px;overflow:hidden;border:2px solid #e0e0e0;';
                     div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
                     preview.appendChild(div);
                 };
@@ -264,30 +427,11 @@
             }
         }
 
-        // Login form
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (password === REALTOR_PASSWORD) {
-                localStorage.setItem('realtorLoggedIn', 'true');
-                localStorage.setItem('realtorUsername', username);
-                
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
-                
-                alert('✅ Login successful! Welcome, ' + username);
-            } else {
-                alert('❌ Incorrect password. Try: MWG@2025');
-            }
-        });
-
-        // Logout
+        // Logout function
         function realtorLogout() {
             if (confirm('Are you sure you want to logout?')) {
+                console.log('👋 Logging out...');
+                
                 localStorage.removeItem('realtorLoggedIn');
                 localStorage.removeItem('realtorUsername');
                 
@@ -295,14 +439,18 @@
                 document.getElementById('dashboardSection').style.display = 'none';
                 
                 document.getElementById('loginForm').reset();
-                location.reload();
+                
+                alert('Logged out successfully!');
             }
         }
 
         // Show section
         function showSection(sectionId) {
+            console.log('📄 Switching to section:', sectionId);
+            
             document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
             document.getElementById(sectionId).classList.add('active');
             event.target.closest('.nav-link').classList.add('active');
         }
