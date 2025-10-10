@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MWG Hostels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+        }
+
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-info {
+            text-align: right;
+        }
+
+        .admin-info .name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .admin-info .role {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #1e3c72;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card.pending {
+            border-left: 4px solid #ffc107;
+        }
+
+        .stat-card.active {
+            border-left: 4px solid #28a745;
+        }
+
+        .stat-card.suspended {
+            border-left: 4px solid #dc3545;
+        }
+
+        .stat-card.hostels {
+            border-left: 4px solid #667eea;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #1e3c72;
+        }
+
+        .tab.active {
+            color: #1e3c72;
+            border-bottom-color: #1e3c72;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            color: #1e3c72;
+            font-size: 20px;
+        }
+
+        .search-box {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 250px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.suspended {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-suspend {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-suspend:hover {
+            background: #e0a800;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #5568d3;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3c72;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Alert */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .alert-error {
+            background: #dc3545;
+            color: white;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1>🛡️ Admin Dashboard</h1>
+            <span class="admin-badge">ADMIN PANEL</span>
+        </div>
+        <div class="header-right">
+            <div class="admin-info">
+                <div class="name" id="adminName">Loading...</div>
+                <div class="role" id="adminRole">Administrator</div>
+            </div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div id="alertBox" class="alert"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card pending">
+                <div class="icon">⏳</div>
+                <div class="value" id="pendingCount">-</div>
+                <div class="label">Pending Realtors</div>
+            </div>
+            <div class="stat-card active">
+                <div class="icon">✅</div>
+                <div class="value" id="activeCount">-</div>
+                <div class="label">Active Realtors</div>
+            </div>
+            <div class="stat-card suspended">
+                <div class="icon">🚫</div>
+                <div class="value" id="suspendedCount">-</div>
+                <div class="label">Suspended</div>
+            </div>
+            <div class="stat-card hostels">
+                <div class="icon">🏠</div>
+                <div class="value" id="hostelsCount">-</div>
+                <div class="label">Total Hostels</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('pending')">Pending Approvals</button>
+            <button class="tab" onclick="switchTab('all')">All Realtors</button>
+            <button class="tab" onclick="switchTab('hostels')">All Hostels</button>
+        </div>
+
+        <!-- Tab Content: Pending Approvals -->
+        <div id="pendingTab" class="tab-content active">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Pending Realtor Applications</h2>
+                </div>
+                <div id="pendingTableContent"></div>
+            </div>
+        </div>
+
+        <!-- Tab Content: All Realtors -->
+        <div id="allTab" class="tab-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>All Realtors</h2>
+                    <input type="text" class="search-box" id="searchRealtors" placeholder="Search realtors...">
+                </div>
+                <div id="allTableContent"></div>
+            </div>
+        </div>
+
+        <!-- Tab Content: All Hostels -->
+        <div id="hostelsTab" class="tab-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>All Hostels</h2>
+                    <input type="text" class="search-box" id="searchHostels" placeholder="Search hostels...">
+                </div>
+                <div id="hostelsTableContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let adminToken = '';
+        let adminData = null;
+
+        // Check authentication on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            adminToken = localStorage.getItem('adminToken');
+            const storedAdminData = localStorage.getItem('adminData');
+
+            if (!adminToken) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            try {
+                adminData = JSON.parse(storedAdminData);
+                document.getElementById('adminName').textContent = adminData.fullName;
+                document.getElementById('adminRole').textContent = adminData.role === 'super-admin' ? 'Super Administrator' : 'Administrator';
+            } catch (e) {
+                console.error('Error parsing admin data:', e);
+            }
+
+            // Load initial data
+            await loadStats();
+            await loadPendingRealtors();
+        });
+
+        // Load Statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const stats = data.data.stats;
+                    document.getElementById('pendingCount').textContent = stats.realtors.pending;
+                    document.getElementById('activeCount').textContent = stats.realtors.active;
+                    document.getElementById('suspendedCount').textContent = stats.realtors.suspended;
+                    document.getElementById('hostelsCount').textContent = stats.hostels.total;
+                } else {
+                    console.error('Failed to load stats:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load Pending Realtors
+        async function loadPendingRealtors() {
+            const container = document.getElementById('pendingTableContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading pending realtors...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/realtors/pending`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const realtors = data.data.realtors;
+
+                    if (realtors.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><h3>No Pending Applications</h3><p>All realtor applications have been processed.</p></div>';
+                        return;
+                    }
+
+                    let tableHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>WhatsApp</th>
+                                    <th>Business Name</th>
+                                    <th>Registered</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    realtors.forEach(realtor => {
+                        const date = new Date(realtor.createdAt).toLocaleDateString();
+                        tableHTML += `
+                            <tr>
+                                <td><strong>${realtor.fullName}</strong></td>
+                                <td>${realtor.email}</td>
+                                <td>${realtor.phoneNumber}</td>
+                                <td>${realtor.whatsapp}</td>
+                                <td>${realtor.businessName || '-'}</td>
+                                <td>${date}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-approve" onclick="approveRealtor('${realtor.id}', '${realtor.fullName}')">✓ Approve</button>
+                                        <button class="btn btn-reject" onclick="rejectRealtor('${realtor.id}', '${realtor.fullName}')">✗ Reject</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += '</tbody></table>';
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Error Loading Data</h3><p>' + data.message + '</p></div>';
+                }
+            } catch (error) {
+                console.error('Error loading pending realtors:', error);
+                container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Connection Error</h3><p>Could not connect to the server.</p></div>';
+            }
+        }
+
+        // Approve Realtor
+        async function approveRealtor(realtorId, realtorName) {
+            if (!confirm(`Are you sure you want to approve ${realtorName}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/realtors/${realtorId}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    await loadStats();
+                    await loadPendingRealtors();
+                } else {
+                    showAlert(data.message || 'Failed to approve realtor', 'error');
+                }
+            } catch (error) {
+                console.error('Error approving realtor:', error);
+                showAlert('Connection error. Please try again.', 'error');
+            }
+        }
+
+        // Reject Realtor
+        async function rejectRealtor(realtorId, realtorName) {
+            if (!confirm(`Are you sure you want to REJECT and DELETE ${realtorName}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/realtors/${realtorId}/reject`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    await loadStats();
+                    await loadPendingRealtors();
+                } else {
+                    showAlert(data.message || 'Failed to reject realtor', 'error');
+                }
+            } catch (error) {
+                console.error('Error rejecting realtor:', error);
+                showAlert('Connection error. Please try again.', 'error');
+            }
+        }
+
+        // Load All Realtors
+        async function loadAllRealtors() {
+            const container = document.getElementById('allTableContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading all realtors...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/realtors`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const realtors = data.data.realtors;
+
+                    if (realtors.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><div class="icon">👥</div><h3>No Realtors Yet</h3><p>No realtors have registered yet.</p></div>';
+                        return;
+                    }
+
+                    let tableHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Business</th>
+                                    <th>Hostels</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    realtors.forEach(realtor => {
+                        tableHTML += `
+                            <tr>
+                                <td><strong>${realtor.fullName}</strong></td>
+                                <td>${realtor.email}</td>
+                                <td>${realtor.phoneNumber}</td>
+                                <td>${realtor.businessName || '-'}</td>
+                                <td>${realtor.totalHostels || 0}</td>
+                                <td><span class="status-badge ${realtor.status}">${realtor.status.toUpperCase()}</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        ${realtor.status === 'suspended' 
+                                            ? `<button class="btn btn-approve" onclick="suspendRealtor('${realtor.id}', '${realtor.fullName}')">Reactivate</button>`
+                                            : `<button class="btn btn-suspend" onclick="suspendRealtor('${realtor.id}', '${realtor.fullName}')">Suspend</button>`
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += '</tbody></table>';
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Error Loading Data</h3><p>' + data.message + '</p></div>';
+                }
+            } catch (error) {
+                console.error('Error loading realtors:', error);
+                container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Connection Error</h3><p>Could not connect to the server.</p></div>';
+            }
+        }
+
+        // Suspend/Reactivate Realtor
+        async function suspendRealtor(realtorId, realtorName) {
+            if (!confirm(`Are you sure you want to change the status of ${realtorName}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/realtors/${realtorId}/suspend`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    await loadStats();
+                    await loadAllRealtors();
+                } else {
+                    showAlert(data.message || 'Failed to update realtor status', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating realtor:', error);
+                showAlert('Connection error. Please try again.', 'error');
+            }
+        }
+
+        // Load All Hostels
+        async function loadAllHostels() {
+            const container = document.getElementById('hostelsTableContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading all hostels...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin-panel/hostels`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const hostels = data.data.hostels;
+
+                    if (hostels.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><div class="icon">🏠</div><h3>No Hostels Yet</h3><p>No hostels have been added yet.</p></div>';
+                        return;
+                    }
+
+                    let tableHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostel Name</th>
+                                    <th>Location</th>
+                                    <th>Price (₦/year)</th>
+                                    <th>Realtor</th>
+                                    <th>Available</th>
+                                    <th>Applications</th>
+                                    <th>Views</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    hostels.forEach(hostel => {
+                        const realtorName = hostel.realtorId ? hostel.realtorId.fullName : 'Unknown';
+                        tableHTML += `
+                            <tr>
+                                <td><strong>${hostel.name}</strong></td>
+                                <td>${hostel.location}</td>
+                                <td>₦${hostel.price.toLocaleString()}</td>
+                                <td>${realtorName}</td>
+                                <td><span class="status-badge ${hostel.available ? 'active' : 'suspended'}">${hostel.available ? 'Yes' : 'No'}</span></td>
+                                <td>${hostel.applications || 0}</td>
+                                <td>${hostel.views || 0}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += '</tbody></table>';
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Error Loading Data</h3><p>' + data.message + '</p></div>';
+                }
+            } catch (error) {
+                console.error('Error loading hostels:', error);
+                container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Connection Error</h3><p>Could not connect to the server.</p></div>';
+            }
+        }
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Load data for the tab
+            if (tabName === 'all' && !document.getElementById('allTableContent').innerHTML) {
+                loadAllRealtors();
+            } else if (tabName === 'hostels' && !document.getElementById('hostelsTableContent').innerHTML) {
+                loadAllHostels();
+            }
+        }
+
+        // Show Alert
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminData');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

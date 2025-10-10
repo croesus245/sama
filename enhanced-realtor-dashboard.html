@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="glass-morphism-global.css">
     <link rel="stylesheet" href="realtor-style.css">
     <link rel="stylesheet" href="advanced-styles.css">
+    <!-- API Connector -->
+    <script src="hostel-api.js"></script>
     <style>
         .dashboard-container {
             max-width: 1200px;
@@ -279,6 +281,19 @@
     </div>
     
     <div class="dashboard-container">
+        <!-- Pending Approval Banner -->
+        <div id="pendingBanner" style="display: none; background: linear-gradient(135deg, #f59e0b, #f97316); color: white; padding: 1rem 2rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-hourglass-half" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <div style="font-weight: 700; font-size: 1.125rem;">⏳ Account Pending Approval</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Your account is awaiting admin verification. You can add hostels, but they won't be visible to students until approved.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Dashboard Header -->
         <div class="dashboard-header">
             <div class="flex justify-between items-center">
@@ -289,9 +304,14 @@
                 <div class="text-right">
                     <div class="text-lg font-semibold">Welcome back, <span id="realtorName">Realtor</span>!</div>
                     <div class="text-sm opacity-75" id="currentDate"></div>
-                    <button onclick="showProfileModal()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 0.875rem;">
-                        <i class="fas fa-user-circle mr-1"></i> Update Profile
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: flex-end;">
+                        <button onclick="showProfileModal()" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 0.875rem;">
+                            <i class="fas fa-user-circle mr-1"></i> Update Profile
+                        </button>
+                        <button onclick="handleLogout()" style="padding: 0.5rem 1rem; background: rgba(220, 38, 38, 0.9); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 0.875rem;">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -548,86 +568,84 @@
     <script src="environment-config.js"></script>
     <script src="advanced-features.js"></script>
     <script>
-        // Load realtor profile from localStorage
-        let realtorProfile = JSON.parse(localStorage.getItem('realtorProfile')) || {
-            name: 'Realtor',
-            whatsapp: '2348145653433'
+        // Authentication Check - Redirect if not logged in
+        let realtorData = null;
+        let realtorToken = localStorage.getItem('realtorToken');
+        
+        function checkAuthentication() {
+            realtorToken = localStorage.getItem('realtorToken');
+            const storedData = localStorage.getItem('realtorData');
+            
+            if (!realtorToken || !storedData) {
+                // Not logged in - redirect to login
+                alert('⚠️ Please login to access the dashboard');
+                window.location.href = 'realtor-login-new.html';
+                return false;
+            }
+            
+            try {
+                realtorData = JSON.parse(storedData);
+                console.log('✅ Realtor authenticated:', realtorData.fullName);
+                return true;
+            } catch (error) {
+                console.error('❌ Invalid realtor data:', error);
+                localStorage.removeItem('realtorToken');
+                localStorage.removeItem('realtorData');
+                window.location.href = 'realtor-login-new.html';
+                return false;
+            }
+        }
+        
+        // Check auth immediately
+        if (!checkAuthentication()) {
+            // Stop script execution if not authenticated
+            throw new Error('Authentication required');
+        }
+        
+        // API Configuration - Use logged-in realtor's ID
+        const REALTOR_ID = realtorData._id || realtorData.id;
+        console.log('🔑 Using Realtor ID:', REALTOR_ID);
+        
+        // Load realtor profile from authenticated data
+        let realtorProfile = {
+            name: realtorData.fullName || 'Realtor',
+            whatsapp: realtorData.whatsapp || '2348145653433',
+            email: realtorData.email || '',
+            status: realtorData.status || 'pending'
         };
         
-        // Load hostels from localStorage or use sample data
-        let hostels = JSON.parse(localStorage.getItem('realtorHostels')) || [
-            {
-                id: 1,
-                name: "Peace Palace Hostel",
-                location: "Behind FUTA South Gate",
-                price: 45000,
-                image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80",
-                available: true,
-                applications: 5,
-                features: ["WiFi", "Security", "Water Supply"],
-                whatsapp: "2348145653433"
-            },
-            {
-                id: 2,
-                name: "Royal Court Hostel",
-                location: "Opposite FUTA Main Gate",
-                price: 55000,
-                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
-                available: false,
-                applications: 8,
-                features: ["24/7 Light", "WiFi", "Security", "Laundry"],
-                whatsapp: "2348145653433"
-            },
-            {
-                id: 3,
-                name: "Golden Gate Hostel",
-                location: "Near FUTA Teaching Hospital",
-                price: 40000,
-                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=400&q=80",
-                available: true,
-                applications: 3,
-                features: ["WiFi", "Security", "Water Supply", "Parking"],
-                whatsapp: "2348145653433"
-            },
-            {
-                id: 4,
-                name: "Student Haven",
-                location: "FUTA Road",
-                price: 38000,
-                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80",
-                available: true,
-                applications: 2,
-                features: ["WiFi", "Security"],
-                whatsapp: "2348145653433"
-            },
-            {
-                id: 5,
-                name: "Elite Residence",
-                location: "Behind FUTA North Gate",
-                price: 65000,
-                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80",
-                available: false,
-                applications: 12,
-                features: ["24/7 Light", "WiFi", "Security", "Gym", "Swimming Pool"],
-                whatsapp: "2348145653433"
-            },
-            {
-                id: 6,
-                name: "Comfort Lodge",
-                location: "Akure-Owo Road",
-                price: 42000,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
-                available: true,
-                applications: 4,
-                features: ["WiFi", "Security", "Water Supply"],
-                whatsapp: "2348145653433"
-            }
-        ];
+        // Hostels array (will be loaded from API)
+        let hostels = [];
         
-        // Save hostels to localStorage
-        function saveHostels() {
-            localStorage.setItem('realtorHostels', JSON.stringify(hostels));
-            console.log('✅ Hostels saved to localStorage');
+        // Load hostels from API
+        async function loadHostelsFromAPI() {
+            try {
+                console.log('🔄 Loading hostels from API...');
+                console.log('🔑 Filtering for Realtor ID:', REALTOR_ID);
+                
+                const allHostels = await HostelAPI.getAllHostels();
+                console.log(`📊 Total hostels in database: ${allHostels.length}`);
+                
+                // Filter to show only this realtor's hostels
+                hostels = allHostels.filter(h => {
+                    // Check both possible ID formats
+                    const hostelRealtorId = h.realtorId || h.realtor?._id || h.realtor;
+                    const matches = hostelRealtorId === REALTOR_ID;
+                    
+                    if (matches) {
+                        console.log('✅ Match found:', h.name, '- Realtor ID:', hostelRealtorId);
+                    }
+                    
+                    return matches;
+                });
+                
+                console.log(`✅ Loaded ${hostels.length} hostels for this realtor`);
+                return hostels;
+            } catch (error) {
+                console.error('❌ Error loading hostels:', error);
+                notifications.show('⚠️ Could not load hostels from server. Please check if the API is running.', 'error');
+                return [];
+            }
         }
         
         let currentFilter = 'all';
@@ -635,12 +653,47 @@
         let currentEditingHostelId = null;
         
         // Initialize dashboard
-        function initializeDashboard() {
+        async function initializeDashboard() {
             loadRealtorProfile();
             updateCurrentDate();
+            showPendingBannerIfNeeded();
+            
+            // Show loading state
+            document.getElementById('hostelList').innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1e40af;"></i><p style="margin-top: 1rem;">Loading hostels...</p></div>';
+            
+            // Load hostels from API
+            await loadHostelsFromAPI();
+            
+            // Update UI
             updateStats();
             renderHostels();
             setupEventListeners();
+        }
+        
+        // Show pending approval banner if needed
+        function showPendingBannerIfNeeded() {
+            if (realtorProfile.status === 'pending') {
+                document.getElementById('pendingBanner').style.display = 'block';
+                console.log('⏳ Realtor status: PENDING - Showing approval banner');
+            } else {
+                console.log('✅ Realtor status:', realtorProfile.status.toUpperCase());
+            }
+        }
+        
+        // Handle logout
+        function handleLogout() {
+            const confirmLogout = confirm('Are you sure you want to logout?');
+            
+            if (confirmLogout) {
+                // Clear authentication data
+                localStorage.removeItem('realtorToken');
+                localStorage.removeItem('realtorData');
+                
+                console.log('👋 Logged out successfully');
+                
+                // Redirect to login page
+                window.location.href = 'realtor-login-new.html';
+            }
         }
         
         function updateCurrentDate() {
@@ -675,9 +728,9 @@
             }
             
             hostelList.innerHTML = hostelsToRender.map(hostel => `
-                <div class="hostel-card" data-hostel-id="${hostel.id}">
+                <div class="hostel-card" data-hostel-id="${hostel._id || hostel.id}">
                     <input type="checkbox" class="hostel-checkbox mr-4" 
-                           onchange="toggleHostelSelection(${hostel.id})">
+                           onchange="toggleHostelSelection('${hostel._id || hostel.id}')">
                     
                     <img src="${hostel.image}" alt="${hostel.name}" class="hostel-image" loading="lazy">
                     
@@ -701,19 +754,19 @@
                         
                         <label class="availability-toggle">
                             <input type="checkbox" ${hostel.available ? 'checked' : ''} 
-                                   onchange="toggleAvailability(${hostel.id}, this.checked)">
+                                   onchange="toggleAvailability('${hostel._id || hostel.id}', this.checked)">
                             <span class="slider"></span>
                         </label>
                         
                         <div class="applications-count">
-                            ${hostel.applications} Applications
+                            ${hostel.applications || 0} Applications
                         </div>
                         
                         <div class="action-buttons">
-                            <button class="btn-secondary" onclick="viewApplications(${hostel.id})">
+                            <button class="btn-secondary" onclick="viewApplications('${hostel._id || hostel.id}')">
                                 <i class="fas fa-eye mr-1"></i> View
                             </button>
-                            <button class="btn-secondary" onclick="editHostel(${hostel.id})">
+                            <button class="btn-secondary" onclick="editHostel('${hostel._id || hostel.id}')">
                                 <i class="fas fa-edit mr-1"></i> Edit
                             </button>
                         </div>
@@ -870,39 +923,57 @@
             const available = document.getElementById('hostelAvailable').checked;
             const whatsapp = document.getElementById('hostelWhatsApp').value.trim() || realtorProfile.whatsapp;
             
-            // Generate new ID
-            const newId = hostels.length > 0 ? Math.max(...hostels.map(h => h.id)) + 1 : 1;
-            
-            // Create new hostel object
-            const newHostel = {
-                id: newId,
+            // Create new hostel object for API
+            const newHostelData = {
                 name,
                 location,
                 price,
                 image,
                 available,
-                applications: 0,
                 features,
-                whatsapp
+                whatsapp,
+                realtorId: REALTOR_ID,
+                realtorName: realtorProfile.name,
+                realtorEmail: realtorProfile.email
             };
             
-            // Add to hostels array
-            hostels.push(newHostel);
+            console.log('📤 Creating hostel with data:', newHostelData);
             
-            // Save to localStorage
-            saveHostels();
+            // Show loading state
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Creating...';
+            submitButton.disabled = true;
             
-            // Update UI
-            updateStats();
-            renderHostels();
-            
-            // Close modal
-            closeAddHostelModal();
-            
-            // Show success notification
-            notifications.show(`✅ ${name} added successfully!`, 'success');
-            
-            Analytics.track('hostel_added', { hostelId: newId, hostelName: name });
+            // Send to API
+            HostelAPI.createHostel(newHostelData)
+                .then(async (createdHostel) => {
+                    console.log('✅ Hostel created:', createdHostel);
+                    
+                    // Reload hostels from API
+                    await loadHostelsFromAPI();
+                    
+                    // Update UI
+                    updateStats();
+                    renderHostels();
+                    
+                    // Close modal
+                    closeAddHostelModal();
+                    
+                    // Show success notification
+                    notifications.show(`✅ ${name} added successfully!`, 'success');
+                    
+                    Analytics.track('hostel_added', { hostelId: createdHostel._id, hostelName: name });
+                })
+                .catch((error) => {
+                    console.error('❌ Error creating hostel:', error);
+                    notifications.show(`❌ Error: ${error.message}`, 'error');
+                })
+                .finally(() => {
+                    // Reset button
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
             
             return false;
         }
@@ -917,44 +988,73 @@
             event.preventDefault();
             
             const hostelId = currentEditingHostelId;
-            const hostel = hostels.find(h => h.id === hostelId);
+            const hostel = hostels.find(h => h._id === hostelId);
             
             if (!hostel) {
                 notifications.show('❌ Hostel not found', 'error');
                 return false;
             }
             
-            // Update hostel data
-            hostel.name = document.getElementById('editHostelName').value.trim();
-            hostel.location = document.getElementById('editHostelLocation').value.trim();
-            hostel.price = parseInt(document.getElementById('editHostelPrice').value);
-            hostel.image = document.getElementById('editHostelImage').value.trim() || hostel.image;
-            const featuresInput = document.getElementById('editHostelFeatures').value.trim();
-            hostel.features = featuresInput ? featuresInput.split(',').map(f => f.trim()) : hostel.features;
-            hostel.whatsapp = document.getElementById('editHostelWhatsApp').value.trim() || realtorProfile.whatsapp;
-            hostel.available = document.getElementById('editHostelAvailable').checked;
+            // Prepare updated data
+            const updatedData = {
+                name: document.getElementById('editHostelName').value.trim(),
+                location: document.getElementById('editHostelLocation').value.trim(),
+                price: parseInt(document.getElementById('editHostelPrice').value),
+                image: document.getElementById('editHostelImage').value.trim() || hostel.image,
+                features: document.getElementById('editHostelFeatures').value.trim() 
+                    ? document.getElementById('editHostelFeatures').value.trim().split(',').map(f => f.trim())
+                    : hostel.features,
+                whatsapp: document.getElementById('editHostelWhatsApp').value.trim() || realtorProfile.whatsapp,
+                available: document.getElementById('editHostelAvailable').checked,
+                realtorId: REALTOR_ID,
+                realtorName: realtorProfile.name,
+                realtorEmail: realtorProfile.email
+            };
             
-            // Save to localStorage
-            saveHostels();
+            console.log('📤 Updating hostel with data:', updatedData);
             
-            // Update UI
-            updateStats();
-            renderHostels();
+            // Show loading state
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Updating...';
+            submitButton.disabled = true;
             
-            // Close modal
-            closeEditHostelModal();
-            
-            // Show success notification
-            notifications.show(`✅ ${hostel.name} updated successfully!`, 'success');
-            
-            Analytics.track('hostel_updated', { hostelId, hostelName: hostel.name });
+            // Send to API
+            HostelAPI.updateHostel(hostelId, updatedData)
+                .then(async (updatedHostel) => {
+                    console.log('✅ Hostel updated:', updatedHostel);
+                    
+                    // Reload hostels from API
+                    await loadHostelsFromAPI();
+                    
+                    // Update UI
+                    updateStats();
+                    renderHostels();
+                    
+                    // Close modal
+                    closeEditHostelModal();
+                    
+                    // Show success notification
+                    notifications.show(`✅ ${updatedHostel.name} updated successfully!`, 'success');
+                    
+                    Analytics.track('hostel_updated', { hostelId, hostelName: updatedHostel.name });
+                })
+                .catch((error) => {
+                    console.error('❌ Error updating hostel:', error);
+                    notifications.show(`❌ Error: ${error.message}`, 'error');
+                })
+                .finally(() => {
+                    // Reset button
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
             
             return false;
         }
         
         function deleteHostel() {
             const hostelId = currentEditingHostelId;
-            const hostel = hostels.find(h => h.id === hostelId);
+            const hostel = hostels.find(h => h._id === hostelId);
             
             if (!hostel) {
                 notifications.show('❌ Hostel not found', 'error');
@@ -964,24 +1064,58 @@
             const confirmDelete = confirm(`Are you sure you want to delete "${hostel.name}"? This action cannot be undone.`);
             
             if (confirmDelete) {
-                // Remove hostel from array
-                hostels = hostels.filter(h => h.id !== hostelId);
+                // Show loading notification
+                notifications.show('🗑️ Deleting hostel...', 'info');
                 
-                // Save to localStorage
-                saveHostels();
-                
-                // Update UI
-                updateStats();
-                renderHostels();
-                
-                // Close modal
-                closeEditHostelModal();
-                
-                // Show success notification
-                notifications.show(`🗑️ ${hostel.name} deleted successfully`, 'success');
-                
-                Analytics.track('hostel_deleted', { hostelId, hostelName: hostel.name });
+                // Send delete request to API
+                HostelAPI.deleteHostel(hostelId)
+                    .then(async () => {
+                        console.log('✅ Hostel deleted');
+                        
+                        // Reload hostels from API
+                        await loadHostelsFromAPI();
+                        
+                        // Update UI
+                        updateStats();
+                        renderHostels();
+                        
+                        // Close modal
+                        closeEditHostelModal();
+                        
+                        // Show success notification
+                        notifications.show(`🗑️ ${hostel.name} deleted successfully`, 'success');
+                        
+                        Analytics.track('hostel_deleted', { hostelId, hostelName: hostel.name });
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error deleting hostel:', error);
+                        notifications.show(`❌ Error: ${error.message}`, 'error');
+                    });
             }
+        }
+        
+        function editHostel(hostelId) {
+            const hostel = hostels.find(h => h._id === hostelId);
+            
+            if (!hostel) {
+                notifications.show('❌ Hostel not found', 'error');
+                return;
+            }
+            
+            currentEditingHostelId = hostelId;
+            
+            // Fill form with hostel data
+            document.getElementById('editHostelId').value = hostel._id;
+            document.getElementById('editHostelName').value = hostel.name;
+            document.getElementById('editHostelLocation').value = hostel.location;
+            document.getElementById('editHostelPrice').value = hostel.price;
+            document.getElementById('editHostelImage').value = hostel.image;
+            document.getElementById('editHostelFeatures').value = hostel.features.join(', ');
+            document.getElementById('editHostelWhatsApp').value = hostel.whatsapp;
+            document.getElementById('editHostelAvailable').checked = hostel.available;
+            
+            // Show modal
+            document.getElementById('editHostelModal').style.display = 'block';
         }
         
         // Close modals when clicking outside

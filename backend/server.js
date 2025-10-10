@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Import routes
+const hostelRoutes = require('./routes/hostels'); // NEW: Hostel routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const propertyRoutes = require('./routes/properties');
@@ -77,6 +78,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mwg_hoste
 });
 
 // API Routes
+app.use('/api/hostels', hostelRoutes); // NEW: Hostel routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/properties', propertyRoutes);
@@ -109,6 +111,7 @@ app.get('/api', (req, res) => {
         author: 'SAMA GREAT',
         documentation: '/api/docs',
         endpoints: {
+            hostels: '/api/hostels', // NEW
             auth: '/api/auth',
             users: '/api/users',
             properties: '/api/properties',
