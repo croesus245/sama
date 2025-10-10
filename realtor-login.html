@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="realtor-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Ensure styles are loaded */
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +15,6 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
         }
 
         .login-container {
@@ -30,60 +28,67 @@
 
         .login-box {
             background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .login-header i {
-            font-size: 48px;
+            font-size: 56px;
             color: #4169E1;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            display: block;
         }
 
         .login-header h2 {
-            color: #333;
+            color: #1a1a1a;
             margin-bottom: 8px;
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: 700;
         }
 
         .login-header p {
             color: #666;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
             color: #333;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #4169E1;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 16px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #4169E1;
-            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.1);
         }
 
         .btn-primary {
@@ -91,369 +96,133 @@
             background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
             color: white;
             border: none;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            margin-top: 8px;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(65, 105, 225, 0.4);
+            box-shadow: 0 8px 24px rgba(65, 105, 225, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         .demo-credentials {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f0f4ff;
-            border-radius: 8px;
+            margin-top: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border-radius: 10px;
             text-align: center;
+            border: 2px dashed #4169E1;
+        }
+
+        .demo-credentials strong {
+            display: block;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
         .demo-credentials code {
-            background: #e0e7ff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
             color: #4169E1;
             font-weight: bold;
-        }
-
-        .dashboard-container {
-            min-height: 100vh;
-            background: #f5f7fa;
+            font-size: 18px;
+            display: inline-block;
+            border: 2px solid #4169E1;
         }
     </style>
 </head>
 <body>
-    <!-- Login Section -->
+    <!-- Login Section ONLY -->
     <div id="loginSection" class="login-container">
         <div class="login-box">
             <div class="login-header">
                 <i class="fas fa-building"></i>
-                <h2>Realtor Login</h2>
-                <p>Access your property dashboard</p>
+                <h2>Realtor Portal</h2>
+                <p>MWG Hostels • FUTA Student Housing</p>
             </div>
-            <form id="loginForm" class="login-form">
+            <form id="loginForm">
                 <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+                    <label><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="username" placeholder="Enter your name" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required autocomplete="current-password">
+                    <label><i class="fas fa-lock"></i> Access Password</label>
+                    <input type="password" id="password" placeholder="Enter realtor password" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                    <i class="fas fa-sign-in-alt"></i> Access Dashboard
                 </button>
                 <div class="demo-credentials">
-                    <strong>Demo Login:</strong>
-                    <p>Password: <code>MWG@2025</code></p>
+                    <strong>🔑 Realtor Access Code</strong>
+                    <code>MWG@2025</code>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Dashboard Container -->
-    <div id="dashboardSection" class="dashboard-container" style="display: none;">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <i class="fas fa-building"></i>
-                <h1>Realtor Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <span id="welcomeUser" style="margin-right: 20px; color: #4169E1; font-weight: 600;"></span>
-                <button onclick="realtorLogout()" class="btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-        </header>
-        
-        <nav class="dashboard-nav">
-            <a href="#" onclick="showSection('addListing'); return false;" class="nav-link active">
-                <i class="fas fa-plus-circle"></i> Add Property
-            </a>
-            <a href="#" onclick="showSection('myListings'); return false;" class="nav-link">
-                <i class="fas fa-list"></i> My Listings
-            </a>
-            <a href="index.html" class="nav-link">
-                <i class="fas fa-home"></i> View Site
-            </a>
-        </nav>
-        
-        <section id="addListing" class="dashboard-section active">
-            <div class="section-header">
-                <h2><i class="fas fa-plus-circle"></i> Add New Property</h2>
-            </div>
-            
-            <form id="addListingForm" class="listing-form">
-                <!-- Form content stays the same -->
-                <div class="form-section">
-                    <h3><i class="fas fa-user"></i> Your Details</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Your Name *</label>
-                            <input type="text" id="realtorName" placeholder="e.g., Ibitayo Emmanuel" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Business Name *</label>
-                            <input type="text" id="businessName" placeholder="e.g., Hemmy Space" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>WhatsApp Number *</label>
-                            <input type="tel" id="realtorPhone" placeholder="07042919808" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email (Optional)</label>
-                            <input type="email" id="realtorEmail" placeholder="contact@business.com">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3><i class="fas fa-home"></i> Property Details</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Property Name *</label>
-                            <input type="text" id="propertyName" placeholder="e.g., Green Valley Hostel" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Location (Gate) *</label>
-                            <select id="propertyLocation" required onchange="toggleOtherLocation()">
-                                <option value="">Select gate location</option>
-                                <option value="North Gate">North Gate</option>
-                                <option value="West Gate">West Gate</option>
-                                <option value="South Gate">South Gate</option>
-                                <option value="Other">Other (Specify)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row" id="otherLocationRow" style="display: none;">
-                        <div class="form-group">
-                            <label>Specify Other Location *</label>
-                            <input type="text" id="otherLocation" placeholder="e.g., Ekosodin, Usiefrun, etc.">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Price (₦ per year) *</label>
-                            <input type="number" id="propertyPrice" placeholder="150000" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Room Type *</label>
-                            <select id="roomType" required>
-                                <option value="">Select type</option>
-                                <option value="self-contained">Self Contained</option>
-                                <option value="single">Single Room</option>
-                                <option value="shared">Shared Room</option>
-                                <option value="apartment">Apartment</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Description *</label>
-                        <textarea id="propertyDescription" rows="4" placeholder="Describe the property, amenities, nearby facilities..." required></textarea>
-                    </div>
-                    
-                    <div class="amenities-section">
-                        <label><strong>Available Amenities</strong></label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasWifi"> 📶 WiFi Available</label>
-                            </div>
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasParking"> 🅿️ Parking Space</label>
-                            </div>
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasSecurity"> 🔒 24/7 Security</label>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasRunningWater"> 💧 Running Water</label>
-                            </div>
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasSolar"> ☀️ Solar/Power Supply</label>
-                            </div>
-                            <div class="form-group">
-                                <label><input type="checkbox" id="hasOtherAmenities" onchange="toggleOtherAmenities()"> ➕ Other Amenities</label>
-                            </div>
-                        </div>
-                        <div class="form-row" id="otherAmenitiesRow" style="display: none;">
-                            <div class="form-group">
-                                <label>Specify Other Amenities</label>
-                                <input type="text" id="otherAmenitiesText" placeholder="e.g., Generator, Kitchen, Laundry, etc.">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3><i class="fas fa-images"></i> Property Images</h3>
-                    <div class="form-group">
-                        <label>Upload Images (Max 5)</label>
-                        <input type="file" id="propertyImages" accept="image/*" multiple onchange="previewImages(event)">
-                        <small>Supported: JPG, PNG, WebP (Max 2MB each)</small>
-                    </div>
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
-                
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-upload"></i> Publish Property
-                </button>
-            </form>
-        </section>
-        
-        <section id="myListings" class="dashboard-section">
-            <div class="section-header">
-                <h2><i class="fas fa-list"></i> All Listings</h2>
-                <p>All properties uploaded by realtors</p>
-            </div>
-            <div id="listingsContainer" class="listings-grid"></div>
-        </section>
-    </div>
+    <!-- Dashboard loads on separate page after login -->
     
-    <!-- Consolidated JavaScript -->
     <script>
-        console.log('🔧 Realtor login page loaded');
-        
+        // SIMPLE PASSWORD SYSTEM - Original Plan
         const REALTOR_PASSWORD = 'MWG@2025';
 
-        // Check login on load
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM loaded, checking login status...');
+        // Check if already logged in
+        if (localStorage.getItem('realtorLoggedIn') === 'true') {
+            // Redirect to dashboard page
+            window.location.href = 'realtor-dashboard.html';
+        }
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            if (localStorage.getItem('realtorLoggedIn') === 'true') {
-                const username = localStorage.getItem('realtorUsername') || 'Realtor';
-                console.log('✅ User already logged in:', username);
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            console.log('🔐 Login attempt by:', username);
+            
+            if (password === REALTOR_PASSWORD) {
+                console.log('✅ Password correct!');
                 
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
+                // Save login state
+                localStorage.setItem('realtorLoggedIn', 'true');
+                localStorage.setItem('realtorUsername', username);
+                localStorage.setItem('loginTime', new Date().toISOString());
+                
+                // Success message
+                alert('✅ Login successful! Welcome, ' + username);
+                
+                // Redirect to dashboard
+                window.location.href = 'realtor-dashboard.html';
+                
             } else {
-                console.log('ℹ️ No active session found');
+                console.log('❌ Wrong password');
+                alert('❌ Incorrect password!\n\nPlease use: MWG@2025');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
             }
         });
 
-        // Login form handler
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                console.log('🔐 Login attempt...');
-                
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value;
-                
-                console.log('Username:', username);
-                console.log('Password length:', password.length);
-                
-                if (password === REALTOR_PASSWORD) {
-                    console.log('✅ Password correct!');
-                    
-                    localStorage.setItem('realtorLoggedIn', 'true');
-                    localStorage.setItem('realtorUsername', username);
-                    
-                    document.getElementById('loginSection').style.display = 'none';
-                    document.getElementById('dashboardSection').style.display = 'block';
-                    document.getElementById('welcomeUser').textContent = `Welcome, ${username}!`;
-                    
-                    alert('✅ Login successful! Welcome, ' + username);
-                } else {
-                    console.log('❌ Password incorrect');
-                    alert('❌ Incorrect password. Try: MWG@2025');
-                }
-            });
-        }
-
-        // Toggle other location
-        function toggleOtherLocation() {
-            const locationSelect = document.getElementById('propertyLocation');
-            const otherLocationRow = document.getElementById('otherLocationRow');
-            const otherLocationInput = document.getElementById('otherLocation');
-            
-            if (locationSelect.value === 'Other') {
-                otherLocationRow.style.display = 'flex';
-                otherLocationInput.required = true;
-            } else {
-                otherLocationRow.style.display = 'none';
-                otherLocationInput.required = false;
-                otherLocationInput.value = '';
-            }
-        }
-
-        // Toggle other amenities
-        function toggleOtherAmenities() {
-            const checkbox = document.getElementById('hasOtherAmenities');
-            const row = document.getElementById('otherAmenitiesRow');
-            
-            if (checkbox.checked) {
-                row.style.display = 'flex';
-            } else {
-                row.style.display = 'none';
-                document.getElementById('otherAmenitiesText').value = '';
-            }
-        }
-
-        // Preview images
-        function previewImages(event) {
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-            const files = event.target.files;
-            
-            for (let i = 0; i < Math.min(files.length, 5); i++) {
-                const file = files[i];
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'position:relative;width:150px;height:150px;border-radius:8px;overflow:hidden;border:2px solid #e0e0e0;';
-                    div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
-                    preview.appendChild(div);
-                };
-                
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Logout function
-        function realtorLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                console.log('👋 Logging out...');
-                
-                localStorage.removeItem('realtorLoggedIn');
-                localStorage.removeItem('realtorUsername');
-                
-                document.getElementById('loginSection').style.display = 'flex';
-                document.getElementById('dashboardSection').style.display = 'none';
-                
-                document.getElementById('loginForm').reset();
-                
-                alert('Logged out successfully!');
-            }
-        }
-
-        // Show section
-        function showSection(sectionId) {
-            console.log('📄 Switching to section:', sectionId);
-            
-            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.target.closest('.nav-link').classList.add('active');
-        }
+        // Show password hint on focus
+        document.getElementById('password').addEventListener('focus', function() {
+            console.log('💡 Password hint: MWG@2025');
+        });
     </script>
 </body>
 </html>
