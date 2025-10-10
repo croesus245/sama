@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login - Debug</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-box {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        pre {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Realtor Login Debug Tool</h1>
+    
+    <div class="debug-box">
+        <h2>Step 1: Check Accounts</h2>
+        <button onclick="checkAccounts()">View All Accounts</button>
+        <div id="accountsResult"></div>
+    </div>
+    
+    <div class="debug-box">
+        <h2>Step 2: Initialize Hemmy Space Account</h2>
+        <button onclick="initializeHemmyAccount()">Create Hemmy Space Account</button>
+        <div id="initResult"></div>
+    </div>
+    
+    <div class="debug-box">
+        <h2>Step 3: Test Login</h2>
+        <button onclick="testLogin()">Test Login with Hemmy Credentials</button>
+        <div id="loginResult"></div>
+    </div>
+    
+    <div class="debug-box">
+        <h2>Step 4: Clear & Reset</h2>
+        <button onclick="clearStorage()">Clear All Data</button>
+        <button onclick="window.location.href='realtor-login.html'">Go to Login Page</button>
+    </div>
+    
+    <script src="realtor-auth-config.js"></script>
+    <script>
+        function checkAccounts() {
+            const accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
+            const result = document.getElementById('accountsResult');
+            
+            if (accounts.length === 0) {
+                result.innerHTML = '<p class="error">❌ No accounts found</p>';
+            } else {
+                result.innerHTML = `
+                    <p class="success">✅ Found ${accounts.length} account(s)</p>
+                    <pre>${JSON.stringify(accounts.map(a => ({
+                        name: a.name,
+                        email: a.email,
+                        phone: a.phone,
+                        company: a.company,
+                        verified: a.verified
+                    })), null, 2)}</pre>
+                `;
+            }
+        }
+        
+        function initializeHemmyAccount() {
+            const hemmyAccount = {
+                id: `realtor_${Date.now()}`,
+                email: 'ibitayo.emmanuel@hemmyspace.com',
+                password: 'Hemmy@2025',
+                name: 'Ibitayo Emmanuel',
+                phone: '07042919808',
+                company: 'Hemmy Space',
+                verified: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            const accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
+            
+            // Check if already exists
+            const exists = accounts.some(acc => 
+                acc.email.toLowerCase() === hemmyAccount.email.toLowerCase()
+            );
+            
+            if (exists) {
+                document.getElementById('initResult').innerHTML = 
+                    '<p class="error">⚠️ Account already exists</p>';
+                return;
+            }
+            
+            accounts.push(hemmyAccount);
+            localStorage.setItem('realtorAccounts', JSON.stringify(accounts));
+            
+            document.getElementById('initResult').innerHTML = `
+                <p class="success">✅ Hemmy Space account created!</p>
+                <pre>${JSON.stringify(hemmyAccount, null, 2)}</pre>
+            `;
+        }
+        
+        function testLogin() {
+            const email = 'ibitayo.emmanuel@hemmyspace.com';
+            const password = 'Hemmy@2025';
+            
+            const accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
+            const account = accounts.find(acc => 
+                acc.email.toLowerCase() === email.toLowerCase() && 
+                acc.password === password
+            );
+            
+            const result = document.getElementById('loginResult');
+            
+            if (account) {
+                localStorage.setItem('currentRealtorUser', JSON.stringify(account));
+                result.innerHTML = `
+                    <p class="success">✅ Login successful!</p>
+                    <p>Name: ${account.name}</p>
+                    <p>Email: ${account.email}</p>
+                    <p>Phone: ${account.phone}</p>
+                    <button onclick="window.location.href='realtor-dashboard.html'">
+                        Go to Dashboard
+                    </button>
+                `;
+            } else {
+                result.innerHTML = `
+                    <p class="error">❌ Login failed</p>
+                    <p>Tried: ${email}</p>
+                    <p>Available accounts: ${accounts.map(a => a.email).join(', ')}</p>
+                `;
+            }
+        }
+        
+        function clearStorage() {
+            if (confirm('⚠️ Clear all realtor data?')) {
+                localStorage.removeItem('realtorAccounts');
+                localStorage.removeItem('currentRealtorUser');
+                localStorage.removeItem('realtorListings');
+                alert('✅ Storage cleared!');
+                location.reload();
+            }
+        }
+        
+        // Auto-check on load
+        window.onload = () => {
+            checkAccounts();
+        };
+    </script>
+</body>
+</html>

@@ -15,6 +15,9 @@ function checkAuth() {
 
 // Show notification
 function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+    
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
@@ -22,19 +25,90 @@ function showNotification(message, type = 'info') {
         <span>${message}</span>
     `;
     
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1rem;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    `;
+    
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.classList.add('show');
+        notification.style.transform = 'translateX(0)';
     }, 100);
     
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.style.transform = 'translateX(400px)';
         setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    }, 4000);
 }
 
-// REGISTRATION HANDLER - With Authorization Check
+// LOGIN HANDLER
+if (document.getElementById('loginForm')) {
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        console.log('🔍 Login attempt:', email);
+        
+        // Get or initialize accounts
+        let accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
+        
+        // If no accounts exist, initialize from config
+        if (accounts.length === 0 && typeof AUTHORIZED_REALTORS !== 'undefined') {
+            console.log('📝 Initializing accounts from config...');
+            initializeAuthorizedRealtors();
+            accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
+        }
+        
+        console.log('👥 Total accounts:', accounts.length);
+        
+        // Find matching account (case-insensitive email)
+        const account = accounts.find(acc => 
+            acc.email.toLowerCase() === email.toLowerCase() && 
+            acc.password === password
+        );
+        
+        if (!account) {
+            console.log('❌ Login failed - Invalid credentials');
+            console.log('Available emails:', accounts.map(a => a.email));
+            showNotification('❌ Invalid email or password', 'error');
+            return;
+        }
+        
+        // Check verification
+        if (!account.verified) {
+            console.log('❌ Login failed - Account not verified');
+            showNotification('⚠️ Your account is pending verification. Contact admin.', 'error');
+            return;
+        }
+        
+        // LOGIN SUCCESS
+        console.log('✅ Login successful:', account.name);
+        localStorage.setItem('currentRealtorUser', JSON.stringify(account));
+        showNotification(`✅ Welcome back, ${account.name}!`, 'success');
+        
+        setTimeout(() => {
+            window.location.href = 'realtor-dashboard.html';
+        }, 1000);
+    });
+}
+
+// REGISTRATION HANDLER
 if (document.getElementById('registerForm')) {
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -46,9 +120,15 @@ if (document.getElementById('registerForm')) {
         const phone = document.getElementById('regPhone').value.trim();
         const company = document.getElementById('regCompany').value.trim();
         
+        // Check if authorization system is loaded
+        if (typeof isAuthorizedEmail !== 'function') {
+            showNotification('❌ Authorization system not loaded. Please refresh the page.', 'error');
+            return;
+        }
+        
         // CHECK 1: Email authorization
         if (!isAuthorizedEmail(email)) {
-            showNotification('❌ This email is not authorized to register. Please contact admin at admin@mwghostels.com', 'error');
+            showNotification('❌ This email is not authorized. Contact admin@mwghostels.com', 'error');
             return;
         }
         
@@ -79,7 +159,7 @@ if (document.getElementById('registerForm')) {
             name: name,
             phone: phone,
             company: company,
-            verified: AUTHORIZED_REALTORS.settings.autoVerifyAuthorized,
+            verified: true, // Auto-verify authorized emails
             createdAt: new Date().toISOString()
         };
         
@@ -96,48 +176,6 @@ if (document.getElementById('registerForm')) {
     });
 }
 
-// LOGIN HANDLER - With Authorization Check
-if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value;
-        
-        // CHECK 1: Email authorization
-        if (!isAuthorizedEmail(email)) {
-            showNotification('❌ This email is not authorized. Contact admin@mwghostels.com', 'error');
-            return;
-        }
-        
-        // CHECK 2: Find account
-        const accounts = JSON.parse(localStorage.getItem('realtorAccounts') || '[]');
-        const account = accounts.find(acc => 
-            acc.email.toLowerCase() === email.toLowerCase() && 
-            acc.password === password
-        );
-        
-        if (!account) {
-            showNotification('❌ Invalid email or password', 'error');
-            return;
-        }
-        
-        // CHECK 3: Verification status
-        if (!account.verified) {
-            showNotification('⚠️ Your account is pending verification. Contact admin.', 'error');
-            return;
-        }
-        
-        // LOGIN SUCCESS
-        localStorage.setItem('currentRealtorUser', JSON.stringify(account));
-        showNotification('✅ Login successful! Redirecting...', 'success');
-        
-        setTimeout(() => {
-            window.location.href = 'realtor-dashboard.html';
-        }, 1000);
-    });
-}
-
 // LOGOUT
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
@@ -146,20 +184,18 @@ function logout() {
     }
 }
 
-// TAB SWITCHING (Login/Register)
+// TAB SWITCHING
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const tab = this.dataset.tab;
         
-        // Update active tab button
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         
-        // Show corresponding form
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
-        document.getElementById(`${tab}Tab`).classList.add('active');
+        document.getElementById(`${tab}Tab`)?.classList.add('active');
     });
 });
 
@@ -168,16 +204,14 @@ if (window.location.pathname.includes('realtor-dashboard.html')) {
     const currentUser = checkAuth();
     
     if (currentUser) {
-        // Display user info
         document.getElementById('realtorName')?.textContent = currentUser.name;
         document.getElementById('realtorEmail')?.textContent = currentUser.email;
         
-        // Load realtor's listings
         loadRealtorListings();
     }
 }
 
-// Load realtor's hostel listings
+// Load realtor's listings
 function loadRealtorListings() {
     const currentUser = JSON.parse(localStorage.getItem('currentRealtorUser'));
     const allListings = JSON.parse(localStorage.getItem('realtorListings') || '[]');
@@ -223,29 +257,6 @@ function loadRealtorListings() {
     `).join('');
 }
 
-// Add new listing
-function addListing(listingData) {
-    const currentUser = JSON.parse(localStorage.getItem('currentRealtorUser'));
-    const listings = JSON.parse(localStorage.getItem('realtorListings') || '[]');
-    
-    const newListing = {
-        ...listingData,
-        id: `listing_${Date.now()}`,
-        realtorId: currentUser.id,
-        realtorName: currentUser.name,
-        realtorPhone: currentUser.phone,
-        realtorEmail: currentUser.email,
-        createdAt: new Date().toISOString(),
-        status: 'Active'
-    };
-    
-    listings.push(newListing);
-    localStorage.setItem('realtorListings', JSON.stringify(listings));
-    
-    showNotification('✅ Listing added successfully!', 'success');
-    loadRealtorListings();
-}
-
 // Delete listing
 function deleteListing(listingId) {
     if (!confirm('⚠️ Delete this listing? This cannot be undone!')) return;
@@ -258,5 +269,4 @@ function deleteListing(listingId) {
     loadRealtorListings();
 }
 
-// Initialize
 console.log('✅ Realtor script loaded');
