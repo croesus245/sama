@@ -1,0 +1,99 @@
+# 🔗 MWG HOSTELS - QUICK LINKS
+
+## 🌐 MAIN PLATFORM
+**https://mwgbysama.vercel.app**
+
+---
+
+## 👨‍🎓 FOR STUDENTS
+
+**Register as Student**:
+https://mwgbysama.vercel.app/student-register.html
+
+**Browse Hostels by Gate**:
+https://mwgbysama.vercel.app/hostels.html
+
+---
+
+## 🏢 FOR REALTORS
+
+**Apply as Realtor**:
+https://mwgbysama.vercel.app/realtor-register.html
+
+**Realtor Login** (after approval):
+https://mwgbysama.vercel.app/realtor-login-new.html
+
+**Realtor Dashboard**:
+https://mwgbysama.vercel.app/enhanced-realtor-dashboard.html
+
+---
+
+## 👑 FOR ADMIN
+
+**Admin Login**:
+https://mwgbysama.vercel.app/admin-login.html
+
+**Credentials**:
+- Email: `admin@mwghostels.com`
+- Password: `Admin@2024`
+
+**Admin Dashboard**:
+https://mwgbysama.vercel.app/admin-dashboard.html
+
+---
+
+## 🔧 BACKEND API
+
+**Backend URL**:
+https://sama-production-9e28.up.railway.app/api
+
+**Health Check**:
+https://sama-production-9e28.up.railway.app/api/health
+
+---
+
+## 📝 WORKFLOWS
+
+### Student Workflow:
+1. Register → https://mwgbysama.vercel.app/student-register.html
+2. Browse → https://mwgbysama.vercel.app/hostels.html
+3. Choose gate → View filtered hostels
+4. Contact realtor via WhatsApp
+
+### Realtor Workflow:
+1. Apply → https://mwgbysama.vercel.app/realtor-register.html
+2. Wait for admin approval
+3. Login → https://mwgbysama.vercel.app/realtor-login-new.html
+4. Add hostels in dashboard
+
+### Admin Workflow:
+1. Login → https://mwgbysama.vercel.app/admin-login.html
+2. View pending realtors
+3. Approve/reject applications
+4. Monitor platform
+
+---
+
+## 🎯 KEY LINKS TO SHARE
+
+**With Students**:
+```
+Browse Hostels: https://mwgbysama.vercel.app/hostels.html
+Register: https://mwgbysama.vercel.app/student-register.html
+```
+
+**With Realtors**:
+```
+Apply: https://mwgbysama.vercel.app/realtor-register.html
+Login: https://mwgbysama.vercel.app/realtor-login-new.html
+```
+
+**Admin Only**:
+```
+Login: https://mwgbysama.vercel.app/admin-login.html
+Dashboard: https://mwgbysama.vercel.app/admin-dashboard.html
+```
+
+---
+
+✅ All links are LIVE and working!
