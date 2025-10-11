@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="advanced-styles.css">
     <!-- API Connector -->
     <script src="hostel-api.js"></script>
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <style>
         .dashboard-container {
             max-width: 1200px;
@@ -424,8 +426,16 @@
                     
                     <div style="margin-bottom: 1rem;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Image URL</label>
-                        <input type="url" id="hostelImage" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Leave blank for default image</small>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="url" id="hostelImage" placeholder="https://example.com/image.jpg" style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                            <button type="button" onclick="openUploadWidget('hostelImage')" style="padding: 0.75rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload
+                            </button>
+                        </div>
+                        <div id="imagePreview" style="margin-top: 0.5rem; display: none;">
+                            <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 2px solid #d1d5db;">
+                        </div>
+                        <small style="color: #6b7280; font-size: 0.875rem;">Click "Upload" to select from computer, or paste URL manually. Leave blank for default image.</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
@@ -486,7 +496,16 @@
                     
                     <div style="margin-bottom: 1rem;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Image URL</label>
-                        <input type="url" id="editHostelImage" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="url" id="editHostelImage" placeholder="https://example.com/image.jpg" style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                            <button type="button" onclick="openUploadWidget('editHostelImage')" style="padding: 0.75rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload
+                            </button>
+                        </div>
+                        <div id="editImagePreview" style="margin-top: 0.5rem; display: none;">
+                            <img id="editPreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 2px solid #d1d5db;">
+                        </div>
+                        <small style="color: #6b7280; font-size: 0.875rem;">Click "Upload" to replace image, or paste URL manually.</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
@@ -1211,6 +1230,83 @@
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', initializeDashboard);
+        
+        // Cloudinary Upload Widget Configuration
+        let uploadWidget;
+        
+        function openUploadWidget(targetInputId) {
+            // Initialize widget if not already done
+            if (!uploadWidget) {
+                uploadWidget = cloudinary.createUploadWidget({
+                    cloudName: 'dsu1po0tg',
+                    uploadPreset: 'mwg_hostels_unsigned',
+                    sources: ['local', 'camera', 'url'],
+                    multiple: false,
+                    maxFileSize: 5000000, // 5MB
+                    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+                    maxImageWidth: 1920,
+                    maxImageHeight: 1080,
+                    cropping: false,
+                    folder: 'mwg-hostels/hostels',
+                    resourceType: 'image',
+                    theme: 'minimal',
+                    styles: {
+                        palette: {
+                            window: '#FFFFFF',
+                            windowBorder: '#1e40af',
+                            tabIcon: '#1e40af',
+                            menuIcons: '#5A616A',
+                            textDark: '#000000',
+                            textLight: '#FFFFFF',
+                            link: '#1e40af',
+                            action: '#1e40af',
+                            inactiveTabIcon: '#9CA3AF',
+                            error: '#dc2626',
+                            inProgress: '#10b981',
+                            complete: '#10b981',
+                            sourceBg: '#F5F7FA'
+                        }
+                    },
+                    text: {
+                        'local.browse': 'Browse Files',
+                        'local.dd_title_single': 'Drag and Drop your hostel image here',
+                        'local.dd_title_multi': 'Drag and Drop images here'
+                    }
+                }, (error, result) => {
+                    if (error) {
+                        console.error('Upload error:', error);
+                        alert('Upload failed: ' + error.message);
+                        return;
+                    }
+                    
+                    if (result && result.event === 'success') {
+                        console.log('Upload successful:', result.info);
+                        
+                        // Get the secure URL
+                        const imageUrl = result.info.secure_url;
+                        
+                        // Update the input field
+                        document.getElementById(targetInputId).value = imageUrl;
+                        
+                        // Show preview
+                        const previewId = targetInputId === 'hostelImage' ? 'imagePreview' : 'editImagePreview';
+                        const imgId = targetInputId === 'hostelImage' ? 'previewImg' : 'editPreviewImg';
+                        
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(imgId).src = imageUrl;
+                        
+                        // Show success message
+                        alert('✅ Image uploaded successfully!');
+                        
+                        // Close widget
+                        uploadWidget.close();
+                    }
+                });
+            }
+            
+            // Open the widget
+            uploadWidget.open();
+        }
     </script>
     
     <!-- Theme System -->
