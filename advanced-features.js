@@ -45,8 +45,8 @@ class ErrorHandler {
             userAgent: navigator.userAgent
         };
         
-        // Log to console in development
-        if (ENV?.get('ENVIRONMENT') !== 'production') {
+        // Log to console in development (ENV is optional)
+        if (typeof ENV === 'undefined' || ENV?.get('ENVIRONMENT') !== 'production') {
             console.error('🚨 Error:', errorInfo);
         }
         
@@ -54,7 +54,7 @@ class ErrorHandler {
         AdvancedState.performance.errors.push(errorInfo);
         
         // Send to error reporting service (in production)
-        if (ENV?.get('ENVIRONMENT') === 'production') {
+        if (typeof ENV !== 'undefined' && ENV?.get('ENVIRONMENT') === 'production') {
             this.reportError(errorInfo);
         }
     }
