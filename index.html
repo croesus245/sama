@@ -1316,8 +1316,11 @@
                 return;
             }
             
+            // Clean the phone number - remove + and any spaces
+            const cleanNumber = hostel.whatsapp.replace(/[\s+]/g, '');
+            
             const message = encodeURIComponent(`Hello! I'm interested in ${hostel.name} (${hostel.location}). Is it still available?`);
-            const whatsappUrl = `https://wa.me/${hostel.whatsapp}?text=${message}`;
+            const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
             
             // Track the contact attempt
             if (typeof Analytics !== 'undefined') {
@@ -1335,8 +1338,11 @@
                 return;
             }
             
+            // Clean the phone number - remove + and any spaces
+            const cleanNumber = whatsappNumber.replace(/[\s+]/g, '');
+            
             const message = encodeURIComponent(`Hello! I'm interested in ${hostelName}. Is it still available?`);
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
         }
         
