@@ -580,6 +580,47 @@ const Utils = {
     }
 };
 
+// Simple Analytics System (for dashboard tracking)
+const Analytics = {
+    track(eventName, data = {}) {
+        const event = {
+            name: eventName,
+            data,
+            timestamp: new Date().toISOString(),
+            url: window.location.href,
+            userAgent: navigator.userAgent
+        };
+        
+        console.log('📊 Analytics Event:', eventName, data);
+        
+        // Store in local storage for debugging
+        const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+        events.push(event);
+        
+        // Keep only last 50 events
+        if (events.length > 50) {
+            events.shift();
+        }
+        
+        localStorage.setItem('analytics_events', JSON.stringify(events));
+        
+        // In production, send to analytics service
+        // fetch('/api/analytics', { method: 'POST', body: JSON.stringify(event) });
+    },
+    
+    getEvents() {
+        return JSON.parse(localStorage.getItem('analytics_events') || '[]');
+    },
+    
+    clearEvents() {
+        localStorage.removeItem('analytics_events');
+    }
+};
+
+// Make Analytics and Utils available globally
+window.Analytics = Analytics;
+window.Utils = Utils;
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeAdvancedFeatures);
