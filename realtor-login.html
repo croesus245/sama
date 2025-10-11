@@ -1,161 +1,374 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Realtor Login - MWG Hostels</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .login-card {
-            background: white; border-radius: 20px; padding: 48px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 480px;
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
             animation: slideUp 0.5s ease;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .logo { text-align: center; margin-bottom: 32px; }
-        .logo i { font-size: 64px; color: #667eea; margin-bottom: 16px; display: block; }
-        .logo h1 { color: #1a1a1a; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .logo p { color: #666; font-size: 16px; }
-        .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; color: #333; font-weight: 600; margin-bottom: 10px; font-size: 15px; }
-        .form-group label i { margin-right: 8px; color: #667eea; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
         .form-group input {
-            width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px;
-            font-size: 16px; transition: all 0.3s ease; font-family: inherit;
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
         }
-        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1); }
-        .password-info {
-            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
-            border: 2px dashed #667eea; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        .password-info strong { display: block; color: #1a1a1a; margin-bottom: 12px; font-size: 16px; }
-        .password-info code {
-            background: white; padding: 12px 24px; border-radius: 8px; font-family: 'Courier New', monospace;
-            color: #667eea; font-weight: bold; font-size: 24px; display: inline-block;
-            border: 2px solid #667eea; letter-spacing: 2px;
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .remember-me label {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+            cursor: pointer;
+        }
+
         .btn-login {
-            width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; border: none; padding: 16px 24px; border-radius: 12px;
-            font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
-        .btn-login:active { transform: translateY(0); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .footer-links { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
-        .footer-links a { color: #667eea; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
-        .footer-links a:hover { color: #764ba2; text-decoration: underline; }
-        .notification {
-            position: fixed; top: 20px; right: 20px; background: white; padding: 16px 24px;
-            border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); z-index: 10000;
-            display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 500;
-            animation: slideInRight 0.3s ease; max-width: 400px;
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        .notification.success { background: #4CAF50; color: white; }
-        .notification.error { background: #f44336; color: white; }
-        @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
-        @media (max-width: 600px) {
-            .login-card { padding: 32px 24px; }
-            .logo h1 { font-size: 28px; }
-            .password-info code { font-size: 20px; padding: 10px 20px; }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .back-link a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            color: #667eea;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
+    <div class="login-container">
         <div class="logo">
-            <i class="fas fa-building"></i>
-            <h1>Realtor Portal</h1>
-            <p>MWG Hostels • FUTA Student Housing</p>
+            <h1>🏠 MWG Hostels</h1>
+            <p>Realtor Login</p>
         </div>
+
+        <div id="alertBox" class="alert"></div>
+
         <form id="loginForm">
             <div class="form-group">
-                <label><i class="fas fa-user"></i> Your Full Name</label>
-                <input type="text" id="realtorName" placeholder="e.g., John Smith" required autocomplete="name">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com" autocomplete="email">
             </div>
+
             <div class="form-group">
-                <label><i class="fas fa-lock"></i> Access Password</label>
-                <input type="password" id="realtorPassword" placeholder="Enter the realtor password" required autocomplete="current-password">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
             </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember me for 30 days</label>
+            </div>
+
             <button type="submit" class="btn-login" id="loginBtn">
-                <i class="fas fa-sign-in-alt"></i> Access Dashboard
+                Login to Dashboard
             </button>
         </form>
-        <div class="footer-links">
-            <a href="index.html"><i class="fas fa-home"></i> Back to Main Site</a>
+
+        <div class="register-link">
+            Don't have an account? <a href="realtor-register.html">Register here</a>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Main Site</a>
         </div>
     </div>
+
     <script>
-        const REALTOR_PASSWORD = 'MWG@2025';
-        function showNotification(message, type = 'success') {
-            document.querySelectorAll('.notification').forEach(n => n.remove());
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
-            document.body.appendChild(notification);
-            setTimeout(() => { notification.style.animation = 'slideOutRight 0.3s ease'; setTimeout(() => notification.remove(), 300); }, 4000);
-        }
-        function checkExistingLogin() {
-            const isLoggedIn = localStorage.getItem('realtorLoggedIn');
-            const realtorName = localStorage.getItem('realtorName');
-            if (isLoggedIn === 'true' && realtorName) {
-                console.log('✅ Already logged in as:', realtorName);
-                window.location.href = 'enhanced-realtor-dashboard.html';
-                return true;
+        // Auto-detect environment
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api'
+            : 'https://sama-production-9e28.up.railway.app/api';
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('realtorToken');
+            if (token) {
+                // Verify token is still valid
+                fetch(`${API_BASE_URL}/realtor-auth/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Already logged in, redirect to dashboard
+                        window.location.href = 'enhanced-realtor-dashboard.html';
+                    }
+                })
+                .catch(() => {
+                    // Token invalid, clear it
+                    localStorage.removeItem('realtorToken');
+                    localStorage.removeItem('realtorData');
+                });
             }
-            return false;
-        }
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        });
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const loginBtn = document.getElementById('loginBtn');
-            const name = document.getElementById('realtorName').value.trim();
-            const password = document.getElementById('realtorPassword').value;
-            if (!name || name.length < 3) {
-                showNotification('❌ Please enter your full name', 'error');
-                document.getElementById('realtorName').focus();
-                return;
-            }
-            if (!password) {
-                showNotification('❌ Please enter the password', 'error');
-                document.getElementById('realtorPassword').focus();
-                return;
-            }
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-            console.log('🔐 Login attempt by:', name);
-            if (password === REALTOR_PASSWORD) {
-                console.log('✅ Password correct!');
-                const realtorId = 'realtor_' + Date.now();
-                localStorage.setItem('realtorLoggedIn', 'true');
-                localStorage.setItem('realtorName', name);
-                localStorage.setItem('realtorId', realtorId);
-                localStorage.setItem('realtorLoginTime', new Date().toISOString());
-                showNotification(`✅ Welcome back, ${name}!`, 'success');
-                setTimeout(() => { window.location.href = 'enhanced-realtor-dashboard.html'; }, 1000);
-            } else {
-                console.log('❌ Wrong password');
-                showNotification('❌ Incorrect password! contact the management', 'error');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Dashboard';
-                document.getElementById('realtorPassword').value = '';
-                document.getElementById('realtorPassword').focus();
+
+            const submitBtn = document.getElementById('loginBtn');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/realtor-auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password, rememberMe })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token and user data
+                    localStorage.setItem('realtorToken', data.data.token);
+                    localStorage.setItem('realtorData', JSON.stringify(data.data.realtor));
+
+                    // Check if account needs approval
+                    if (data.data.needsApproval) {
+                        showAlert('Your account is pending admin approval. You can view the dashboard but cannot add hostels yet.', 'warning');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, 2000);
+                    } else {
+                        showAlert('Login successful! Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, 1000);
+                    }
+                } else {
+                    showAlert(data.message || 'Login failed. Please check your credentials.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Login to Dashboard';
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Connection error. Please check if the server is running.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Login to Dashboard';
             }
         });
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('🔐 MWG HOSTELS - Realtor Login');
-            console.log('Password for all realtors: contact the management');
-            console.log('═══════════════════════════════════════════════════════');
-            checkExistingLogin();
-        });
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
     </script>
 </body>
 </html>
