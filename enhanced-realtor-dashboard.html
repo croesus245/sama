@@ -425,17 +425,30 @@
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Image URL</label>
-                        <div style="display: flex; gap: 0.5rem; align-items: center;">
-                            <input type="url" id="hostelImage" placeholder="https://example.com/image.jpg" style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                            <button type="button" onclick="openUploadWidget('hostelImage')" style="padding: 0.75rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-cloud-upload-alt"></i> Upload
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5)</label>
+                        <button type="button" onclick="openHostelImagesWidget()" style="width: 100%; padding: 0.75rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-images"></i> Upload Hostel Images (<span id="hostelImageCount">0</span>/5)
+                        </button>
+                        <div id="hostelImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;"></div>
+                        <input type="hidden" id="hostelImageUrls">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Upload up to 5 images to showcase your hostel</small>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Video Tour (optional)</label>
+                        <button type="button" onclick="openHostelVideoWidget()" style="width: 100%; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-video"></i> <span id="hostelVideoStatus">Upload Video Tour</span>
+                        </button>
+                        <div id="hostelVideoPreview" style="margin-top: 0.5rem; display: none;">
+                            <video id="hostelPreviewVideo" controls style="width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #8b5cf6;">
+                                <source src="" type="video/mp4">
+                            </video>
+                            <button type="button" onclick="removeHostelVideo()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-trash"></i> Remove Video
                             </button>
                         </div>
-                        <div id="imagePreview" style="margin-top: 0.5rem; display: none;">
-                            <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 2px solid #d1d5db;">
-                        </div>
-                        <small style="color: #6b7280; font-size: 0.875rem;">Click "Upload" to select from computer, or paste URL manually. Leave blank for default image.</small>
+                        <input type="hidden" id="hostelVideoUrl">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
@@ -495,17 +508,30 @@
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Image URL</label>
-                        <div style="display: flex; gap: 0.5rem; align-items: center;">
-                            <input type="url" id="editHostelImage" placeholder="https://example.com/image.jpg" style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                            <button type="button" onclick="openUploadWidget('editHostelImage')" style="padding: 0.75rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-cloud-upload-alt"></i> Upload
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5)</label>
+                        <button type="button" onclick="openEditHostelImagesWidget()" style="width: 100%; padding: 0.75rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-images"></i> Upload Hostel Images (<span id="editHostelImageCount">0</span>/5)
+                        </button>
+                        <div id="editHostelImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;"></div>
+                        <input type="hidden" id="editHostelImageUrls">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Upload up to 5 images to showcase your hostel</small>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Video Tour (optional)</label>
+                        <button type="button" onclick="openEditHostelVideoWidget()" style="width: 100%; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-video"></i> <span id="editHostelVideoStatus">Upload Video Tour</span>
+                        </button>
+                        <div id="editHostelVideoPreview" style="margin-top: 0.5rem; display: none;">
+                            <video id="editHostelPreviewVideo" controls style="width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #8b5cf6;">
+                                <source src="" type="video/mp4">
+                            </video>
+                            <button type="button" onclick="removeEditHostelVideo()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-trash"></i> Remove Video
                             </button>
                         </div>
-                        <div id="editImagePreview" style="margin-top: 0.5rem; display: none;">
-                            <img id="editPreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 2px solid #d1d5db;">
-                        </div>
-                        <small style="color: #6b7280; font-size: 0.875rem;">Click "Upload" to replace image, or paste URL manually.</small>
+                        <input type="hidden" id="editHostelVideoUrl">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
@@ -935,8 +961,15 @@
             const name = document.getElementById('hostelName').value.trim();
             const location = document.getElementById('hostelLocation').value.trim();
             const price = parseInt(document.getElementById('hostelPrice').value);
-            const image = document.getElementById('hostelImage').value.trim() || 
-                         'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80';
+            
+            // Get images from hidden input
+            const imageUrls = document.getElementById('hostelImageUrls').value;
+            const images = imageUrls ? imageUrls.split(',') : [];
+            const image = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80';
+            
+            // Get video from hidden input
+            const video = document.getElementById('hostelVideoUrl').value.trim() || null;
+            
             const featuresInput = document.getElementById('hostelFeatures').value.trim();
             const features = featuresInput ? featuresInput.split(',').map(f => f.trim()) : ['WiFi', 'Security'];
             const available = document.getElementById('hostelAvailable').checked;
@@ -948,6 +981,8 @@
                 location,
                 price,
                 image,
+                images: images.length > 0 ? images : [image], // Save all images
+                video, // Add video URL
                 available,
                 features,
                 whatsapp,
@@ -975,6 +1010,13 @@
                     // Update UI
                     updateStats();
                     renderHostels();
+                    
+                    // Reset form and clear uploads
+                    uploadedHostelImages = [];
+                    uploadedHostelVideo = null;
+                    updateHostelImagesPreview();
+                    document.getElementById('hostelVideoPreview').style.display = 'none';
+                    document.getElementById('hostelVideoStatus').textContent = 'Upload Video Tour';
                     
                     // Close modal
                     closeAddHostelModal();
@@ -1014,12 +1056,22 @@
                 return false;
             }
             
+            // Get images from hidden input
+            const imageUrls = document.getElementById('editHostelImageUrls').value;
+            const images = imageUrls ? imageUrls.split(',') : (hostel.images || [hostel.image]);
+            const image = images.length > 0 ? images[0] : hostel.image;
+            
+            // Get video from hidden input
+            const video = document.getElementById('editHostelVideoUrl').value.trim() || hostel.video || null;
+            
             // Prepare updated data
             const updatedData = {
                 name: document.getElementById('editHostelName').value.trim(),
                 location: document.getElementById('editHostelLocation').value.trim(),
                 price: parseInt(document.getElementById('editHostelPrice').value),
-                image: document.getElementById('editHostelImage').value.trim() || hostel.image,
+                image,
+                images: images.length > 0 ? images : [image], // Save all images
+                video, // Add video URL
                 features: document.getElementById('editHostelFeatures').value.trim() 
                     ? document.getElementById('editHostelFeatures').value.trim().split(',').map(f => f.trim())
                     : hostel.features,
@@ -1049,6 +1101,10 @@
                     // Update UI
                     updateStats();
                     renderHostels();
+                    
+                    // Reset uploads
+                    editUploadedHostelImages = [];
+                    editUploadedHostelVideo = null;
                     
                     // Close modal
                     closeEditHostelModal();
@@ -1231,77 +1287,291 @@
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', initializeDashboard);
         
-        // Cloudinary Upload Widget Configuration
-        let uploadWidget;
+        // Cloudinary Upload Widget Configuration for Multiple Images
+        let uploadedHostelImages = [];
+        let editUploadedHostelImages = [];
+        let uploadedHostelVideo = null;
+        let editUploadedHostelVideo = null;
         
-        function openUploadWidget(targetInputId) {
-            // Initialize widget if not already done
-            if (!uploadWidget) {
-                uploadWidget = cloudinary.createUploadWidget({
-                    cloudName: 'dsu1po0tg',
-                    uploadPreset: 'mwg_hostels_unsigned',
-                    sources: ['local', 'camera', 'url'],
-                    multiple: false,
-                    maxFileSize: 5000000, // 5MB
-                    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-                    maxImageWidth: 1920,
-                    maxImageHeight: 1080,
-                    cropping: false,
-                    folder: 'mwg-hostels/hostels',
-                    resourceType: 'image',
-                    theme: 'minimal',
-                    styles: {
-                        palette: {
-                            window: '#FFFFFF',
-                            windowBorder: '#1e40af',
-                            tabIcon: '#1e40af',
-                            menuIcons: '#5A616A',
-                            textDark: '#000000',
-                            textLight: '#FFFFFF',
-                            link: '#1e40af',
-                            action: '#1e40af',
-                            inactiveTabIcon: '#9CA3AF',
-                            error: '#dc2626',
-                            inProgress: '#10b981',
-                            complete: '#10b981',
-                            sourceBg: '#F5F7FA'
-                        }
-                    },
-                    text: {
-                        'local.browse': 'Browse Files',
-                        'local.dd_title_single': 'Drag and Drop your hostel image here',
-                        'local.dd_title_multi': 'Drag and Drop images here'
+        function openHostelImagesWidget() {
+            const widget = cloudinary.createUploadWidget({
+                cloudName: 'dsu1po0tg',
+                uploadPreset: 'mwg_hostels_unsigned',
+                sources: ['local', 'camera', 'url'],
+                multiple: true,
+                maxFiles: 5 - uploadedHostelImages.length,
+                maxFileSize: 5000000, // 5MB per image
+                clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+                maxImageWidth: 1920,
+                maxImageHeight: 1080,
+                folder: 'mwg-hostels/hostels',
+                resourceType: 'image',
+                theme: 'minimal',
+                styles: {
+                    palette: {
+                        window: '#FFFFFF',
+                        windowBorder: '#10b981',
+                        tabIcon: '#10b981',
+                        menuIcons: '#5A616A',
+                        textDark: '#000000',
+                        textLight: '#FFFFFF',
+                        link: '#10b981',
+                        action: '#10b981',
+                        inactiveTabIcon: '#9CA3AF',
+                        error: '#dc2626',
+                        inProgress: '#10b981',
+                        complete: '#10b981',
+                        sourceBg: '#F5F7FA'
                     }
-                }, (error, result) => {
-                    if (error) {
-                        console.error('Upload error:', error);
-                        alert('Upload failed: ' + error.message);
-                        return;
-                    }
+                },
+                text: {
+                    'local.browse': 'Browse Files',
+                    'local.dd_title_multi': 'Drag and Drop hostel images here (up to 5)'
+                }
+            }, (error, result) => {
+                if (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    return;
+                }
+                
+                if (result && result.event === 'success') {
+                    const imageUrl = result.info.secure_url;
                     
-                    if (result && result.event === 'success') {
-                        console.log('Upload successful:', result.info);
-                        
-                        // Get the secure URL
-                        const imageUrl = result.info.secure_url;
-                        
-                        // Update the input field
-                        document.getElementById(targetInputId).value = imageUrl;
-                        
-                        // Show preview
-                        const previewId = targetInputId === 'hostelImage' ? 'imagePreview' : 'editImagePreview';
-                        const imgId = targetInputId === 'hostelImage' ? 'previewImg' : 'editPreviewImg';
-                        
-                        document.getElementById(previewId).style.display = 'block';
-                        document.getElementById(imgId).src = imageUrl;
-                        
-                        // Show success message
-                        alert('✅ Image uploaded successfully!');
-                        
-                        // Close widget
-                        uploadWidget.close();
+                    if (uploadedHostelImages.length < 5) {
+                        uploadedHostelImages.push(imageUrl);
+                        updateHostelImagesPreview();
+                        document.getElementById('hostelImageUrls').value = uploadedHostelImages.join(',');
                     }
-                });
+                }
+            });
+            
+            widget.open();
+        }
+        
+        function updateHostelImagesPreview() {
+            const preview = document.getElementById('hostelImagesPreview');
+            const counter = document.getElementById('hostelImageCount');
+            
+            counter.textContent = uploadedHostelImages.length;
+            preview.innerHTML = '';
+            
+            uploadedHostelImages.forEach((url, index) => {
+                const imageContainer = document.createElement('div');
+                imageContainer.style.position = 'relative';
+                imageContainer.innerHTML = `
+                    <img src="${url}" alt="Hostel ${index + 1}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;">
+                    <button onclick="removeHostelImage('${url}')" style="position: absolute; top: 4px; right: 4px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">×</button>
+                    ${index === 0 ? '<div style="position: absolute; bottom: 4px; left: 4px; background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;">Main</div>' : ''}
+                `;
+                preview.appendChild(imageContainer);
+            });
+        }
+        
+        function removeHostelImage(imageUrl) {
+            uploadedHostelImages = uploadedHostelImages.filter(url => url !== imageUrl);
+            updateHostelImagesPreview();
+            document.getElementById('hostelImageUrls').value = uploadedHostelImages.join(',');
+        }
+        
+        function openHostelVideoWidget() {
+            const widget = cloudinary.createUploadWidget({
+                cloudName: 'dsu1po0tg',
+                uploadPreset: 'mwg_hostels_unsigned',
+                sources: ['local', 'camera'],
+                multiple: false,
+                maxFileSize: 52428800, // 50MB
+                clientAllowedFormats: ['mp4', 'mov', 'avi', 'webm', 'mkv'],
+                folder: 'mwg-hostels/hostel-videos',
+                resourceType: 'video',
+                theme: 'minimal',
+                styles: {
+                    palette: {
+                        window: '#FFFFFF',
+                        windowBorder: '#8b5cf6',
+                        tabIcon: '#8b5cf6',
+                        menuIcons: '#5A616A',
+                        textDark: '#000000',
+                        textLight: '#FFFFFF',
+                        link: '#8b5cf6',
+                        action: '#8b5cf6',
+                        inactiveTabIcon: '#9CA3AF',
+                        error: '#dc2626',
+                        inProgress: '#8b5cf6',
+                        complete: '#8b5cf6',
+                        sourceBg: '#F5F7FA'
+                    }
+                },
+                text: {
+                    'local.browse': 'Browse Video Files',
+                    'local.dd_title_single': 'Drag and Drop hostel video tour here'
+                }
+            }, (error, result) => {
+                if (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    return;
+                }
+                
+                if (result && result.event === 'success') {
+                    uploadedHostelVideo = result.info.secure_url;
+                    document.getElementById('hostelVideoUrl').value = uploadedHostelVideo;
+                    document.getElementById('hostelVideoStatus').textContent = '✅ Video uploaded';
+                    
+                    // Show video preview
+                    const preview = document.getElementById('hostelVideoPreview');
+                    const video = document.getElementById('hostelPreviewVideo');
+                    video.querySelector('source').src = uploadedHostelVideo;
+                    video.load();
+                    preview.style.display = 'block';
+                }
+            });
+            
+            widget.open();
+        }
+        
+        function removeHostelVideo() {
+            uploadedHostelVideo = null;
+            document.getElementById('hostelVideoUrl').value = '';
+            document.getElementById('hostelVideoStatus').textContent = 'Upload Video Tour';
+            document.getElementById('hostelVideoPreview').style.display = 'none';
+        }
+        
+        // Edit form versions
+        function openEditHostelImagesWidget() {
+            const widget = cloudinary.createUploadWidget({
+                cloudName: 'dsu1po0tg',
+                uploadPreset: 'mwg_hostels_unsigned',
+                sources: ['local', 'camera', 'url'],
+                multiple: true,
+                maxFiles: 5 - editUploadedHostelImages.length,
+                maxFileSize: 5000000,
+                clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+                maxImageWidth: 1920,
+                maxImageHeight: 1080,
+                folder: 'mwg-hostels/hostels',
+                resourceType: 'image',
+                theme: 'minimal',
+                styles: {
+                    palette: {
+                        window: '#FFFFFF',
+                        windowBorder: '#10b981',
+                        tabIcon: '#10b981',
+                        menuIcons: '#5A616A',
+                        textDark: '#000000',
+                        textLight: '#FFFFFF',
+                        link: '#10b981',
+                        action: '#10b981',
+                        inactiveTabIcon: '#9CA3AF',
+                        error: '#dc2626',
+                        inProgress: '#10b981',
+                        complete: '#10b981',
+                        sourceBg: '#F5F7FA'
+                    }
+                }
+            }, (error, result) => {
+                if (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    return;
+                }
+                
+                if (result && result.event === 'success') {
+                    const imageUrl = result.info.secure_url;
+                    
+                    if (editUploadedHostelImages.length < 5) {
+                        editUploadedHostelImages.push(imageUrl);
+                        updateEditHostelImagesPreview();
+                        document.getElementById('editHostelImageUrls').value = editUploadedHostelImages.join(',');
+                    }
+                }
+            });
+            
+            widget.open();
+        }
+        
+        function updateEditHostelImagesPreview() {
+            const preview = document.getElementById('editHostelImagesPreview');
+            const counter = document.getElementById('editHostelImageCount');
+            
+            counter.textContent = editUploadedHostelImages.length;
+            preview.innerHTML = '';
+            
+            editUploadedHostelImages.forEach((url, index) => {
+                const imageContainer = document.createElement('div');
+                imageContainer.style.position = 'relative';
+                imageContainer.innerHTML = `
+                    <img src="${url}" alt="Hostel ${index + 1}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;">
+                    <button onclick="removeEditHostelImage('${url}')" style="position: absolute; top: 4px; right: 4px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">×</button>
+                    ${index === 0 ? '<div style="position: absolute; bottom: 4px; left: 4px; background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;">Main</div>' : ''}
+                `;
+                preview.appendChild(imageContainer);
+            });
+        }
+        
+        function removeEditHostelImage(imageUrl) {
+            editUploadedHostelImages = editUploadedHostelImages.filter(url => url !== imageUrl);
+            updateEditHostelImagesPreview();
+            document.getElementById('editHostelImageUrls').value = editUploadedHostelImages.join(',');
+        }
+        
+        function openEditHostelVideoWidget() {
+            const widget = cloudinary.createUploadWidget({
+                cloudName: 'dsu1po0tg',
+                uploadPreset: 'mwg_hostels_unsigned',
+                sources: ['local', 'camera'],
+                multiple: false,
+                maxFileSize: 52428800,
+                clientAllowedFormats: ['mp4', 'mov', 'avi', 'webm', 'mkv'],
+                folder: 'mwg-hostels/hostel-videos',
+                resourceType: 'video',
+                theme: 'minimal',
+                styles: {
+                    palette: {
+                        window: '#FFFFFF',
+                        windowBorder: '#8b5cf6',
+                        tabIcon: '#8b5cf6',
+                        menuIcons: '#5A616A',
+                        textDark: '#000000',
+                        textLight: '#FFFFFF',
+                        link: '#8b5cf6',
+                        action: '#8b5cf6',
+                        inactiveTabIcon: '#9CA3AF',
+                        error: '#dc2626',
+                        inProgress: '#8b5cf6',
+                        complete: '#8b5cf6',
+                        sourceBg: '#F5F7FA'
+                    }
+                }
+            }, (error, result) => {
+                if (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    return;
+                }
+                
+                if (result && result.event === 'success') {
+                    editUploadedHostelVideo = result.info.secure_url;
+                    document.getElementById('editHostelVideoUrl').value = editUploadedHostelVideo;
+                    document.getElementById('editHostelVideoStatus').textContent = '✅ Video uploaded';
+                    
+                    const preview = document.getElementById('editHostelVideoPreview');
+                    const video = document.getElementById('editHostelPreviewVideo');
+                    video.querySelector('source').src = editUploadedHostelVideo;
+                    video.load();
+                    preview.style.display = 'block';
+                }
+            });
+            
+            widget.open();
+        }
+        
+        function removeEditHostelVideo() {
+            editUploadedHostelVideo = null;
+            document.getElementById('editHostelVideoUrl').value = '';
+            document.getElementById('editHostelVideoStatus').textContent = 'Upload Video Tour';
+            document.getElementById('editHostelVideoPreview').style.display = 'none';
+        }
             }
             
             // Open the widget

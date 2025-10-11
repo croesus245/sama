@@ -28,6 +28,19 @@ const hostelSchema = new mongoose.Schema({
     required: [true, 'Image URL is required']
   },
   
+  // Multiple images support (up to 5)
+  images: [{
+    type: String,
+    trim: true
+  }],
+  
+  // Video tour support
+  video: {
+    type: String,
+    trim: true,
+    default: null
+  },
+  
   // Features
   features: [{
     type: String,
