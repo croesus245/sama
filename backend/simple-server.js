@@ -49,12 +49,14 @@ const hostelRoutes = require('./routes/hostels');
 const realtorAuthRoutes = require('./routes/realtorAuth');
 const adminPanelRoutes = require('./routes/adminPanel');
 const studentAuthRoutes = require('./routes/studentAuth');
+const uploadRoutes = require('./routes/upload');
 
 // Routes
 app.use('/api/hostels', hostelRoutes);
 app.use('/api/realtor-auth', realtorAuthRoutes);
 app.use('/api/admin-panel', adminPanelRoutes);
 app.use('/api/students', studentAuthRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -95,7 +97,12 @@ app.get('/api', (req, res) => {
       studentLogin: '/api/students/login',
       studentProfile: '/api/students/profile',
       studentSaveHostel: '/api/students/save-hostel/:hostelId',
-      studentSavedHostels: '/api/students/saved-hostels'
+      studentSavedHostels: '/api/students/saved-hostels',
+      // Image Upload
+      uploadImage: '/api/upload/image',
+      uploadMultiple: '/api/upload/multiple',
+      deleteImage: '/api/upload/image/:publicId',
+      uploadConfig: '/api/upload/config'
     }
   });
 });
