@@ -827,6 +827,9 @@
                             <button class="btn-secondary" onclick="editHostel('${hostel._id || hostel.id}')">
                                 <i class="fas fa-edit mr-1"></i> Edit
                             </button>
+                            <button class="btn-secondary" onclick="openDeleteModal('${hostel._id || hostel.id}')" style="background: #dc2626; color: white;">
+                                <i class="fas fa-trash mr-1"></i> Delete
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1197,6 +1200,48 @@
                     .catch((error) => {
                         console.error('❌ Error deleting hostel:', error);
                         notifications.show(`❌ Error: ${error.message}`, 'error');
+                    });
+            }
+        }
+        
+        // Direct delete function for hostel list delete buttons
+        function openDeleteModal(hostelId) {
+            const hostel = hostels.find(h => h._id === hostelId);
+            
+            if (!hostel) {
+                notifications.show('❌ Hostel not found', 'error');
+                return;
+            }
+            
+            const confirmDelete = confirm(`Are you sure you want to delete "${hostel.name}"?\n\nLocation: ${hostel.location}\nPrice: ${Utils.formatCurrency(hostel.price)}\n\nThis action cannot be undone.`);
+            
+            if (confirmDelete) {
+                // Show loading notification
+                notifications.show('🗑️ Deleting hostel...', 'info');
+                
+                // Send delete request to API
+                HostelAPI.deleteHostel(hostelId)
+                    .then(async () => {
+                        console.log('✅ Hostel deleted:', hostelId);
+                        
+                        // Reload hostels from API
+                        await loadHostelsFromAPI();
+                        
+                        // Update UI
+                        updateStats();
+                        renderHostels();
+                        
+                        // Show success notification
+                        notifications.show(`🗑️ ${hostel.name} deleted successfully`, 'success');
+                        
+                        // Track deletion
+                        if (typeof Analytics !== 'undefined') {
+                            Analytics.track('hostel_deleted', { hostelId, hostelName: hostel.name });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error deleting hostel:', error);
+                        notifications.show(`❌ Failed to delete: ${error.message}`, 'error');
                     });
             }
         }
