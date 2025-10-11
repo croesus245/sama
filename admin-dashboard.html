@@ -833,7 +833,6 @@
                                     <th>Available</th>
                                     <th>Applications</th>
                                     <th>Views</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -841,9 +840,8 @@
 
                     hostels.forEach(hostel => {
                         const realtorName = hostel.realtorId ? hostel.realtorId.fullName : 'Unknown';
-                        const hostelNameEscaped = hostel.name.replace(/'/g, "\\'");
                         tableHTML += `
-                            <tr id="hostel-row-${hostel._id}">
+                            <tr>
                                 <td><strong>${hostel.name}</strong></td>
                                 <td>${hostel.location}</td>
                                 <td>₦${hostel.price.toLocaleString()}</td>
@@ -851,11 +849,6 @@
                                 <td><span class="status-badge ${hostel.available ? 'active' : 'suspended'}">${hostel.available ? 'Yes' : 'No'}</span></td>
                                 <td>${hostel.applications || 0}</td>
                                 <td>${hostel.views || 0}</td>
-                                <td>
-                                    <button class="btn-reject" onclick="deleteHostel('${hostel._id}', '${hostelNameEscaped}')">
-                                        🗑️ Delete
-                                    </button>
-                                </td>
                             </tr>
                         `;
                     });
@@ -868,36 +861,6 @@
             } catch (error) {
                 console.error('Error loading hostels:', error);
                 container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><h3>Connection Error</h3><p>Could not connect to the server.</p></div>';
-            }
-        }
-
-        // Delete Hostel Function
-        async function deleteHostel(hostelId, hostelName) {
-            if (!confirm(`⚠️ Are you sure you want to DELETE "${hostelName}"?\n\nThis action CANNOT be undone!`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/hostels/${hostelId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${adminToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const row = document.getElementById(`hostel-row-${hostelId}`);
-                    if (row) row.remove();
-                    showAlert(`✅ Successfully deleted "${hostelName}"`, 'success');
-                    await loadStats();
-                } else {
-                    const data = await response.json();
-                    showAlert(`❌ Error: ${data.message || 'Failed to delete hostel'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting hostel:', error);
-                showAlert('❌ Connection error. Could not delete hostel.', 'error');
             }
         }
 
