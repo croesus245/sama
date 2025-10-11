@@ -6,6 +6,8 @@
     <title>Roommate Finder - MWG Hostels</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <style>
         .roommate-container {
             max-width: 1200px;
@@ -308,6 +310,19 @@
                     <textarea id="providerDescription" placeholder="Describe your space, amenities, house rules..." required></textarea>
                 </div>
                 
+                <div class="form-group">
+                    <label>Room Images (Optional)</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                        <button type="button" onclick="openRoommateUploadWidget()" style="padding: 0.75rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-cloud-upload-alt"></i> Upload Room Images
+                        </button>
+                        <span id="uploadedCount" style="color: #666; font-size: 0.9rem;">0 images uploaded</span>
+                    </div>
+                    <div id="roomImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;"></div>
+                    <input type="hidden" id="roomImageUrls" value="">
+                    <small style="color: #666;">Upload up to 5 images of your room/apartment. This helps attract potential roommates!</small>
+                </div>
+                
                 <button type="submit" class="btn-primary btn-large">
                     <i class="fas fa-plus"></i> List Your Space
                 </button>
@@ -343,6 +358,129 @@
     </div>
     
     <script src="roommate-finder-fixed.js"></script>
+    
+    <!-- Cloudinary Upload Widget for Roommate Images -->
+    <script>
+        let roommateUploadWidget;
+        let uploadedRoomImages = [];
+        
+        function openRoommateUploadWidget() {
+            // Initialize widget if not already done
+            if (!roommateUploadWidget) {
+                roommateUploadWidget = cloudinary.createUploadWidget({
+                    cloudName: 'dsu1po0tg',
+                    uploadPreset: 'mwg_hostels_unsigned',
+                    sources: ['local', 'camera'],
+                    multiple: true,
+                    maxFiles: 5,
+                    maxFileSize: 5000000, // 5MB
+                    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+                    maxImageWidth: 1920,
+                    maxImageHeight: 1080,
+                    cropping: false,
+                    folder: 'mwg-hostels/roommates',
+                    resourceType: 'image',
+                    theme: 'minimal',
+                    styles: {
+                        palette: {
+                            window: '#FFFFFF',
+                            windowBorder: '#2196F3',
+                            tabIcon: '#2196F3',
+                            menuIcons: '#5A616A',
+                            textDark: '#000000',
+                            textLight: '#FFFFFF',
+                            link: '#2196F3',
+                            action: '#2196F3',
+                            inactiveTabIcon: '#9CA3AF',
+                            error: '#dc2626',
+                            inProgress: '#10b981',
+                            complete: '#10b981',
+                            sourceBg: '#F5F7FA'
+                        }
+                    },
+                    text: {
+                        'local.browse': 'Browse Files',
+                        'local.dd_title_single': 'Drag and Drop room images here',
+                        'local.dd_title_multi': 'Drag and Drop room images here (up to 5)'
+                    }
+                }, (error, result) => {
+                    if (error) {
+                        console.error('Upload error:', error);
+                        alert('Upload failed: ' + error.message);
+                        return;
+                    }
+                    
+                    if (result && result.event === 'success') {
+                        console.log('Upload successful:', result.info);
+                        
+                        // Get the secure URL
+                        const imageUrl = result.info.secure_url;
+                        
+                        // Add to uploaded images array
+                        if (uploadedRoomImages.length < 5) {
+                            uploadedRoomImages.push(imageUrl);
+                            
+                            // Update hidden input
+                            document.getElementById('roomImageUrls').value = uploadedRoomImages.join(',');
+                            
+                            // Update counter
+                            document.getElementById('uploadedCount').textContent = `${uploadedRoomImages.length} image${uploadedRoomImages.length > 1 ? 's' : ''} uploaded`;
+                            
+                            // Add preview
+                            const previewContainer = document.getElementById('roomImagesPreview');
+                            const previewDiv = document.createElement('div');
+                            previewDiv.style.cssText = 'position: relative; border-radius: 8px; overflow: hidden; border: 2px solid #e0e0e0;';
+                            previewDiv.innerHTML = `
+                                <img src="${imageUrl}" style="width: 100%; height: 120px; object-fit: cover;">
+                                <button onclick="removeRoomImage('${imageUrl}')" style="position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                                    ×
+                                </button>
+                            `;
+                            previewContainer.appendChild(previewDiv);
+                        }
+                        
+                        if (uploadedRoomImages.length >= 5) {
+                            alert('✅ Maximum 5 images uploaded!');
+                            roommateUploadWidget.close();
+                        }
+                    }
+                    
+                    if (result && result.event === 'close') {
+                        console.log('Widget closed');
+                    }
+                });
+            }
+            
+            // Open the widget
+            roommateUploadWidget.open();
+        }
+        
+        function removeRoomImage(imageUrl) {
+            // Remove from array
+            uploadedRoomImages = uploadedRoomImages.filter(url => url !== imageUrl);
+            
+            // Update hidden input
+            document.getElementById('roomImageUrls').value = uploadedRoomImages.join(',');
+            
+            // Update counter
+            document.getElementById('uploadedCount').textContent = `${uploadedRoomImages.length} image${uploadedRoomImages.length > 1 ? 's' : ''} uploaded`;
+            
+            // Refresh preview
+            const previewContainer = document.getElementById('roomImagesPreview');
+            previewContainer.innerHTML = '';
+            uploadedRoomImages.forEach(url => {
+                const previewDiv = document.createElement('div');
+                previewDiv.style.cssText = 'position: relative; border-radius: 8px; overflow: hidden; border: 2px solid #e0e0e0;';
+                previewDiv.innerHTML = `
+                    <img src="${url}" style="width: 100%; height: 120px; object-fit: cover;">
+                    <button onclick="removeRoomImage('${url}')" style="position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                        ×
+                    </button>
+                `;
+                previewContainer.appendChild(previewDiv);
+            });
+        }
+    </script>
 </body>
 </html>
 

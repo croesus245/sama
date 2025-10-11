@@ -68,6 +68,10 @@ document.getElementById('seekerForm').addEventListener('submit', function(e) {
 document.getElementById('providerForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Get uploaded image URLs
+    const imageUrls = document.getElementById('roomImageUrls').value;
+    const imagesArray = imageUrls ? imageUrls.split(',') : [];
+    
     const profile = {
         id: `provider_${Date.now()}`,
         type: 'provider',
@@ -78,11 +82,20 @@ document.getElementById('providerForm').addEventListener('submit', function(e) {
         location: document.getElementById('providerLocation').value,
         availableDate: document.getElementById('providerAvailableDate').value,
         description: document.getElementById('providerDescription').value,
+        images: imagesArray, // Store uploaded images
         createdAt: new Date().toISOString()
     };
     
     saveProfile(profile);
     this.reset();
+    
+    // Reset image uploads
+    if (typeof uploadedRoomImages !== 'undefined') {
+        uploadedRoomImages = [];
+        document.getElementById('uploadedCount').textContent = '0 images uploaded';
+        document.getElementById('roomImagesPreview').innerHTML = '';
+    }
+    
     showNotification('✅ Space listed successfully!');
     
     setTimeout(() => {
@@ -123,10 +136,22 @@ function displayProfiles(profiles) {
     container.innerHTML = profiles.map(profile => {
         const initial = profile.name.charAt(0).toUpperCase();
         const isSeeker = profile.type === 'seeker';
+        const hasImages = profile.images && profile.images.length > 0;
         
         return `
             <div class="profile-card">
-                <div class="profile-header">
+                ${hasImages ? `
+                    <div style="width: 100%; height: 200px; overflow: hidden; border-radius: 8px 8px 0 0; position: relative;">
+                        <img src="${profile.images[0]}" alt="Room" style="width: 100%; height: 100%; object-fit: cover;">
+                        ${profile.images.length > 1 ? `
+                            <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
+                                <i class="fas fa-images"></i> ${profile.images.length} photos
+                            </span>
+                        ` : ''}
+                    </div>
+                ` : ''}
+                
+                <div class="profile-header" style="${hasImages ? 'padding-top: 16px;' : ''}">
                     <div class="profile-avatar">${initial}</div>
                     <div class="profile-info">
                         <h3>${profile.name}</h3>
@@ -148,6 +173,14 @@ function displayProfiles(profiles) {
                         ${profile.bio || profile.description || 'No description provided'}
                     </p>
                 </div>
+                
+                ${hasImages && profile.images.length > 1 ? `
+                    <div style="padding: 8px 16px; display: flex; gap: 8px; overflow-x: auto;">
+                        ${profile.images.slice(1).map(img => `
+                            <img src="${img}" alt="Room" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #e0e0e0;" onclick="window.open('${img}', '_blank')">
+                        `).join('')}
+                    </div>
+                ` : ''}
                 
                 <button class="btn-contact" onclick="contactViaWhatsApp('${profile.phone}', '${profile.name}')">
                     <i class="fab fa-whatsapp"></i> Contact via WhatsApp
