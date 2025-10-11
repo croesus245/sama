@@ -511,6 +511,24 @@
             <h2>
                 <i class="fas fa-home"></i> Available Student Hostels
             </h2>
+            
+            <!-- Location Filter Dropdown -->
+            <div style="margin: 2rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <label for="locationFilter" style="font-weight: 600; color: #1e40af; font-size: 1.1rem;">
+                    <i class="fas fa-map-marker-alt"></i> Filter by Gate Area:
+                </label>
+                <select id="locationFilter" onchange="filterHostelsByLocation()" 
+                    style="padding: 0.75rem 1.5rem; border: 2px solid #1e40af; border-radius: 8px; font-size: 1rem; cursor: pointer; background: white; color: #1e40af; font-weight: 600; min-width: 200px;">
+                    <option value="all">All Locations</option>
+                    <option value="West Gate">West Gate</option>
+                    <option value="South Gate">South Gate</option>
+                    <option value="North Gate">North Gate</option>
+                </select>
+                <span id="hostelCount" style="color: #64748b; font-size: 0.95rem; margin-left: auto;">
+                    Loading...
+                </span>
+            </div>
+            
             <div id="hostelsGrid" class="hostels-grid">
                 <!-- Hostels will be loaded dynamically from realtor listings -->
             </div>
@@ -1117,6 +1135,101 @@
 
     <!-- Load and Display Hostels from MongoDB API -->
     <script>
+        // Store all hostels globally for filtering
+        let allHostelsData = [];
+
+        // Filter hostels by location
+        function filterHostelsByLocation() {
+            const selectedLocation = document.getElementById('locationFilter').value;
+            const hostelsGrid = document.getElementById('hostelsGrid');
+            
+            let filteredHostels = allHostelsData.filter(h => h.available === true);
+            
+            if (selectedLocation !== 'all') {
+                filteredHostels = filteredHostels.filter(h => h.location === selectedLocation);
+            }
+            
+            // Update count
+            document.getElementById('hostelCount').textContent = 
+                `Showing ${filteredHostels.length} of ${allHostelsData.filter(h => h.available).length} hostels`;
+            
+            // Display filtered hostels
+            displayHostels(filteredHostels);
+        }
+
+        // Display hostels in grid
+        function displayHostels(hostels) {
+            const hostelsGrid = document.getElementById('hostelsGrid');
+            
+            if (hostels.length === 0) {
+                hostelsGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b;">
+                        <i class="fas fa-home" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 0.5rem;">No Hostels Found</h3>
+                        <p>No hostels match your filter. Try selecting a different location.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            hostelsGrid.innerHTML = hostels.map(hostel => `
+                <div class="hostel-card" data-hostel-id="${hostel._id}">
+                    <img src="${hostel.image}" alt="${hostel.name}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
+                         style="width: 100%; height: 200px; object-fit: cover;">
+                    
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">
+                            ${hostel.name}
+                        </h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; color: #64748b;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-map-marker-alt" style="color: #1e40af;"></i>
+                                <span style="font-weight: 600; color: #1e40af;">${hostel.location}</span>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-naira-sign" style="color: #10b981;"></i>
+                                <span style="font-weight: 700; font-size: 1.25rem; color: #10b981;">
+                                    ${formatCurrency(hostel.price)}/year
+                                </span>
+                            </div>
+
+                            ${hostel.description ? `
+                                <div style="margin-top: 0.75rem; padding: 0.75rem; background: #f8fafc; border-left: 3px solid #1e40af; border-radius: 4px;">
+                                    <p style="font-size: 0.9rem; line-height: 1.5; color: #475569; margin: 0;">
+                                        ${hostel.description.length > 150 ? hostel.description.substring(0, 150) + '...' : hostel.description}
+                                    </p>
+                                </div>
+                            ` : ''}
+                            
+                            ${hostel.features && hostel.features.length > 0 ? `
+                                <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.5rem;">
+                                    <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem;"></i>
+                                    <span style="font-size: 0.875rem;">${hostel.features.join(' • ')}</span>
+                                </div>
+                            ` : ''}
+                            
+                            ${hostel.video ? `
+                                <div style="margin-top: 0.5rem;">
+                                    <span style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                                        <i class="fas fa-video"></i> Video Tour Available
+                                    </span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <button onclick="contactRealtor('${hostel._id}')" 
+                                style="width: 100%; padding: 0.75rem; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s;">
+                            <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
+                            Contact via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         // Load hostels from API and display on main site
         async function loadAndDisplayHostels() {
             const hostelsGrid = document.getElementById('hostelsGrid');
@@ -1136,12 +1249,16 @@
             
             try {
                 // Get all hostels from API
-                const allHostels = await HostelAPI.getAllHostels();
+                allHostelsData = await HostelAPI.getAllHostels();
                 
                 // Filter to only show available hostels
-                const availableHostels = allHostels.filter(h => h.available === true);
+                const availableHostels = allHostelsData.filter(h => h.available === true);
                 
-                console.log(`✅ Loaded ${allHostels.length} total hostels, ${availableHostels.length} available`);
+                console.log(`✅ Loaded ${allHostelsData.length} total hostels, ${availableHostels.length} available`);
+                
+                // Update count
+                document.getElementById('hostelCount').textContent = 
+                    `Showing ${availableHostels.length} ${availableHostels.length === 1 ? 'hostel' : 'hostels'}`;
                 
                 if (availableHostels.length === 0) {
                     hostelsGrid.innerHTML = `
@@ -1158,61 +1275,13 @@
                     return;
                 }
                 
-                // Display hostels as cards
-                hostelsGrid.innerHTML = availableHostels.map(hostel => `
-                    <div class="hostel-card" data-hostel-id="${hostel._id}">
-                        <img src="${hostel.image}" alt="${hostel.name}" 
-                             onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
-                             style="width: 100%; height: 200px; object-fit: cover;">
-                        
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">
-                                ${hostel.name}
-                            </h3>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; color: #64748b;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-map-marker-alt" style="color: #1e40af;"></i>
-                                    <span>${hostel.location}</span>
-                                </div>
-                                
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-naira-sign" style="color: #1e40af;"></i>
-                                    <span style="font-weight: 600; font-size: 1.125rem; color: #1e40af;">
-                                        ${formatCurrency(hostel.price)}/year
-                                    </span>
-                                </div>
-                                
-                                ${hostel.features && hostel.features.length > 0 ? `
-                                    <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.5rem;">
-                                        <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem;"></i>
-                                        <span style="font-size: 0.875rem;">${hostel.features.join(' • ')}</span>
-                                    </div>
-                                ` : ''}
-                            </div>
-                            
-                            <div style="display: flex; gap: 0.75rem;">
-                                <button onclick="contactRealtorViaWhatsApp('${hostel.name}', '${hostel.whatsapp}')" 
-                                        style="flex: 1; padding: 0.75rem; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                    <i class="fab fa-whatsapp" style="font-size: 1.25rem;"></i>
-                                    Contact via WhatsApp
-                                </button>
-                            </div>
-                            
-                            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0; text-align: center;">
-                                <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #dcfce7; color: #16a34a; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">
-                                    <i class="fas fa-check-circle"></i>
-                                    Available Now
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                // Display all available hostels initially
+                displayHostels(availableHostels);
                 
             } catch (error) {
                 console.error('❌ Error loading hostels:', error);
                 
-                // Show error message with fallback to localStorage
+                // Show error message
                 hostelsGrid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #dc2626;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
@@ -1239,25 +1308,36 @@
             }).format(amount).replace('NGN', '₦');
         }
         
-        // Contact realtor via WhatsApp
+        // Contact realtor via WhatsApp (updated to use new function name)
+        function contactRealtor(hostelId) {
+            const hostel = allHostelsData.find(h => h._id === hostelId);
+            if (!hostel || !hostel.whatsapp) {
+                alert('WhatsApp contact not available for this hostel.');
+                return;
+            }
+            
+            const message = encodeURIComponent(`Hello! I'm interested in ${hostel.name} (${hostel.location}). Is it still available?`);
+            const whatsappUrl = `https://wa.me/${hostel.whatsapp}?text=${message}`;
+            
+            // Track the contact attempt
+            if (typeof Analytics !== 'undefined') {
+                Analytics.track('whatsapp_contact', { hostelName: hostel.name });
+            }
+            
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Legacy function for backwards compatibility
         function contactRealtorViaWhatsApp(hostelName, whatsappNumber) {
             if (!whatsappNumber) {
-                alert('WhatsApp contact not available for this hostel. Please try contacting through other means.');
+                alert('WhatsApp contact not available for this hostel.');
                 return;
             }
             
             const message = encodeURIComponent(`Hello! I'm interested in ${hostelName}. Is it still available?`);
             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
-            
-            // Track the contact attempt
-            if (typeof Analytics !== 'undefined') {
-                Analytics.track('whatsapp_contact', { hostelName, whatsappNumber });
-            }
-            
-            // Open WhatsApp
             window.open(whatsappUrl, '_blank');
-            
-            console.log(`📱 Opening WhatsApp for ${hostelName} - ${whatsappNumber}`);
         }
         
         // Load hostels when page loads

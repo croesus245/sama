@@ -415,23 +415,37 @@
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Location *</label>
-                        <input type="text" id="hostelLocation" required placeholder="e.g., Behind FUTA South Gate" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Location (Gate Area) *</label>
+                        <select id="hostelLocation" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; background: white; cursor: pointer;">
+                            <option value="">-- Select Gate Area --</option>
+                            <option value="West Gate">West Gate</option>
+                            <option value="South Gate">South Gate</option>
+                            <option value="North Gate">North Gate</option>
+                        </select>
+                        <small style="color: #6b7280; font-size: 0.875rem;">Choose the nearest gate to your hostel</small>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Detailed Description *</label>
+                        <textarea id="hostelDescription" required placeholder="Describe your hostel: rooms available, amenities, nearby landmarks, transport access, etc." 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
+                        <small style="color: #6b7280; font-size: 0.875rem;">Provide detailed information to help students make informed decisions (min 50 characters)</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Price (₦) *</label>
-                        <input type="number" id="hostelPrice" required placeholder="45000" min="0" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Price (₦/year) *</label>
+                        <input type="number" id="hostelPrice" required placeholder="150000" min="0" step="1000" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Annual rent in Naira</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5)</label>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5) *</label>
                         <button type="button" onclick="openHostelImagesWidget()" style="width: 100%; padding: 0.75rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                             <i class="fas fa-images"></i> Upload Hostel Images (<span id="hostelImageCount">0</span>/5)
                         </button>
                         <div id="hostelImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;"></div>
                         <input type="hidden" id="hostelImageUrls">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Upload up to 5 images to showcase your hostel</small>
+                        <small style="color: #6b7280; font-size: 0.875rem;">Upload at least 1 image (up to 5 total) to showcase your hostel</small>
                     </div>
                     
                     <div style="margin-bottom: 1rem;">
@@ -959,12 +973,30 @@
             
             const name = document.getElementById('hostelName').value.trim();
             const location = document.getElementById('hostelLocation').value.trim();
+            const description = document.getElementById('hostelDescription').value.trim();
             const price = parseInt(document.getElementById('hostelPrice').value);
+            
+            // Validation
+            if (!location) {
+                notifications.show('❌ Please select a gate area (location)', 'error');
+                return false;
+            }
+
+            if (description.length < 50) {
+                notifications.show('❌ Description must be at least 50 characters', 'error');
+                return false;
+            }
             
             // Get images from hidden input
             const imageUrls = document.getElementById('hostelImageUrls').value;
             const images = imageUrls ? imageUrls.split(',') : [];
-            const image = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80';
+            
+            if (images.length === 0) {
+                notifications.show('❌ Please upload at least 1 hostel image', 'error');
+                return false;
+            }
+
+            const image = images[0];
             
             // Get video from hidden input
             const video = document.getElementById('hostelVideoUrl').value.trim() || null;
@@ -978,10 +1010,11 @@
             const newHostelData = {
                 name,
                 location,
+                description,
                 price,
                 image,
-                images: images.length > 0 ? images : [image], // Save all images
-                video, // Add video URL
+                images: images,
+                video,
                 available,
                 features,
                 whatsapp,
