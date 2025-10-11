@@ -72,6 +72,9 @@ document.getElementById('providerForm').addEventListener('submit', function(e) {
     const imageUrls = document.getElementById('roomImageUrls').value;
     const imagesArray = imageUrls ? imageUrls.split(',') : [];
     
+    // Get uploaded video URL
+    const videoUrl = document.getElementById('roomVideoUrl').value;
+    
     const profile = {
         id: `provider_${Date.now()}`,
         type: 'provider',
@@ -83,6 +86,7 @@ document.getElementById('providerForm').addEventListener('submit', function(e) {
         availableDate: document.getElementById('providerAvailableDate').value,
         description: document.getElementById('providerDescription').value,
         images: imagesArray, // Store uploaded images
+        video: videoUrl || null, // Store uploaded video
         createdAt: new Date().toISOString()
     };
     
@@ -94,6 +98,15 @@ document.getElementById('providerForm').addEventListener('submit', function(e) {
         uploadedRoomImages = [];
         document.getElementById('uploadedCount').textContent = '0 images uploaded';
         document.getElementById('roomImagesPreview').innerHTML = '';
+    }
+    
+    // Reset video upload
+    if (typeof uploadedRoomVideo !== 'undefined') {
+        uploadedRoomVideo = null;
+        document.getElementById('videoUploadedStatus').textContent = 'No video uploaded';
+        document.getElementById('videoUploadedStatus').style.color = '#666';
+        document.getElementById('roomVideoPreview').style.display = 'none';
+        document.getElementById('roomVideoPreview').innerHTML = '';
     }
     
     showNotification('✅ Space listed successfully!');
@@ -137,6 +150,7 @@ function displayProfiles(profiles) {
         const initial = profile.name.charAt(0).toUpperCase();
         const isSeeker = profile.type === 'seeker';
         const hasImages = profile.images && profile.images.length > 0;
+        const hasVideo = profile.video && profile.video.trim() !== '';
         
         return `
             <div class="profile-card">
@@ -146,6 +160,11 @@ function displayProfiles(profiles) {
                         ${profile.images.length > 1 ? `
                             <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
                                 <i class="fas fa-images"></i> ${profile.images.length} photos
+                            </span>
+                        ` : ''}
+                        ${hasVideo ? `
+                            <span style="position: absolute; top: 8px; right: 8px; background: rgba(139,92,246,0.9); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
+                                <i class="fas fa-video"></i> Video Tour
                             </span>
                         ` : ''}
                     </div>
@@ -173,6 +192,22 @@ function displayProfiles(profiles) {
                         ${profile.bio || profile.description || 'No description provided'}
                     </p>
                 </div>
+                
+                ${hasVideo ? `
+                    <div style="padding: 8px 16px; margin-top: 8px;">
+                        <details style="cursor: pointer;">
+                            <summary style="font-weight: 600; color: #8b5cf6; padding: 8px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-play-circle"></i> Watch Video Tour
+                            </summary>
+                            <div style="margin-top: 12px; border-radius: 8px; overflow: hidden; border: 2px solid #8b5cf6;">
+                                <video controls style="width: 100%; max-height: 300px; background: #000;">
+                                    <source src="${profile.video}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </details>
+                    </div>
+                ` : ''}
                 
                 ${hasImages && profile.images.length > 1 ? `
                     <div style="padding: 8px 16px; display: flex; gap: 8px; overflow-x: auto;">
