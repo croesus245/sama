@@ -29,8 +29,9 @@ router.post('/submit', async (req, res) => {
       });
     }
     
-    // Get realtor information
-    const realtor = await Realtor.findById(hostel.realtor);
+    // Get realtor information - handle both realtor and realtorId fields
+    const realtorId = hostel.realtor || hostel.realtorId;
+    const realtor = realtorId ? await Realtor.findById(realtorId) : null;
     
     // Create application document
     const application = new Application({
@@ -42,10 +43,10 @@ router.post('/submit', async (req, res) => {
         hostelLocation: hostel.location
       },
       realtor: {
-        realtorId: hostel.realtor,
-        realtorName: realtor ? `${realtor.firstName} ${realtor.lastName}` : 'Unknown',
+        realtorId: realtorId || hostel._id, // Fallback to hostel ID if no realtor
+        realtorName: realtor ? `${realtor.firstName} ${realtor.lastName}` : (hostel.realtorName || 'Unknown'),
         realtorEmail: realtor?.email,
-        realtorPhone: realtor?.phone
+        realtorPhone: realtor?.phone || hostel.whatsapp
       },
       studentInfo: applicationData.studentInfo,
       accommodation: applicationData.accommodation,
