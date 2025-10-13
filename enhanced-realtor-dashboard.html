@@ -669,14 +669,14 @@
                 console.error('❌ Missing authentication data on initial check');
                 console.log('Token:', realtorToken ? 'EXISTS' : 'MISSING');
                 console.log('Data:', storedData ? 'EXISTS' : 'MISSING');
-                console.log('⏳ Waiting 3 seconds for mobile sync...');
+                console.log('⏳ Waiting 5 seconds for mobile sync...');
                 
                 setTimeout(() => {
                     // Check again after wait
                     realtorToken = localStorage.getItem('realtorToken');
                     const retryStoredData = localStorage.getItem('realtorData');
                     
-                    console.log('🔄 Retry check after 3s:', {
+                    console.log('🔄 Retry check after 5s:', {
                         hasToken: !!realtorToken,
                         hasData: !!retryStoredData
                     });
@@ -706,7 +706,7 @@
                             reject(false);
                         }
                     }
-                }, 3000); // Wait 3 full seconds for mobile
+                }, 5000); // Wait 5 full seconds for mobile (increased from 3s)
             });
         }
         

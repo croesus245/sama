@@ -294,21 +294,27 @@
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                // ALWAYS clear redirect counter when landing on login page
-                sessionStorage.removeItem('realtorRedirectAttempts');
-                
                 const token = localStorage.getItem('realtorToken');
-                debugLog('Token on load: ' + (token ? 'EXISTS' : 'NONE'));
+                const validLogin = sessionStorage.getItem('validLogin');
+                debugLog('Token on load: ' + (token ? 'EXISTS' : 'NONE') + ' | Valid: ' + validLogin);
                 
-                // Check if we just came from dashboard (indicates a loop)
+                // Check if we just came from dashboard
                 const referrer = document.referrer || '';
                 const cameFromDashboard = referrer.includes('enhanced-realtor-dashboard.html');
                 
                 if (cameFromDashboard) {
-                    debugLog('⚠️ Redirected from dashboard - clearing session to prevent loop', true);
-                    localStorage.removeItem('realtorToken');
-                    localStorage.removeItem('realtorData');
-                    showAlert('Session could not be maintained. Please login again.', 'warning');
+                    // Dashboard redirected us back - this means auth failed there
+                    debugLog('⚠️ Redirected from dashboard - auth check failed', true);
+                    // DON'T clear the token immediately - user might have just logged in
+                    // Only clear if there's NO validLogin flag AND no token
+                    if (!validLogin && !token) {
+                        localStorage.removeItem('realtorToken');
+                        localStorage.removeItem('realtorData');
+                        showAlert('Session expired. Please login again.', 'warning');
+                    } else {
+                        // We have a token/flag but got redirected - maybe mobile sync issue
+                        showAlert('Loading issue detected. Please try logging in again.', 'info');
+                    }
                     return; // Don't try to auto-login
                 }
                 
@@ -411,8 +417,8 @@
                             showAlert('✅ Login successful! Redirecting to dashboard...', 'success');
                         }
                         
-                        // Wait longer for mobile browsers - 4 seconds total
-                        debugLog('⏳ Waiting 4 seconds before redirect to ensure mobile sync...');
+                        // Wait longer for mobile browsers - 6 seconds total
+                        debugLog('⏳ Waiting 6 seconds before redirect to ensure mobile sync...');
                         setTimeout(() => {
                             // Final verification before redirect
                             const finalToken = localStorage.getItem('realtorToken');
@@ -428,7 +434,7 @@
                             
                             debugLog('✅ Final check passed! Redirecting now...');
                             window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 4000); // Wait 4 full seconds
+                        }, 6000); // Wait 6 full seconds (increased for mobile)
                         
                     } catch (storageError) {
                         debugLog('ERROR: localStorage exception: ' + storageError.message, true);
