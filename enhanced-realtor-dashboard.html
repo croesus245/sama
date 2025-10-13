@@ -656,17 +656,28 @@
                             realtorData = JSON.parse(storedData);
                             
                             // Validate the parsed data has required fields
-                            if (!realtorData || (!realtorData._id && !realtorData.id)) {
-                                throw new Error('Realtor ID missing from session data');
+                            // Be flexible - accept id, _id, or realtorId
+                            const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
+                            
+                            if (!realtorData || !realtorId) {
+                                console.error('Session data:', realtorData);
+                                throw new Error('Realtor ID missing from session data. Found fields: ' + Object.keys(realtorData || {}).join(', '));
+                            }
+                            
+                            // Store the ID in a consistent format for later use
+                            if (!realtorData._id && realtorData.id) {
+                                realtorData._id = realtorData.id;
                             }
                             
                             console.log('✅ Realtor authenticated:', realtorData.fullName || realtorData.email);
+                            console.log('🆔 Realtor ID:', realtorId);
                             sessionStorage.setItem('validLogin', 'true');
                             authCheckComplete = true;
                             resolve(true);
                             return;
                         } catch (error) {
                             console.error('❌ Invalid realtor data:', error.message);
+                            console.error('Raw stored data:', storedData);
                             localStorage.removeItem('realtorToken');
                             localStorage.removeItem('realtorData');
                             sessionStorage.removeItem('validLogin');
@@ -704,16 +715,27 @@
                                     realtorData = JSON.parse(retryStoredData);
                                     
                                     // Validate the parsed data
-                                    if (!realtorData || (!realtorData._id && !realtorData.id)) {
-                                        throw new Error('Realtor ID missing from session data');
+                                    // Be flexible - accept id, _id, or realtorId
+                                    const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
+                                    
+                                    if (!realtorData || !realtorId) {
+                                        console.error('Session data after retry:', realtorData);
+                                        throw new Error('Realtor ID missing from session data. Found fields: ' + Object.keys(realtorData || {}).join(', '));
+                                    }
+                                    
+                                    // Store the ID in a consistent format for later use
+                                    if (!realtorData._id && realtorData.id) {
+                                        realtorData._id = realtorData.id;
                                     }
                                     
                                     console.log('✅ Realtor authenticated after retry:', realtorData.fullName || realtorData.email);
+                                    console.log('🆔 Realtor ID:', realtorId);
                                     sessionStorage.setItem('validLogin', 'true');
                                     authCheckComplete = true;
                                     resolve(true);
                                 } catch (error) {
                                     console.error('❌ Invalid realtor data after retry:', error.message);
+                                    console.error('Raw stored data:', retryStoredData);
                                     localStorage.removeItem('realtorToken');
                                     localStorage.removeItem('realtorData');
                                     sessionStorage.removeItem('validLogin');
@@ -820,11 +842,14 @@
                 
                 // Authentication successful - set up realtor data
                 console.log('✅ Authentication complete, initializing dashboard...');
+                console.log('📋 Realtor data:', realtorData);
                 
-                REALTOR_ID = realtorData._id || realtorData.id;
+                // Be flexible with ID field - accept id, _id, or realtorId
+                REALTOR_ID = realtorData._id || realtorData.id || realtorData.realtorId;
                 
                 if (!REALTOR_ID) {
-                    throw new Error('Realtor ID not found in authenticated data');
+                    console.error('Available fields in realtorData:', Object.keys(realtorData));
+                    throw new Error('Realtor ID not found in authenticated data. Available fields: ' + Object.keys(realtorData).join(', '));
                 }
                 
                 console.log('🔑 Using Realtor ID:', REALTOR_ID);

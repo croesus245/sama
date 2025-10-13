@@ -29,6 +29,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Performance Optimization Scripts -->
+    <script src="performance-config.js" defer></script>
+    <script src="app-optimizer.js" defer></script>
+
     <!-- Enhanced Styles -->
     <link rel="stylesheet" href="universal-bg-system.css">
     <link rel="stylesheet" href="perfect-vibe-theme.css">
@@ -1174,9 +1178,19 @@
             
             hostelsGrid.innerHTML = hostels.map(hostel => `
                 <div class="hostel-card" data-hostel-id="${hostel._id}">
-                    <img src="${hostel.image}" alt="${hostel.name}" 
-                         onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
-                         style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="position: relative; cursor: pointer;" onclick="showHostelGallery('${hostel._id}', ${JSON.stringify(hostel.images || [hostel.image]).replace(/"/g, '&quot;')}, '${hostel.name.replace(/'/g, "\\'")}')">
+                        <img src="${hostel.images && hostel.images.length > 0 ? hostel.images[0] : hostel.image}" alt="${hostel.name}" 
+                             onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
+                             style="width: 100%; height: 200px; object-fit: cover;">
+                        ${hostel.images && hostel.images.length > 1 ? `
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                <i class="fas fa-images"></i> ${hostel.images.length} photos
+                            </div>
+                        ` : ''}
+                        <div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); color: #1e40af; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">
+                            <i class="fas fa-expand"></i> Click to view
+                        </div>
+                    </div>
                     
                     <div style="padding: 1.5rem;">
                         <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">
@@ -1297,6 +1311,146 @@
                 `;
             }
         }
+        
+        // Show hostel image gallery modal
+        function showHostelGallery(hostelId, images, hostelName) {
+            // Parse images if it's a string
+            if (typeof images === 'string') {
+                try {
+                    images = JSON.parse(images.replace(/&quot;/g, '"'));
+                } catch (e) {
+                    images = [images];
+                }
+            }
+            
+            // Ensure images is an array
+            if (!Array.isArray(images)) {
+                images = [images];
+            }
+            
+            // Filter out empty/null values
+            images = images.filter(img => img && img.trim());
+            
+            // If no images, use placeholder
+            if (images.length === 0) {
+                images = ['https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80'];
+            }
+            
+            // Create modal HTML
+            const modalHTML = `
+                <div id="galleryModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s;">
+                    <div style="position: absolute; top: 20px; right: 20px; z-index: 10001;">
+                        <button onclick="closeGalleryModal()" style="background: white; color: #333; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                            ✕
+                        </button>
+                    </div>
+                    
+                    <div style="max-width: 1200px; width: 100%; background: white; border-radius: 12px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white;">
+                            <h2 style="margin: 0; font-size: 24px;">${hostelName}</h2>
+                            <p style="margin: 5px 0 0 0; opacity: 0.9;">${images.length} ${images.length === 1 ? 'photo' : 'photos'}</p>
+                        </div>
+                        
+                        <div style="padding: 20px; overflow-y: auto; flex: 1;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+                                ${images.map((img, index) => `
+                                    <div onclick="showImageFullScreen('${img}', '${hostelName} - Photo ${index + 1}')" style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; aspect-ratio: 4/3; background: #f0f0f0; transition: transform 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <img src="${img}" 
+                                             alt="${hostelName} - Photo ${index + 1}" 
+                                             onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80'"
+                                             style="width: 100%; height: 100%; object-fit: cover;">
+                                        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                                            <i class="fas fa-expand" style="color: white; font-size: 24px;"></i>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                    
+                    @media (max-width: 768px) {
+                        #galleryModal > div {
+                            max-height: 85vh !important;
+                        }
+                        
+                        #galleryModal > div > div:last-child > div {
+                            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+                            gap: 10px !important;
+                        }
+                    }
+                </style>
+            `;
+            
+            // Add to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeGalleryModal() {
+            const modal = document.getElementById('galleryModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+        
+        function showImageFullScreen(imageSrc, title) {
+            const fullScreenHTML = `
+                <div id="fullScreenImage" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.98); z-index: 10002; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s;">
+                    <div style="position: absolute; top: 20px; right: 20px;">
+                        <button onclick="closeFullScreen()" style="background: white; color: #333; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                            ✕
+                        </button>
+                    </div>
+                    
+                    <div style="position: absolute; top: 20px; left: 20px; color: white;">
+                        <h3 style="margin: 0; font-size: 18px;">${title}</h3>
+                    </div>
+                    
+                    <img src="${imageSrc}" 
+                         alt="${title}"
+                         onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80'"
+                         style="max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', fullScreenHTML);
+        }
+        
+        function closeFullScreen() {
+            const fullScreen = document.getElementById('fullScreenImage');
+            if (fullScreen) {
+                fullScreen.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    fullScreen.remove();
+                }, 300);
+            }
+        }
+        
+        // Close modals on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFullScreen();
+                closeGalleryModal();
+            }
+        });
         
         // Format currency helper
         function formatCurrency(amount) {

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Data Viewer - Debug Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #000;
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        h1 {
+            color: #0ff;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px #0ff;
+        }
+
+        .section {
+            background: #111;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .section h2 {
+            color: #ff0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .data-row {
+            padding: 10px;
+            border-bottom: 1px solid #222;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #888;
+            font-weight: bold;
+        }
+
+        .value {
+            color: #0f0;
+            word-break: break-all;
+        }
+
+        .json-view {
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        .success {
+            color: #0f0;
+        }
+
+        .warning {
+            color: #ff0;
+        }
+
+        .btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn:hover {
+            background: #0ff;
+        }
+
+        .btn-danger {
+            background: #f00;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #ff4444;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status.ok {
+            background: #0f0;
+            color: #000;
+        }
+
+        .status.fail {
+            background: #f00;
+            color: #fff;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Session Data Viewer</h1>
+
+        <div class="section">
+            <h2>📦 LocalStorage - Realtor Token</h2>
+            <div id="tokenData"></div>
+        </div>
+
+        <div class="section">
+            <h2>👤 LocalStorage - Realtor Data</h2>
+            <div id="realtorDataSection"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔐 SessionStorage - Valid Login Flag</h2>
+            <div id="sessionData"></div>
+        </div>
+
+        <div class="section">
+            <h2>🆔 ID Field Analysis</h2>
+            <div id="idAnalysis"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="refreshData()">🔄 Refresh</button>
+            <button class="btn" onclick="copyToClipboard()">📋 Copy Data</button>
+            <button class="btn" onclick="fixIdField()">🔧 Fix ID Field</button>
+            <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+
+    <script>
+        function updateTimestamp() {
+            document.getElementById('timestamp').textContent = 'Last updated: ' + new Date().toLocaleString();
+        }
+
+        function loadTokenData() {
+            const container = document.getElementById('tokenData');
+            const token = localStorage.getItem('realtorToken');
+
+            if (token) {
+                container.innerHTML = `
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value success">✓ Token exists <span class="status ok">OK</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Length:</span>
+                        <span class="value">${token.length} characters</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Preview:</span>
+                        <span class="value">${token.substring(0, 50)}...</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Full Token:</span>
+                        <div class="json-view">${token}</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value error">✗ No token found <span class="status fail">FAIL</span></span>
+                    </div>
+                `;
+            }
+        }
+
+        function loadRealtorData() {
+            const container = document.getElementById('realtorDataSection');
+            const dataStr = localStorage.getItem('realtorData');
+
+            if (!dataStr) {
+                container.innerHTML = `
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value error">✗ No realtor data found <span class="status fail">FAIL</span></span>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const data = JSON.parse(dataStr);
+                
+                let html = `
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value success">✓ Data exists <span class="status ok">OK</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Full Name:</span>
+                        <span class="value">${data.fullName || 'N/A'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Email:</span>
+                        <span class="value">${data.email || 'N/A'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value">${data.status || 'N/A'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Available Fields:</span>
+                        <span class="value">${Object.keys(data).join(', ')}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Full JSON:</span>
+                        <div class="json-view">${JSON.stringify(data, null, 2)}</div>
+                    </div>
+                `;
+
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="data-row">
+                        <span class="label">Status:</span>
+                        <span class="value error">✗ Invalid JSON <span class="status fail">ERROR</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Error:</span>
+                        <span class="value error">${error.message}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Raw Data:</span>
+                        <div class="json-view">${dataStr}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function loadSessionData() {
+            const container = document.getElementById('sessionData');
+            const validLogin = sessionStorage.getItem('validLogin');
+
+            container.innerHTML = `
+                <div class="data-row">
+                    <span class="label">Valid Login Flag:</span>
+                    <span class="value ${validLogin === 'true' ? 'success' : 'warning'}">${validLogin || 'Not set'} ${validLogin === 'true' ? '<span class="status ok">OK</span>' : '<span class="status fail">NOT SET</span>'}</span>
+                </div>
+            `;
+        }
+
+        function analyzeIdField() {
+            const container = document.getElementById('idAnalysis');
+            const dataStr = localStorage.getItem('realtorData');
+
+            if (!dataStr) {
+                container.innerHTML = `
+                    <div class="value error">No realtor data to analyze</div>
+                `;
+                return;
+            }
+
+            try {
+                const data = JSON.parse(dataStr);
+                
+                const hasId = !!data.id;
+                const has_Id = !!data._id;
+                const hasRealtorId = !!data.realtorId;
+
+                let html = `
+                    <div class="data-row">
+                        <span class="label">data.id:</span>
+                        <span class="value ${hasId ? 'success' : 'error'}">${hasId ? '✓ ' + data.id : '✗ Not found'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">data._id:</span>
+                        <span class="value ${has_Id ? 'success' : 'error'}">${has_Id ? '✓ ' + data._id : '✗ Not found'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">data.realtorId:</span>
+                        <span class="value ${hasRealtorId ? 'success' : 'error'}">${hasRealtorId ? '✓ ' + data.realtorId : '✗ Not found'}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Recommendation:</span>
+                        <span class="value ${hasId || has_Id || hasRealtorId ? 'success' : 'error'}">
+                            ${hasId || has_Id || hasRealtorId 
+                                ? '✓ At least one ID field found - should work!' 
+                                : '✗ NO ID FIELD FOUND - this will cause errors!'}
+                        </span>
+                    </div>
+                `;
+
+                if (hasId && !has_Id) {
+                    html += `
+                        <div class="data-row">
+                            <span class="label">Action Needed:</span>
+                            <span class="value warning">⚠️ Has "id" but not "_id". Click "Fix ID Field" button below to add "_id".</span>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="value error">Error analyzing data: ${error.message}</div>
+                `;
+            }
+        }
+
+        function fixIdField() {
+            const dataStr = localStorage.getItem('realtorData');
+            
+            if (!dataStr) {
+                alert('No realtor data found to fix.');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(dataStr);
+                
+                // If has id but not _id, copy id to _id
+                if (data.id && !data._id) {
+                    data._id = data.id;
+                    localStorage.setItem('realtorData', JSON.stringify(data));
+                    alert('✓ Fixed! Added "_id" field from "id".');
+                    refreshData();
+                } else if (data._id && !data.id) {
+                    data.id = data._id;
+                    localStorage.setItem('realtorData', JSON.stringify(data));
+                    alert('✓ Fixed! Added "id" field from "_id".');
+                    refreshData();
+                } else if (!data.id && !data._id && !data.realtorId) {
+                    alert('✗ Cannot fix - no ID field found at all. Please login again.');
+                } else {
+                    alert('✓ Already OK - ID fields present.');
+                }
+            } catch (error) {
+                alert('Error fixing data: ' + error.message);
+            }
+        }
+
+        function refreshData() {
+            loadTokenData();
+            loadRealtorData();
+            loadSessionData();
+            analyzeIdField();
+            updateTimestamp();
+        }
+
+        function copyToClipboard() {
+            const token = localStorage.getItem('realtorToken') || 'N/A';
+            const realtorData = localStorage.getItem('realtorData') || 'N/A';
+            const validLogin = sessionStorage.getItem('validLogin') || 'N/A';
+
+            const text = `=== Session Data Debug Info ===
+Token: ${token}
+
+Realtor Data: ${realtorData}
+
+Valid Login: ${validLogin}
+
+Timestamp: ${new Date().toLocaleString()}
+`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✓ Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        function clearAll() {
+            if (confirm('⚠️ Clear ALL session data?\n\nThis will log you out.')) {
+                localStorage.removeItem('realtorToken');
+                localStorage.removeItem('realtorData');
+                sessionStorage.removeItem('validLogin');
+                alert('✓ All session data cleared!');
+                refreshData();
+            }
+        }
+
+        // Auto-refresh every 3 seconds
+        setInterval(refreshData, 3000);
+
+        // Initial load
+        refreshData();
+    </script>
+</body>
+</html>
