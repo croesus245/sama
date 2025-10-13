@@ -635,7 +635,19 @@
             const storedData = localStorage.getItem('realtorData');
             
             if (!realtorToken || !storedData) {
-                // Not logged in - redirect to login
+                // Track redirect attempts to prevent infinite loop
+                let redirectAttempts = parseInt(sessionStorage.getItem('realtorRedirectAttempts') || '0');
+                redirectAttempts++;
+                sessionStorage.setItem('realtorRedirectAttempts', redirectAttempts.toString());
+                
+                if (redirectAttempts > 3) {
+                    // Too many attempts, clear everything
+                    sessionStorage.removeItem('realtorRedirectAttempts');
+                    alert('⚠️ Unable to maintain login session. Please check if your browser allows storage/cookies.\n\nTry: Settings > Privacy > Allow Cookies');
+                    window.location.href = 'realtor-login.html';
+                    return false;
+                }
+                
                 // Give a small delay for mobile browsers to sync localStorage
                 setTimeout(() => {
                     realtorToken = localStorage.getItem('realtorToken');
@@ -655,11 +667,14 @@
             try {
                 realtorData = JSON.parse(storedData);
                 console.log('✅ Realtor authenticated:', realtorData.fullName);
+                // Reset counter on successful auth
+                sessionStorage.setItem('realtorRedirectAttempts', '0');
                 return true;
             } catch (error) {
                 console.error('❌ Invalid realtor data:', error);
                 localStorage.removeItem('realtorToken');
                 localStorage.removeItem('realtorData');
+                sessionStorage.removeItem('realtorRedirectAttempts');
                 alert('⚠️ Session expired. Please login again.');
                 window.location.href = 'realtor-login.html';
                 return false;
