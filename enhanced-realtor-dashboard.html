@@ -628,76 +628,91 @@
     <script>
         // Authentication Check - Redirect if not logged in
         let realtorData = null;
-        let realtorToken = localStorage.getItem('realtorToken');
+        let realtorToken = null;
+        let authCheckComplete = false;
         
         function checkAuthentication() {
-            realtorToken = localStorage.getItem('realtorToken');
-            const storedData = localStorage.getItem('realtorData');
-            
-            if (!realtorToken || !storedData) {
-                // Track redirect attempts to prevent infinite loop
-                let redirectAttempts = parseInt(sessionStorage.getItem('realtorRedirectAttempts') || '0');
-                redirectAttempts++;
-                sessionStorage.setItem('realtorRedirectAttempts', redirectAttempts.toString());
+            return new Promise((resolve, reject) => {
+                realtorToken = localStorage.getItem('realtorToken');
+                const storedData = localStorage.getItem('realtorData');
+                const validLogin = sessionStorage.getItem('validLogin');
                 
-                if (redirectAttempts > 3) {
-                    // Too many attempts, clear everything
-                    sessionStorage.removeItem('realtorRedirectAttempts');
-                    alert('⚠️ Unable to maintain login session. Please check if your browser allows storage/cookies.\n\nTry: Settings > Privacy > Allow Cookies');
-                    window.location.href = 'realtor-login.html';
-                    return false;
+                console.log('🔍 Auth Check:', {
+                    hasToken: !!realtorToken,
+                    hasData: !!storedData,
+                    validLogin: validLogin,
+                    tokenLength: realtorToken ? realtorToken.length : 0
+                });
+                
+                // If we have both token and data, authenticate immediately
+                if (realtorToken && storedData) {
+                    try {
+                        realtorData = JSON.parse(storedData);
+                        console.log('✅ Realtor authenticated:', realtorData.fullName);
+                        sessionStorage.setItem('validLogin', 'true');
+                        authCheckComplete = true;
+                        resolve(true);
+                        return;
+                    } catch (error) {
+                        console.error('❌ Invalid realtor data:', error);
+                        localStorage.removeItem('realtorToken');
+                        localStorage.removeItem('realtorData');
+                        sessionStorage.removeItem('validLogin');
+                        alert('⚠️ Session data corrupted. Please login again.');
+                        window.location.href = 'realtor-login.html';
+                        reject(false);
+                        return;
+                    }
                 }
                 
-                // Give a small delay for mobile browsers to sync localStorage
+                // If no token/data, wait for mobile to sync
+                console.error('❌ Missing authentication data on initial check');
+                console.log('Token:', realtorToken ? 'EXISTS' : 'MISSING');
+                console.log('Data:', storedData ? 'EXISTS' : 'MISSING');
+                console.log('⏳ Waiting 3 seconds for mobile sync...');
+                
                 setTimeout(() => {
+                    // Check again after wait
                     realtorToken = localStorage.getItem('realtorToken');
                     const retryStoredData = localStorage.getItem('realtorData');
                     
+                    console.log('🔄 Retry check after 3s:', {
+                        hasToken: !!realtorToken,
+                        hasData: !!retryStoredData
+                    });
+                    
                     if (!realtorToken || !retryStoredData) {
-                        alert('⚠️ Please login to access the dashboard');
+                        // Still no data after wait - this is a real auth failure
+                        console.error('❌ Still no authentication data after retry');
+                        sessionStorage.removeItem('validLogin');
+                        alert('⚠️ Login session not found.\n\nPossible causes:\n• Private/Incognito mode is blocking storage\n• Browser storage is disabled\n• Cookies are blocked\n\nPlease enable storage and try again.');
                         window.location.href = 'realtor-login.html';
+                        reject(false);
                     } else {
-                        // Try again after delay
-                        location.reload();
+                        // Found data after retry!
+                        try {
+                            realtorData = JSON.parse(retryStoredData);
+                            console.log('✅ Realtor authenticated after retry:', realtorData.fullName);
+                            sessionStorage.setItem('validLogin', 'true');
+                            authCheckComplete = true;
+                            resolve(true);
+                        } catch (error) {
+                            console.error('❌ Invalid realtor data after retry:', error);
+                            localStorage.removeItem('realtorToken');
+                            localStorage.removeItem('realtorData');
+                            sessionStorage.removeItem('validLogin');
+                            alert('⚠️ Session data corrupted. Please login again.');
+                            window.location.href = 'realtor-login.html';
+                            reject(false);
+                        }
                     }
-                }, 500);
-                return false;
-            }
-            
-            try {
-                realtorData = JSON.parse(storedData);
-                console.log('✅ Realtor authenticated:', realtorData.fullName);
-                // Reset counter on successful auth
-                sessionStorage.setItem('realtorRedirectAttempts', '0');
-                return true;
-            } catch (error) {
-                console.error('❌ Invalid realtor data:', error);
-                localStorage.removeItem('realtorToken');
-                localStorage.removeItem('realtorData');
-                sessionStorage.removeItem('realtorRedirectAttempts');
-                alert('⚠️ Session expired. Please login again.');
-                window.location.href = 'realtor-login.html';
-                return false;
-            }
+                }, 3000); // Wait 3 full seconds for mobile
+            });
         }
         
-        // Check auth immediately
-        if (!checkAuthentication()) {
-            // Stop script execution if not authenticated
-            throw new Error('Authentication required');
-        }
-        
-        // API Configuration - Use logged-in realtor's ID
-        const REALTOR_ID = realtorData._id || realtorData.id;
-        console.log('🔑 Using Realtor ID:', REALTOR_ID);
-        
-        // Load realtor profile from authenticated data
-        let realtorProfile = {
-            name: realtorData.fullName || 'Realtor',
-            whatsapp: realtorData.whatsapp || '2348145653433',
-            email: realtorData.email || '',
-            status: realtorData.status || 'pending'
-        };
+        // API Configuration - Use logged-in realtor's ID (will be set after auth)
+        let REALTOR_ID = null;
+        let realtorProfile = null;
         
         // Hostels array (will be loaded from API)
         let hostels = [];
@@ -705,6 +720,12 @@
         // Load hostels from API
         async function loadHostelsFromAPI() {
             try {
+                // Check if HostelAPI is available
+                if (typeof HostelAPI === 'undefined') {
+                    console.error('❌ HostelAPI not loaded');
+                    throw new Error('HostelAPI module not available');
+                }
+                
                 console.log('🔄 Loading hostels from API...');
                 console.log('🔑 Filtering for Realtor ID:', REALTOR_ID);
                 
@@ -752,28 +773,52 @@
         
         // Initialize dashboard
         async function initializeDashboard() {
-            loadRealtorProfile();
-            updateCurrentDate();
-            showPendingBannerIfNeeded();
+            try {
+                // Wait for authentication to complete first
+                await checkAuthentication();
+                
+                // Authentication successful - set up realtor data
+                console.log('✅ Authentication complete, initializing dashboard...');
+                
+                REALTOR_ID = realtorData._id || realtorData.id;
+                console.log('🔑 Using Realtor ID:', REALTOR_ID);
+                
+                realtorProfile = {
+                    name: realtorData.fullName || 'Realtor',
+                    whatsapp: realtorData.whatsapp || '2348145653433',
+                    email: realtorData.email || '',
+                    status: realtorData.status || 'pending'
+                };
+                
+                // Now load dashboard UI
+                loadRealtorProfile();
+                updateCurrentDate();
+                showPendingBannerIfNeeded();
             
             // Show loading state
             document.getElementById('hostelList').innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1e40af;"></i><p style="margin-top: 1rem;">Loading hostels...</p></div>';
             
-            // Load hostels from API
-            await loadHostelsFromAPI();
-            
-            // Update UI
-            updateStats();
-            renderHostels();
-            setupEventListeners();
+                // Load hostels from API
+                await loadHostelsFromAPI();
+                
+                // Update UI
+                updateStats();
+                renderHostels();
+                setupEventListeners();
+                
+            } catch (error) {
+                console.error('❌ Dashboard initialization error:', error);
+                alert('Failed to initialize dashboard. Please try logging in again.');
+                window.location.href = 'realtor-login.html';
+            }
         }
         
         // Show pending approval banner if needed
         function showPendingBannerIfNeeded() {
-            if (realtorProfile.status === 'pending') {
+            if (realtorProfile && realtorProfile.status === 'pending') {
                 document.getElementById('pendingBanner').style.display = 'block';
                 console.log('⏳ Realtor status: PENDING - Showing approval banner');
-            } else {
+            } else if (realtorProfile) {
                 console.log('✅ Realtor status:', realtorProfile.status.toUpperCase());
             }
         }
@@ -800,10 +845,11 @@
         }
         
         function updateStats() {
-            const totalHostels = hostels.length;
-            const availableHostels = hostels.filter(h => h.available).length;
+            const safeHostels = hostels || [];
+            const totalHostels = safeHostels.length;
+            const availableHostels = safeHostels.filter(h => h.available).length;
             const unavailableHostels = totalHostels - availableHostels;
-            const totalApplications = hostels.reduce((sum, h) => sum + h.applications, 0);
+            const totalApplications = safeHostels.reduce((sum, h) => sum + (h.applications || 0), 0);
             
             document.getElementById('totalHostels').textContent = totalHostels;
             document.getElementById('availableHostels').textContent = availableHostels;
@@ -1373,7 +1419,7 @@
         
         // Load profile name on page load
         function loadRealtorProfile() {
-            if (realtorProfile.name) {
+            if (realtorProfile && realtorProfile.name) {
                 document.getElementById('realtorName').textContent = realtorProfile.name;
             }
         }
@@ -1710,13 +1756,22 @@
     <!-- Load Fixed Password System -->
     <script src="realtor-fixed-password-system.js"></script>
     <script>
-        // Protect this dashboard - require authentication
-        requireRealtorAuth();
+        // CRITICAL FIX: Don't call requireRealtorAuth() immediately!
+        // It races with the async checkAuthentication() in initializeDashboard()
+        // which has a 3-second wait for mobile localStorage sync.
         
-        // Update UI with realtor name
-        updateRealtorDashboardUI();
+        // The proper auth check is done in initializeDashboard() on line 1451
+        // requireRealtorAuth(); // ❌ REMOVED - Causes immediate redirect before token syncs
         
-        console.log('✅ Enhanced Realtor Dashboard with Fixed Password System Loaded');
+        // Don't update UI yet - realtorData isn't loaded until after checkAuthentication()
+        // updateRealtorDashboardUI(); // ❌ REMOVED - realtorData is null at this point
+        
+        // ❌ REMOVED DUPLICATE: initializeDashboard() is already registered on line 1451
+        // window.addEventListener('DOMContentLoaded', () => {
+        //     initializeDashboard();
+        // });
+        
+        console.log('✅ Enhanced Realtor Dashboard Loaded - DOMContentLoaded handler registered on line 1451');
     </script>
 </body>
 </html>

@@ -281,43 +281,45 @@
             ? 'http://localhost:5000/api'
             : 'https://sama-production-9e28.up.railway.app/api';
 
-        // Prevent infinite reload loop
-        let redirectAttempts = parseInt(sessionStorage.getItem('realtorRedirectAttempts') || '0');
-        if (redirectAttempts > 3) {
-            // Too many redirects, clear everything and show error
-            localStorage.removeItem('realtorToken');
-            localStorage.removeItem('realtorData');
-            sessionStorage.removeItem('realtorRedirectAttempts');
-            alert('⚠️ Login session issue detected. Please try logging in again.\n\nIf this keeps happening, click "Troubleshoot Mobile Login" below.');
-        }
-
         // Debug log helper (only shows on errors)
         function debugLog(msg, isError = false) {
             if (isError) {
                 const logDiv = document.getElementById('debugLog');
                 logDiv.style.display = 'block';
-                logDiv.innerHTML += `<div>${msg}</div>`;
+                logDiv.innerHTML += `<div><strong>[${new Date().toLocaleTimeString()}]</strong> ${msg}</div>`;
             }
-            console.log(msg); // Still log to console for developers
+            console.log('[Realtor Login]', msg); // Still log to console for developers
         }
 
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('realtorToken');
-            debugLog('Token on load: ' + token);
-            
-            // Don't auto-redirect if we came from the dashboard (prevents loop)
-            const referrer = document.referrer;
-            if (referrer.includes('enhanced-realtor-dashboard.html')) {
-                debugLog('Came from dashboard - not auto-redirecting to prevent loop', true);
-                localStorage.removeItem('realtorToken');
-                localStorage.removeItem('realtorData');
+            try {
+                // ALWAYS clear redirect counter when landing on login page
                 sessionStorage.removeItem('realtorRedirectAttempts');
-                return;
-            }
-            
-            if (token) {
-                // Verify token is still valid
+                
+                const token = localStorage.getItem('realtorToken');
+                debugLog('Token on load: ' + (token ? 'EXISTS' : 'NONE'));
+                
+                // Check if we just came from dashboard (indicates a loop)
+                const referrer = document.referrer || '';
+                const cameFromDashboard = referrer.includes('enhanced-realtor-dashboard.html');
+                
+                if (cameFromDashboard) {
+                    debugLog('⚠️ Redirected from dashboard - clearing session to prevent loop', true);
+                    localStorage.removeItem('realtorToken');
+                    localStorage.removeItem('realtorData');
+                    showAlert('Session could not be maintained. Please login again.', 'warning');
+                    return; // Don't try to auto-login
+                }
+                
+                // Don't auto-redirect if there's no token
+                if (!token) {
+                    debugLog('No token found - staying on login page');
+                    return;
+                }
+                
+                // Only try to verify and redirect if we have a token AND didn't come from dashboard
+                debugLog('Found token, verifying with API...');
                 fetch(`${API_BASE_URL}/realtor-auth/verify`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -327,8 +329,16 @@
                 .then(data => {
                     debugLog('Verify response: ' + JSON.stringify(data));
                     if (data.status === 'success') {
-                        // Already logged in, redirect to dashboard
-                        window.location.href = 'enhanced-realtor-dashboard.html';
+                        debugLog('Token valid! Redirecting to dashboard...');
+                        // Set a flag to indicate we're intentionally going to dashboard
+                        sessionStorage.setItem('validLogin', 'true');
+                        setTimeout(() => {
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, 500);
+                    } else {
+                        debugLog('Token invalid, clearing...', true);
+                        localStorage.removeItem('realtorToken');
+                        localStorage.removeItem('realtorData');
                     }
                 })
                 .catch((err) => {
@@ -336,8 +346,10 @@
                     // Token invalid, clear it
                     localStorage.removeItem('realtorToken');
                     localStorage.removeItem('realtorData');
-                    sessionStorage.removeItem('realtorRedirectAttempts');
                 });
+            } catch (error) {
+                console.error('DOMContentLoaded error:', error);
+                debugLog('Error during page load: ' + error.message, true);
             }
         });
 
@@ -349,6 +361,12 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Validate inputs
+            if (!email || !password) {
+                showAlert('Please enter both email and password', 'error');
+                return;
+            }
 
             // Disable button and show loading
             submitBtn.disabled = true;
@@ -367,38 +385,61 @@
                 debugLog('Login response: ' + JSON.stringify(data));
 
                 if (response.ok) {
-                    // Store token and user data
-                    localStorage.setItem('realtorToken', data.data.token);
-                    localStorage.setItem('realtorData', JSON.stringify(data.data.realtor));
-                    debugLog('Token saved: ' + data.data.token);
-
-                    // Verify token was actually saved (mobile browser fix)
-                    const savedToken = localStorage.getItem('realtorToken');
-                    if (!savedToken) {
-                        debugLog('ERROR: Token not saved to localStorage!', true);
-                        showAlert('Storage error. Please enable cookies/storage in your browser settings.', 'error');
+                    // CRITICAL FIX: Use synchronous storage writes where possible
+                    try {
+                        // Store token and user data
+                        localStorage.setItem('realtorToken', data.data.token);
+                        localStorage.setItem('realtorData', JSON.stringify(data.data.realtor));
+                        
+                        // Force a synchronous read to ensure write completed
+                        const immediateCheck = localStorage.getItem('realtorToken');
+                        debugLog('Immediate check - Token: ' + (immediateCheck ? 'SAVED ✓' : 'FAILED ✗'));
+                        
+                        if (!immediateCheck) {
+                            throw new Error('localStorage write failed immediately');
+                        }
+                        
+                        debugLog('✅ Token confirmed saved');
+                        
+                        // Set valid login flag
+                        sessionStorage.setItem('validLogin', 'true');
+                        
+                        // Show success message
+                        if (data.data.needsApproval) {
+                            showAlert('Your account is pending admin approval. Redirecting...', 'warning');
+                        } else {
+                            showAlert('✅ Login successful! Redirecting to dashboard...', 'success');
+                        }
+                        
+                        // Wait longer for mobile browsers - 4 seconds total
+                        debugLog('⏳ Waiting 4 seconds before redirect to ensure mobile sync...');
+                        setTimeout(() => {
+                            // Final verification before redirect
+                            const finalToken = localStorage.getItem('realtorToken');
+                            const finalData = localStorage.getItem('realtorData');
+                            
+                            if (!finalToken || !finalData) {
+                                debugLog('ERROR: Data lost before redirect!', true);
+                                showAlert('❌ Storage error! Data did not persist.\n\nYour browser may be blocking storage.', 'error');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Login to Dashboard';
+                                return;
+                            }
+                            
+                            debugLog('✅ Final check passed! Redirecting now...');
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, 4000); // Wait 4 full seconds
+                        
+                    } catch (storageError) {
+                        debugLog('ERROR: localStorage exception: ' + storageError.message, true);
+                        showAlert('❌ Storage error! Your browser is blocking data storage.\n\n' +
+                                'Please:\n' +
+                                '1. Disable Private/Incognito mode\n' +
+                                '2. Enable cookies in Settings > Privacy\n' +
+                                '3. Try a different browser (Chrome/Firefox)', 'error');
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = 'Login to Dashboard';
                         return;
-                    }
-
-                    // Reset redirect counter on successful login
-                    sessionStorage.setItem('realtorRedirectAttempts', '0');
-
-                    // Check if account needs approval
-                    if (data.data.needsApproval) {
-                        showAlert('Your account is pending admin approval. You can view the dashboard but cannot add hostels yet.', 'warning');
-                        setTimeout(() => {
-                            sessionStorage.setItem('realtorRedirectAttempts', '1');
-                            window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 2000);
-                    } else {
-                        showAlert('Login successful! Redirecting...', 'success');
-                        // Longer delay for mobile browsers to save data
-                        setTimeout(() => {
-                            sessionStorage.setItem('realtorRedirectAttempts', '1');
-                            window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 1500);
                     }
                 } else {
                     showAlert(data.message || 'Login failed. Please check your credentials.', 'error');
@@ -416,6 +457,11 @@
 
         function showAlert(message, type) {
             const alertBox = document.getElementById('alertBox');
+            if (!alertBox) {
+                console.error('Alert box element not found');
+                alert(message); // Fallback to browser alert
+                return;
+            }
             alertBox.className = `alert alert-${type} show`;
             alertBox.textContent = message;
 
