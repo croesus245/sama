@@ -5,7 +5,7 @@ const API_CONFIG = {
     
     // API Base URLs
     local: 'http://localhost:5000',
-    production: 'https://mwg-hostels-api.herokuapp.com',
+    production: 'https://sama-production-9e28.up.railway.app',
     
     // Get the correct API URL
     getBaseURL() {
