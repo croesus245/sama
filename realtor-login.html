@@ -267,8 +267,12 @@
         </div>
 
         <div class="back-link">
-            <a href="index.html">← Back to Main Site</a>
+            <a href="index.html">← Back to Main Site</a> | 
+            <a href="mobile-storage-test.html" style="color:#999;">🔧 Troubleshoot Mobile Login</a>
         </div>
+
+        <!-- Visible debug log for mobile troubleshooting -->
+        <div id="debugLog" style="background:#f3f3f3;color:#333;padding:10px;border-radius:8px;margin-top:20px;font-size:13px;display:none;word-break:break-all;"></div>
     </div>
 
     <script>
@@ -277,9 +281,20 @@
             ? 'http://localhost:5000/api'
             : 'https://sama-production-9e28.up.railway.app/api';
 
+        // Debug log helper (only shows on errors)
+        function debugLog(msg, isError = false) {
+            if (isError) {
+                const logDiv = document.getElementById('debugLog');
+                logDiv.style.display = 'block';
+                logDiv.innerHTML += `<div>${msg}</div>`;
+            }
+            console.log(msg); // Still log to console for developers
+        }
+
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('realtorToken');
+            debugLog('Token on load: ' + token);
             if (token) {
                 // Verify token is still valid
                 fetch(`${API_BASE_URL}/realtor-auth/verify`, {
@@ -289,12 +304,14 @@
                 })
                 .then(res => res.json())
                 .then(data => {
+                    debugLog('Verify response: ' + JSON.stringify(data));
                     if (data.status === 'success') {
                         // Already logged in, redirect to dashboard
                         window.location.href = 'enhanced-realtor-dashboard.html';
                     }
                 })
-                .catch(() => {
+                .catch((err) => {
+                    debugLog('Verify error: ' + err, true);
                     // Token invalid, clear it
                     localStorage.removeItem('realtorToken');
                     localStorage.removeItem('realtorData');
@@ -325,25 +342,36 @@
                 });
 
                 const data = await response.json();
+                debugLog('Login response: ' + JSON.stringify(data));
 
                 if (response.ok) {
                     // Store token and user data
                     localStorage.setItem('realtorToken', data.data.token);
                     localStorage.setItem('realtorData', JSON.stringify(data.data.realtor));
+                    debugLog('Token saved: ' + data.data.token);
+
+                    // Verify token was actually saved (mobile browser fix)
+                    const savedToken = localStorage.getItem('realtorToken');
+                    if (!savedToken) {
+                        debugLog('ERROR: Token not saved to localStorage!', true);
+                        showAlert('Storage error. Please enable cookies/storage in your browser settings.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Login to Dashboard';
+                        return;
+                    }
 
                     // Check if account needs approval
                     if (data.data.needsApproval) {
                         showAlert('Your account is pending admin approval. You can view the dashboard but cannot add hostels yet.', 'warning');
-                        
                         setTimeout(() => {
                             window.location.href = 'enhanced-realtor-dashboard.html';
                         }, 2000);
                     } else {
                         showAlert('Login successful! Redirecting...', 'success');
-                        
+                        // Longer delay for mobile browsers to save data
                         setTimeout(() => {
                             window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 1000);
+                        }, 1500);
                     }
                 } else {
                     showAlert(data.message || 'Login failed. Please check your credentials.', 'error');
@@ -352,8 +380,8 @@
                 }
 
             } catch (error) {
-                console.error('Login error:', error);
-                showAlert('Connection error. Please check if the server is running.', 'error');
+                debugLog('Login error: ' + error, true);
+                showAlert('Unable to connect. Please check your internet connection and try again.', 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Login to Dashboard';
             }

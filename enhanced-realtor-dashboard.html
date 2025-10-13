@@ -636,8 +636,19 @@
             
             if (!realtorToken || !storedData) {
                 // Not logged in - redirect to login
-                alert('⚠️ Please login to access the dashboard');
-                window.location.href = 'realtor-login.html';
+                // Give a small delay for mobile browsers to sync localStorage
+                setTimeout(() => {
+                    realtorToken = localStorage.getItem('realtorToken');
+                    const retryStoredData = localStorage.getItem('realtorData');
+                    
+                    if (!realtorToken || !retryStoredData) {
+                        alert('⚠️ Please login to access the dashboard');
+                        window.location.href = 'realtor-login.html';
+                    } else {
+                        // Try again after delay
+                        location.reload();
+                    }
+                }, 500);
                 return false;
             }
             
@@ -649,6 +660,7 @@
                 console.error('❌ Invalid realtor data:', error);
                 localStorage.removeItem('realtorToken');
                 localStorage.removeItem('realtorData');
+                alert('⚠️ Session expired. Please login again.');
                 window.location.href = 'realtor-login.html';
                 return false;
             }

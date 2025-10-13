@@ -442,7 +442,7 @@
 
             } catch (error) {
                 console.error('Registration error:', error);
-                showAlert('Connection error. Please check if the server is running.', 'error');
+                showAlert('Unable to connect. Please check your internet connection and try again.', 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Create Account';
             }
