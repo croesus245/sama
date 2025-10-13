@@ -33,16 +33,30 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI)
+// Database connection with better error handling
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => {
     console.log('✅ Connected to MongoDB Atlas');
     console.log('📊 Database: mwg-hostels');
   })
   .catch((error) => {
     console.error('❌ MongoDB connection error:', error.message);
-    process.exit(1);
+    console.log('⚠️ Server will continue running with limited functionality');
   });
+
+// Handle MongoDB connection events
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️ MongoDB disconnected. Attempting to reconnect...');
+});
 
 // Import routes
 const hostelRoutes = require('./routes/hostels');
@@ -50,6 +64,7 @@ const realtorAuthRoutes = require('./routes/realtorAuth');
 const adminPanelRoutes = require('./routes/adminPanel');
 const studentAuthRoutes = require('./routes/studentAuth');
 const uploadRoutes = require('./routes/upload');
+const applicationRoutes = require('./routes/applications');
 
 // Routes
 app.use('/api/hostels', hostelRoutes);
@@ -57,6 +72,7 @@ app.use('/api/realtor-auth', realtorAuthRoutes);
 app.use('/api/admin-panel', adminPanelRoutes);
 app.use('/api/students', studentAuthRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/applications', applicationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

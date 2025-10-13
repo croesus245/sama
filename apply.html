@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Hostel - MWG Hostels</title>
+    <link rel="stylesheet" href="hostel-style.css">
+    <link rel="stylesheet" href="glass-morphism-global.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .application-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .hostel-name {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-section h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h2::before {
+            content: "📋";
+            font-size: 1.2em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        label .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .error-message {
+            background: #fff3f3;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            color: #2f855a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message h3 {
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hostel-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .hostel-detail {
+            text-align: center;
+        }
+
+        .hostel-detail .label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .hostel-detail .value {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .application-container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="application-container">
+        <div class="header">
+            <h1>🏠 Hostel Application</h1>
+            <div class="hostel-name" id="hostelName">Loading...</div>
+        </div>
+
+        <div class="hostel-summary" id="hostelSummary" style="display: none;">
+            <div class="hostel-detail">
+                <div class="label">Location</div>
+                <div class="value" id="hostelLocation">-</div>
+            </div>
+            <div class="hostel-detail">
+                <div class="label">Price</div>
+                <div class="value" id="hostelPrice">-</div>
+            </div>
+            <div class="hostel-detail">
+                <div class="label">Room Type</div>
+                <div class="value" id="hostelRoomType">-</div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage">
+            <h3>✅ Application Submitted Successfully!</h3>
+            <p>Your application ID: <strong id="applicationId"></strong></p>
+            <p>The realtor will review your application and contact you soon.</p>
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">Back to Home</button>
+        </div>
+
+        <form id="applicationForm">
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>First Name <span class="required">*</span></label>
+                        <input type="text" name="firstName" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Last Name <span class="required">*</span></label>
+                        <input type="text" name="lastName" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <input type="tel" name="phone" required placeholder="+233...">
+                    </div>
+                    <div class="form-field">
+                        <label>WhatsApp Number</label>
+                        <input type="tel" name="whatsapp" placeholder="+233...">
+                    </div>
+                    <div class="form-field">
+                        <label>Student ID <span class="required">*</span></label>
+                        <input type="text" name="studentId" required placeholder="e.g., 2024123456">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Information -->
+            <div class="form-section">
+                <h2>Academic Information</h2>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Level <span class="required">*</span></label>
+                        <select name="level" required>
+                            <option value="">Select Level</option>
+                            <option value="100">100 Level</option>
+                            <option value="200">200 Level</option>
+                            <option value="300">300 Level</option>
+                            <option value="400">400 Level</option>
+                            <option value="500">500 Level</option>
+                            <option value="postgraduate">Postgraduate</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Department <span class="required">*</span></label>
+                        <input type="text" name="department" required placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="form-field full-width">
+                        <label>Expected Graduation</label>
+                        <input type="text" name="graduation" placeholder="e.g., June 2026">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accommodation Preferences -->
+            <div class="form-section">
+                <h2>Accommodation Preferences</h2>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Preferred Room Type <span class="required">*</span></label>
+                        <select name="roomType" required>
+                            <option value="">Select Room Type</option>
+                            <option value="single">Single Room</option>
+                            <option value="shared">Shared Room</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="any">Any Available</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Move-in Date <span class="required">*</span></label>
+                        <input type="date" name="moveInDate" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Accommodation Duration <span class="required">*</span></label>
+                        <select name="duration" required>
+                            <option value="">Select Duration</option>
+                            <option value="semester">One Semester</option>
+                            <option value="academic_year">Academic Year</option>
+                            <option value="multiple_years">Multiple Years</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Previous Accommodation Experience</label>
+                        <select name="previousStay">
+                            <option value="">Select Experience</option>
+                            <option value="first_time">First Time Living Off-Campus</option>
+                            <option value="hostel_experience">Previous Hostel Experience</option>
+                            <option value="apartment_experience">Previous Apartment Experience</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="form-section">
+                <h2>Additional Information</h2>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Emergency Contact <span class="required">*</span></label>
+                        <input type="tel" name="emergencyContact" required placeholder="Parent/Guardian Phone">
+                    </div>
+                    <div class="form-field">
+                        <label>Payment Method <span class="required">*</span></label>
+                        <select name="paymentMethod" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="full_payment">Full Payment Upfront</option>
+                            <option value="installments">Installment Plan</option>
+                            <option value="family_support">Family Support</option>
+                            <option value="scholarship">Scholarship</option>
+                        </select>
+                    </div>
+                    <div class="form-field full-width">
+                        <label>Additional Information</label>
+                        <textarea name="additionalInfo" placeholder="Any special requirements, medical conditions, or other information the realtor should know..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="form-section">
+                <h2>Terms and Conditions</h2>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+                    <label for="termsAccepted">I accept the terms and conditions <span class="required">*</span></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="dataConsent" name="dataConsent" required>
+                    <label for="dataConsent">I consent to data processing <span class="required">*</span></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="communicationConsent" name="communicationConsent" required>
+                    <label for="communicationConsent">I agree to receive communication about my application <span class="required">*</span></label>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Submitting your application...</p>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Application</button>
+                <a href="index.html" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Get hostel ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const hostelId = urlParams.get('hostelId');
+
+        let hostelData = null;
+
+        // Load hostel details
+        async function loadHostelDetails() {
+            if (!hostelId) {
+                showError('No hostel selected. Please go back and select a hostel.');
+                document.getElementById('applicationForm').style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/hostels/${hostelId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    hostelData = data.hostel;
+                    document.getElementById('hostelName').textContent = hostelData.name;
+                    document.getElementById('hostelLocation').textContent = hostelData.location || 'N/A';
+                    document.getElementById('hostelPrice').textContent = hostelData.price ? `GH₵${hostelData.price}` : 'N/A';
+                    document.getElementById('hostelRoomType').textContent = hostelData.roomType || 'Various';
+                    document.getElementById('hostelSummary').style.display = 'grid';
+                } else {
+                    showError('Failed to load hostel details.');
+                }
+            } catch (error) {
+                console.error('Error loading hostel:', error);
+                showError('Error loading hostel details. Please try again.');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const applicationData = {
+                applicationId: `APP-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+                hostelId: hostelId,
+                studentInfo: {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    whatsapp: formData.get('whatsapp') || formData.get('phone'),
+                    studentId: formData.get('studentId'),
+                    level: formData.get('level'),
+                    department: formData.get('department'),
+                    graduation: formData.get('graduation')
+                },
+                accommodation: {
+                    roomType: formData.get('roomType'),
+                    moveInDate: formData.get('moveInDate'),
+                    duration: formData.get('duration'),
+                    previousStay: formData.get('previousStay')
+                },
+                additional: {
+                    emergencyContact: formData.get('emergencyContact'),
+                    additionalInfo: formData.get('additionalInfo'),
+                    paymentMethod: formData.get('paymentMethod')
+                }
+            };
+
+            // Show loading
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('errorMessage').style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/applications/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ applicationData })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show success message
+                    document.getElementById('applicationId').textContent = result.data.applicationId;
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('applicationForm').style.display = 'none';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showError(result.message || 'Failed to submit application. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                showError('Error submitting application. Please check your connection and try again.');
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set minimum date for move-in date to today
+        const moveInDateInput = document.querySelector('input[name="moveInDate"]');
+        if (moveInDateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            moveInDateInput.min = today;
+        }
+
+        // Load hostel details on page load
+        loadHostelDetails();
+    </script>
+</body>
+</html>

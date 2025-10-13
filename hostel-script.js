@@ -528,8 +528,11 @@ function viewHostelDetails(hostelId) {
             </div>
             
             <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="contactRealtor('${hostel.id}'); closeModal();">
-                    <i class="fas fa-phone"></i> Contact Realtor
+                <button class="btn btn-primary" onclick="checkLoginAndApply('${hostel.id}'); closeModal();">
+                    <i class="fas fa-paper-plane"></i> Apply Now
+                </button>
+                <button class="btn btn-outline" onclick="showHostelGallery('${hostel.id}'); closeModal();">
+                    <i class="fas fa-images"></i> View Gallery
                 </button>
             </div>
         </div>
@@ -1199,14 +1202,11 @@ function generateEnhancedHostelCard(hostel) {
                     <button class="btn btn-outline btn-sm" onclick="viewHostelDetails('${hostel.id}')">
                         <i class="fas fa-eye"></i> View Details
                     </button>
-                    <button class="btn btn-success btn-sm" data-action="apply-hostel" data-hostel-id="${hostel.id}">
+                    <button class="btn btn-primary btn-sm" onclick="checkLoginAndApply('${hostel.id}')">
                         <i class="fas fa-paper-plane"></i> Apply Now
                     </button>
-                    <button class="btn btn-primary btn-sm" onclick="try { console.log('Button clicked for hostel:', '${hostel.id}'); contactRealtor('${hostel.id}'); } catch(e) { console.error('Contact error:', e); alert('Error: ' + e.message); }">
-                        <i class="fas fa-phone"></i> Contact
-                    </button>
-                    <button class="btn btn-outline btn-sm" onclick="alert('Test button clicked! Hostel ID: ${hostel.id}. Contact function exists: ' + (typeof contactRealtor !== 'undefined'))">
-                        <i class="fas fa-bug"></i> Test
+                    <button class="btn btn-success btn-sm" onclick="showHostelGallery('${hostel.id}')">
+                        <i class="fas fa-images"></i> Gallery
                     </button>
                 </div>
             </div>

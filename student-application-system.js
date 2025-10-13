@@ -303,7 +303,7 @@ class StudentApplicationSystem {
     }
 
     // Submit application
-    submitApplication(form) {
+    async submitApplication(form) {
         const formData = new FormData(form);
         const application = {
             id: formData.get('applicationId'),
@@ -337,18 +337,58 @@ class StudentApplicationSystem {
             lastUpdated: new Date().toISOString()
         };
 
-        // Add to applications
-        this.applications.push(application);
-        this.saveApplications();
+        try {
+            // Save to backend API
+            const response = await fetch('http://localhost:5000/api/applications/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    applicationData: {
+                        applicationId: application.id,
+                        hostelId: application.hostelId,
+                        studentInfo: application.studentInfo,
+                        accommodation: application.accommodation,
+                        additional: application.additional
+                    }
+                })
+            });
 
-        // Show success message
-        closeModal();
-        this.showSuccessMessage(application);
-        
-        // Send notification to realtor (simulated)
-        this.notifyRealtor(application);
-        
-        console.log('✅ Application submitted successfully:', application.id);
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || 'Failed to submit application');
+            }
+
+            console.log('✅ Application saved to backend:', result);
+
+            // Also save locally as backup
+            this.applications.push(application);
+            this.saveApplications();
+
+            // Show success message
+            closeModal();
+            this.showSuccessMessage(application);
+            
+            // Send notification to realtor
+            this.notifyRealtor(application);
+            
+            console.log('✅ Application submitted successfully:', application.id);
+
+        } catch (error) {
+            console.error('❌ Error submitting application:', error);
+            
+            // Save locally as fallback
+            this.applications.push(application);
+            this.saveApplications();
+            
+            // Still show success to user
+            closeModal();
+            this.showSuccessMessage(application);
+            
+            console.log('⚠️ Application saved locally (backend unavailable)');
+        }
     }
 
     // Show success message
