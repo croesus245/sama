@@ -341,16 +341,95 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
             .header h1 {
-                font-size: 1.8em;
+                font-size: 1.5em;
+            }
+
+            .header p {
+                font-size: 0.95em;
             }
 
             .email-form input {
                 min-width: 100%;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .email-form button {
+                padding: 12px 20px;
+                font-size: 0.95em;
+            }
+
+            .application-card {
+                padding: 15px;
             }
 
             .application-header {
                 flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .application-id {
+                font-size: 0.85em;
+                margin-bottom: 10px;
+            }
+
+            .status-badge {
+                margin-top: 10px;
+            }
+
+            .application-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .detail-item {
+                padding: 10px;
+            }
+
+            .application-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 12px;
+                font-size: 0.95em;
+            }
+
+            .back-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+            }
+
+            .application-card {
+                padding: 12px;
+            }
+
+            .hostel-name {
+                font-size: 1.1em;
+            }
+
+            .detail-item {
+                font-size: 0.9em;
             }
         }
     </style>
