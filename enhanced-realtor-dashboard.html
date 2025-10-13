@@ -688,7 +688,20 @@
                 hostels = allHostels.filter(h => {
                     // Check both possible ID formats
                     const hostelRealtorId = h.realtorId || h.realtor?._id || h.realtor;
-                    const matches = hostelRealtorId === REALTOR_ID;
+                    
+                    // Convert both to strings for comparison
+                    const hostelIdStr = String(hostelRealtorId || '');
+                    const realtorIdStr = String(REALTOR_ID || '');
+                    
+                    // Debug: Log all comparisons
+                    console.log(`🔍 Comparing:`, {
+                        hostelName: h.name,
+                        hostelRealtorId: hostelIdStr,
+                        loggedInRealtorId: realtorIdStr,
+                        match: hostelIdStr === realtorIdStr
+                    });
+                    
+                    const matches = hostelIdStr === realtorIdStr;
                     
                     if (matches) {
                         console.log('✅ Match found:', h.name, '- Realtor ID:', hostelRealtorId);
