@@ -417,8 +417,8 @@
                             showAlert('✅ Login successful! Redirecting to dashboard...', 'success');
                         }
                         
-                        // Wait longer for mobile browsers - 8 seconds total (matching dashboard wait)
-                        debugLog('⏳ Waiting 8 seconds before redirect to ensure mobile sync...');
+                        // Wait longer for mobile browsers - 10 seconds total (matching dashboard wait)
+                        debugLog('⏳ Waiting 10 seconds before redirect to ensure mobile sync...');
                         setTimeout(() => {
                             // Final verification before redirect
                             const finalToken = localStorage.getItem('realtorToken');
@@ -441,7 +441,7 @@
                             
                             debugLog('✅ Final check passed! Redirecting now...');
                             window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 8000); // Wait 8 full seconds (matching dashboard wait time)
+                        }, 10000); // Wait 10 full seconds (matching dashboard wait time)
                         
                     } catch (storageError) {
                         debugLog('ERROR: localStorage exception: ' + storageError.message, true);
