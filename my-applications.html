@@ -421,6 +421,7 @@
         </div>
     </div>
 
+    <script src="api-config.js"></script>
     <script>
         let currentEmail = '';
 
@@ -442,7 +443,8 @@
             document.getElementById('emptySection').style.display = 'none';
 
             try {
-                const response = await fetch(`http://localhost:5000/api/applications/student/${encodeURIComponent(email)}`);
+                const apiUrl = API_CONFIG.endpoints.studentApplications(email);
+                const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 document.getElementById('loadingSection').style.display = 'none';
@@ -552,7 +554,8 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:5000/api/applications/${applicationId}`, {
+                const apiUrl = API_CONFIG.endpoint(`/api/applications/${applicationId}`);
+                const response = await fetch(apiUrl, {
                     method: 'DELETE'
                 });
 

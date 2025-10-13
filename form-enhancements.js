@@ -182,7 +182,9 @@ class NotificationSystem {
 }
 
 // Global Notification System
-const notifications = new NotificationSystem();
+if (typeof notifications === 'undefined') {
+    var notifications = new NotificationSystem();
+}
 
 // Loading Manager
 class LoadingManager {

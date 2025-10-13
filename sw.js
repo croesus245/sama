@@ -160,10 +160,16 @@ async function cacheFirst(request) {
 async function staleWhileRevalidate(request) {
   const cachedResponse = await caches.match(request);
   
-  const networkResponsePromise = fetch(request).then(networkResponse => {
-    if (networkResponse.ok) {
-      const cache = caches.open(IMAGE_CACHE);
-      cache.then(c => c.put(request, networkResponse.clone()));
+  const networkResponsePromise = fetch(request).then(async networkResponse => {
+    if (networkResponse && networkResponse.ok) {
+      try {
+        const cache = await caches.open(IMAGE_CACHE);
+        // Clone before using the response
+        const responseToCache = networkResponse.clone();
+        await cache.put(request, responseToCache);
+      } catch (err) {
+        console.log('Cache put failed:', err);
+      }
     }
     return networkResponse;
   }).catch(() => null);
@@ -175,9 +181,15 @@ async function networkFirstWithFallback(request) {
   try {
     const networkResponse = await fetch(request);
     
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
+    if (networkResponse && networkResponse.ok) {
+      try {
+        const cache = await caches.open(DYNAMIC_CACHE);
+        // Clone before using the response
+        const responseToCache = networkResponse.clone();
+        await cache.put(request, responseToCache);
+      } catch (err) {
+        console.log('Cache put failed:', err);
+      }
     }
     
     return networkResponse;

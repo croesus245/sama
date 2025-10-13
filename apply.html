@@ -472,6 +472,7 @@
         </form>
     </div>
 
+    <script src="api-config.js"></script>
     <script>
         // Get hostel ID from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -488,18 +489,36 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:5000/api/hostels/${hostelId}`);
+                const apiUrl = API_CONFIG.endpoints.hostel(hostelId);
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
 
-                if (data.success) {
+                // Handle different response structures
+                if (data.success && data.hostel) {
                     hostelData = data.hostel;
+                } else if (data.hostel) {
+                    hostelData = data.hostel;
+                } else if (data._id) {
+                    // Direct hostel object
+                    hostelData = data;
+                } else {
+                    throw new Error('Invalid hostel data structure');
+                }
+
+                // Safely set hostel details
+                if (hostelData && hostelData.name) {
                     document.getElementById('hostelName').textContent = hostelData.name;
                     document.getElementById('hostelLocation').textContent = hostelData.location || 'N/A';
                     document.getElementById('hostelPrice').textContent = hostelData.price ? `GH₵${hostelData.price}` : 'N/A';
                     document.getElementById('hostelRoomType').textContent = hostelData.roomType || 'Various';
                     document.getElementById('hostelSummary').style.display = 'grid';
                 } else {
-                    showError('Failed to load hostel details.');
+                    throw new Error('Hostel data is incomplete');
                 }
             } catch (error) {
                 console.error('Error loading hostel:', error);
@@ -545,7 +564,8 @@
             document.getElementById('errorMessage').style.display = 'none';
 
             try {
-                const response = await fetch('http://localhost:5000/api/applications/submit', {
+                const apiUrl = API_CONFIG.endpoints.submitApplication();
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

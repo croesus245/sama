@@ -882,8 +882,10 @@ function closeModal(modalId = null) {
 }
 
 // Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
+if (!document.getElementById('hostel-script-styles')) {
+    const style = document.createElement('style');
+    style.id = 'hostel-script-styles';
+    style.textContent = `
     @keyframes slideInRight {
         from {
             opacity: 0;
@@ -1095,7 +1097,8 @@ style.textContent = `
         color: var(--gray-700);
     }
 `;
-document.head.appendChild(style);
+    document.head.appendChild(style);
+}
 
 // ===========================================
 // ENHANCED IMAGE VIEWING & UNIFORM SIZING

@@ -451,7 +451,16 @@ class AdvancedPerformanceMonitor {
         document.documentElement.style.removeProperty('--animation-duration');
         
         // Load high-quality images
-        this.loadHighQualityImages();
+        if (typeof this.loadHighQualityImages === 'function') {
+            this.loadHighQualityImages();
+        } else {
+            // Fallback: upgrade lazy-loaded images
+            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                }
+            });
+        }
     }
     
     optimizeMemoryUsage() {
