@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Realtor Login - MWG Hostels (Mobile Optimized)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .network-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+        }
+
+        .network-online {
+            background: #10b981;
+            color: white;
+        }
+
+        .network-offline {
+            background: #ef4444;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.5s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .mobile-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .remember-me label {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .progress-container.show {
+            display: block;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-step .icon {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .progress-step.complete .icon {
+            color: #10b981;
+        }
+
+        .progress-step.active .icon {
+            color: #3b82f6;
+            animation: spin 1s linear infinite;
+        }
+
+        .progress-step.error .icon {
+            color: #ef4444;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .countdown {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .back-link a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+        }
+
+        .back-link a:hover {
+            color: #667eea;
+        }
+
+        .debug-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            color: #0f0;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 9999;
+        }
+
+        .debug-panel.show {
+            display: block;
+        }
+
+        .debug-line {
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .debug-error {
+            color: #ff5555;
+        }
+
+        .debug-success {
+            color: #50fa7b;
+        }
+
+        .debug-warning {
+            color: #f1fa8c;
+        }
+
+        .storage-test-banner {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .storage-test-banner.show {
+            display: block;
+        }
+
+        .storage-test-banner h3 {
+            color: #92400e;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .storage-test-banner p {
+            color: #78350f;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+
+            .form-group input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Network Status Indicator -->
+    <div id="networkStatus" class="network-status"></div>
+
+    <div class="login-container">
+        <div class="logo">
+            <h1>🏠 MWG Hostels</h1>
+            <p>Realtor Login</p>
+            <div class="mobile-badge" id="mobileBadge" style="display: none;">📱 Mobile Mode</div>
+        </div>
+
+        <!-- Storage Test Warning -->
+        <div id="storageWarning" class="storage-test-banner"></div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Progress Tracker -->
+        <div id="progressContainer" class="progress-container">
+            <div class="progress-step" id="step1">
+                <span class="icon">⏳</span>
+                <span>Verifying credentials...</span>
+            </div>
+            <div class="progress-step" id="step2">
+                <span class="icon">⏳</span>
+                <span>Saving session data...</span>
+            </div>
+            <div class="progress-step" id="step3">
+                <span class="icon">⏳</span>
+                <span>Syncing storage...</span>
+            </div>
+            <div class="progress-step" id="step4">
+                <span class="icon">⏳</span>
+                <span>Redirecting to dashboard<span id="countdown" class="countdown" style="display: none;"></span></span>
+            </div>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember me for 30 days</label>
+            </div>
+
+            <button type="submit" class="btn-login" id="loginBtn">
+                Login to Dashboard
+            </button>
+        </form>
+
+        <div class="register-link">
+            Don't have an account? <a href="realtor-register.html">Register here</a>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Main Site</a> |
+            <a href="auth-debugger.html">🔧 Troubleshoot</a>
+        </div>
+    </div>
+
+    <!-- Debug Panel (Mobile) -->
+    <div id="debugPanel" class="debug-panel"></div>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api'
+            : 'https://sama-production-9e28.up.railway.app/api';
+
+        const CONFIG = {
+            STORAGE_SYNC_TIME: 12000, // 12 seconds for mobile
+            RETRY_ATTEMPTS: 3,
+            RETRY_DELAY: 2000,
+            DEBUG_MODE: true // Show debug panel on mobile
+        };
+
+        // ===== MOBILE DETECTION =====
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            document.getElementById('mobileBadge').style.display = 'inline-block';
+            if (CONFIG.DEBUG_MODE) {
+                document.getElementById('debugPanel').classList.add('show');
+            }
+        }
+
+        // ===== DEBUG LOGGING =====
+        function debugLog(msg, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${msg}`);
+            
+            if (isMobile && CONFIG.DEBUG_MODE) {
+                const panel = document.getElementById('debugPanel');
+                const line = document.createElement('div');
+                line.className = `debug-line debug-${type}`;
+                line.textContent = `[${timestamp}] ${msg}`;
+                panel.appendChild(line);
+                panel.scrollTop = panel.scrollHeight;
+            }
+        }
+
+        // ===== NETWORK STATUS =====
+        function updateNetworkStatus() {
+            const status = document.getElementById('networkStatus');
+            if (navigator.onLine) {
+                status.className = 'network-status network-online';
+                status.textContent = '● Online';
+                status.style.display = 'block';
+                setTimeout(() => status.style.display = 'none', 3000);
+            } else {
+                status.className = 'network-status network-offline';
+                status.textContent = '● Offline';
+                status.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        // ===== STORAGE TEST =====
+        async function testStorage() {
+            debugLog('Testing storage capabilities...', 'info');
+            const issues = [];
+
+            // Test 1: localStorage availability
+            try {
+                if (typeof(Storage) === "undefined") {
+                    issues.push('LocalStorage not supported by your browser');
+                }
+            } catch (e) {
+                issues.push('Cannot access localStorage');
+            }
+
+            // Test 2: Can we write?
+            try {
+                const testKey = '__storage_test__';
+                localStorage.setItem(testKey, 'test');
+                const readBack = localStorage.getItem(testKey);
+                localStorage.removeItem(testKey);
+                
+                if (readBack !== 'test') {
+                    issues.push('Storage write/read mismatch');
+                }
+            } catch (e) {
+                issues.push('Cannot write to localStorage: ' + e.message);
+            }
+
+            // Test 3: Private mode detection
+            try {
+                const test = await new Promise((resolve) => {
+                    const db = indexedDB.open('test');
+                    db.onsuccess = () => resolve(false);
+                    db.onerror = () => resolve(true);
+                });
+                if (test) {
+                    issues.push('Browser may be in Private/Incognito mode');
+                }
+            } catch (e) {
+                issues.push('Cannot detect private mode status');
+            }
+
+            // Test 4: Cookies enabled
+            if (!navigator.cookieEnabled) {
+                issues.push('Cookies are disabled');
+            }
+
+            return issues;
+        }
+
+        // ===== PROGRESS STEPS =====
+        function updateStep(stepId, status) {
+            const step = document.getElementById(stepId);
+            if (!step) return;
+
+            const icon = step.querySelector('.icon');
+            step.className = `progress-step ${status}`;
+            
+            switch(status) {
+                case 'complete':
+                    icon.textContent = '✓';
+                    break;
+                case 'active':
+                    icon.textContent = '⏳';
+                    break;
+                case 'error':
+                    icon.textContent = '✗';
+                    break;
+            }
+        }
+
+        // ===== ALERT SYSTEM =====
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.innerHTML = message.replace(/\n/g, '<br>');
+            
+            if (type !== 'error') {
+                setTimeout(() => alertBox.classList.remove('show'), 10000);
+            }
+        }
+
+        // ===== STORAGE OPERATIONS WITH RETRY =====
+        async function saveWithRetry(key, value, attempts = CONFIG.RETRY_ATTEMPTS) {
+            for (let i = 0; i < attempts; i++) {
+                try {
+                    localStorage.setItem(key, value);
+                    const verify = localStorage.getItem(key);
+                    
+                    if (verify === value) {
+                        debugLog(`✓ Saved ${key} (attempt ${i + 1})`, 'success');
+                        return true;
+                    }
+                    
+                    debugLog(`⚠ Mismatch on ${key} (attempt ${i + 1})`, 'warning');
+                } catch (e) {
+                    debugLog(`✗ Error saving ${key}: ${e.message}`, 'error');
+                }
+                
+                if (i < attempts - 1) {
+                    await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY));
+                }
+            }
+            
+            return false;
+        }
+
+        // ===== INITIALIZE =====
+        window.addEventListener('DOMContentLoaded', async () => {
+            debugLog('Page loaded, initializing...', 'info');
+            debugLog(`Device: ${isMobile ? 'Mobile' : 'Desktop'}`, 'info');
+            debugLog(`Browser: ${navigator.userAgent}`, 'info');
+            
+            // Test storage
+            const storageIssues = await testStorage();
+            if (storageIssues.length > 0) {
+                const warning = document.getElementById('storageWarning');
+                warning.innerHTML = `
+                    <h3>⚠️ Storage Issues Detected</h3>
+                    <p>${storageIssues.join('<br>')}</p>
+                    <p><strong>Login may not work properly.</strong> Please fix these issues first.</p>
+                `;
+                warning.classList.add('show');
+                debugLog('Storage issues: ' + storageIssues.join(', '), 'error');
+            } else {
+                debugLog('✓ Storage tests passed', 'success');
+            }
+
+            // Check if redirected from dashboard
+            const referrer = document.referrer || '';
+            const cameFromDashboard = referrer.includes('enhanced-realtor-dashboard.html') || referrer.includes('realtor-dashboard.html');
+            
+            if (cameFromDashboard) {
+                debugLog('⚠ Redirected from dashboard - auth failed', 'warning');
+                localStorage.removeItem('realtorToken');
+                localStorage.removeItem('realtorData');
+                sessionStorage.removeItem('validLogin');
+                showAlert('Session expired or couldn\'t be loaded. Please login again.', 'warning');
+                return;
+            }
+
+            // Check if already logged in
+            const token = localStorage.getItem('realtorToken');
+            const validLogin = sessionStorage.getItem('validLogin');
+            
+            if (token && validLogin) {
+                debugLog('Found existing session, verifying...', 'info');
+                showAlert('Found existing session. Verifying...', 'info');
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/realtor-auth/verify`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        debugLog('✓ Session valid, redirecting...', 'success');
+                        showAlert('Session valid! Redirecting to dashboard...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, 1000);
+                    } else {
+                        debugLog('✗ Session invalid, please login', 'warning');
+                        localStorage.removeItem('realtorToken');
+                        localStorage.removeItem('realtorData');
+                        sessionStorage.removeItem('validLogin');
+                    }
+                } catch (error) {
+                    debugLog('✗ Verification failed: ' + error.message, 'error');
+                    localStorage.removeItem('realtorToken');
+                    localStorage.removeItem('realtorData');
+                    sessionStorage.removeItem('validLogin');
+                }
+            }
+        });
+
+        // ===== FORM SUBMISSION =====
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('loginBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Validate
+            if (!email || !password) {
+                showAlert('Please enter both email and password', 'error');
+                return;
+            }
+
+            // Check network
+            if (!navigator.onLine) {
+                showAlert('❌ No internet connection. Please check your network and try again.', 'error');
+                return;
+            }
+
+            // Disable form
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Logging in...';
+            progressContainer.classList.add('show');
+
+            debugLog('Starting login process...', 'info');
+            
+            // STEP 1: Verify credentials
+            updateStep('step1', 'active');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/realtor-auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, rememberMe })
+                });
+
+                const data = await response.json();
+                debugLog('Login response: ' + JSON.stringify(data), response.ok ? 'success' : 'error');
+
+                if (!response.ok) {
+                    updateStep('step1', 'error');
+                    showAlert(data.message || 'Login failed. Please check your credentials.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Login to Dashboard';
+                    return;
+                }
+
+                updateStep('step1', 'complete');
+                
+                // STEP 2: Save session data
+                updateStep('step2', 'active');
+                debugLog('Saving session data...', 'info');
+                
+                const tokenSaved = await saveWithRetry('realtorToken', data.data.token);
+                const dataSaved = await saveWithRetry('realtorData', JSON.stringify(data.data.realtor));
+                
+                if (!tokenSaved || !dataSaved) {
+                    updateStep('step2', 'error');
+                    showAlert('❌ Failed to save session data after multiple attempts.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies and site data\n• Try a different browser', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Login to Dashboard';
+                    debugLog('✗ Failed to save session data', 'error');
+                    return;
+                }
+                
+                updateStep('step2', 'complete');
+                
+                // STEP 3: Sync storage (wait for mobile browsers)
+                updateStep('step3', 'active');
+                debugLog(`Syncing storage (${CONFIG.STORAGE_SYNC_TIME}ms)...`, 'info');
+                
+                sessionStorage.setItem('validLogin', 'true');
+                
+                await new Promise(resolve => setTimeout(resolve, CONFIG.STORAGE_SYNC_TIME));
+                
+                // Final verification
+                const finalToken = localStorage.getItem('realtorToken');
+                const finalData = localStorage.getItem('realtorData');
+                const finalFlag = sessionStorage.getItem('validLogin');
+                
+                if (!finalToken || !finalData || finalFlag !== 'true') {
+                    updateStep('step3', 'error');
+                    showAlert('❌ Storage sync failed!\n\nData did not persist after waiting.\n\nThis usually means your browser is blocking storage.', 'error');
+                    debugLog('✗ Final verification failed', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Login to Dashboard';
+                    return;
+                }
+                
+                updateStep('step3', 'complete');
+                debugLog('✓ Storage sync complete', 'success');
+                
+                // STEP 4: Redirect
+                updateStep('step4', 'active');
+                
+                if (data.data.needsApproval) {
+                    showAlert('⚠️ Your account is pending admin approval.', 'warning');
+                }
+                
+                showAlert('✅ Login successful! Redirecting...', 'success');
+                
+                // Countdown timer
+                let timeLeft = 3;
+                const countdownEl = document.getElementById('countdown');
+                countdownEl.style.display = 'inline-block';
+                countdownEl.textContent = timeLeft;
+                
+                const countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) {
+                        countdownEl.textContent = timeLeft;
+                    } else {
+                        clearInterval(countdownInterval);
+                        updateStep('step4', 'complete');
+                        debugLog('✓ Redirecting to dashboard...', 'success');
+                        window.location.href = 'enhanced-realtor-dashboard.html';
+                    }
+                }, 1000);
+
+            } catch (error) {
+                updateStep('step1', 'error');
+                debugLog('✗ Network error: ' + error.message, 'error');
+                showAlert('❌ Connection failed. Please check your internet and try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Login to Dashboard';
+            }
+        });
+
+        debugLog('Login page initialized', 'success');
+    </script>
+</body>
+</html>

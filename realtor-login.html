@@ -407,7 +407,7 @@
                         
                         debugLog('✅ Token confirmed saved');
                         
-                        // Set valid login flag
+                        // Set valid login flag BEFORE redirect
                         sessionStorage.setItem('validLogin', 'true');
                         
                         // Show success message
@@ -417,16 +417,23 @@
                             showAlert('✅ Login successful! Redirecting to dashboard...', 'success');
                         }
                         
-                        // Wait longer for mobile browsers - 6 seconds total
-                        debugLog('⏳ Waiting 6 seconds before redirect to ensure mobile sync...');
+                        // Wait longer for mobile browsers - 8 seconds total (matching dashboard wait)
+                        debugLog('⏳ Waiting 8 seconds before redirect to ensure mobile sync...');
                         setTimeout(() => {
                             // Final verification before redirect
                             const finalToken = localStorage.getItem('realtorToken');
                             const finalData = localStorage.getItem('realtorData');
+                            const finalFlag = sessionStorage.getItem('validLogin');
+                            
+                            debugLog('Final check before redirect:', {
+                                token: finalToken ? 'EXISTS' : 'MISSING',
+                                data: finalData ? 'EXISTS' : 'MISSING',
+                                flag: finalFlag
+                            });
                             
                             if (!finalToken || !finalData) {
                                 debugLog('ERROR: Data lost before redirect!', true);
-                                showAlert('❌ Storage error! Data did not persist.\n\nYour browser may be blocking storage.', 'error');
+                                showAlert('❌ Storage error! Data did not persist.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies/site data in browser settings\n• Try Chrome or Firefox browser', 'error');
                                 submitBtn.disabled = false;
                                 submitBtn.innerHTML = 'Login to Dashboard';
                                 return;
@@ -434,7 +441,7 @@
                             
                             debugLog('✅ Final check passed! Redirecting now...');
                             window.location.href = 'enhanced-realtor-dashboard.html';
-                        }, 6000); // Wait 6 full seconds (increased for mobile)
+                        }, 8000); // Wait 8 full seconds (matching dashboard wait time)
                         
                     } catch (storageError) {
                         debugLog('ERROR: localStorage exception: ' + storageError.message, true);
