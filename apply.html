@@ -426,16 +426,7 @@
                         <label>Emergency Contact <span class="required">*</span></label>
                         <input type="tel" name="emergencyContact" required placeholder="Parent/Guardian Phone">
                     </div>
-                    <div class="form-field">
-                        <label>Payment Method <span class="required">*</span></label>
-                        <select name="paymentMethod" required>
-                            <option value="">Select Payment Method</option>
-                            <option value="full_payment">Full Payment Upfront</option>
-                            <option value="installments">Installment Plan</option>
-                            <option value="family_support">Family Support</option>
-                            <option value="scholarship">Scholarship</option>
-                        </select>
-                    </div>
+                  
                     <div class="form-field full-width">
                         <label>Additional Information</label>
                         <textarea name="additionalInfo" placeholder="Any special requirements, medical conditions, or other information the realtor should know..."></textarea>
@@ -489,26 +480,53 @@
             }
 
             try {
-                const apiUrl = API_CONFIG.endpoints.hostel(hostelId);
+                console.log('🔍 Loading hostel ID:', hostelId);
+                
+                // Check if API_CONFIG is loaded
+                if (typeof API_CONFIG === 'undefined') {
+                    console.warn('⚠️ API_CONFIG not loaded, using fallback URL');
+                    var apiUrl = `http://localhost:5000/api/hostels/${hostelId}`;
+                } else {
+                    var apiUrl = API_CONFIG.endpoints.hostel(hostelId);
+                }
+                
+                console.log('📡 Fetching from:', apiUrl);
                 const response = await fetch(apiUrl);
+                
+                console.log('📥 Response status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
+                console.log('📦 Received data:', data);
 
                 // Handle different response structures
-                if (data.success && data.hostel) {
+                if (data.success && data.data) {
+                    // Response format: { success: true, data: {...} }
+                    hostelData = data.data;
+                    console.log('✅ Using data.data format');
+                } else if (data.success && data.hostel) {
+                    // Response format: { success: true, hostel: {...} }
                     hostelData = data.hostel;
+                    console.log('✅ Using data.hostel format');
+                } else if (data.data) {
+                    hostelData = data.data;
+                    console.log('✅ Using data format');
                 } else if (data.hostel) {
                     hostelData = data.hostel;
+                    console.log('✅ Using hostel format');
                 } else if (data._id) {
                     // Direct hostel object
                     hostelData = data;
+                    console.log('✅ Using direct object format');
                 } else {
+                    console.error('❌ Unknown data structure:', data);
                     throw new Error('Invalid hostel data structure');
                 }
+
+                console.log('🏠 Hostel data:', hostelData);
 
                 // Safely set hostel details
                 if (hostelData && hostelData.name) {
@@ -517,11 +535,14 @@
                     document.getElementById('hostelPrice').textContent = hostelData.price ? `GH₵${hostelData.price}` : 'N/A';
                     document.getElementById('hostelRoomType').textContent = hostelData.roomType || 'Various';
                     document.getElementById('hostelSummary').style.display = 'grid';
+                    console.log('✅ Hostel details loaded successfully');
                 } else {
+                    console.error('❌ Hostel data missing name:', hostelData);
                     throw new Error('Hostel data is incomplete');
                 }
             } catch (error) {
-                console.error('Error loading hostel:', error);
+                console.error('❌ Error loading hostel:', error);
+                console.error('Error details:', error.message, error.stack);
                 showError('Error loading hostel details. Please try again.');
             }
         }

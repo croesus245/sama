@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Application Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Application Form Test</h1>
+        
+        <div id="status" class="status info">
+            <strong>Testing API Connection...</strong>
+        </div>
+
+        <h2>Test Results:</h2>
+        <div id="results"></div>
+
+        <h2>Actions:</h2>
+        <button onclick="testAPIConnection()">Test API Connection</button>
+        <button onclick="testHostelLoad()">Test Load Hostel</button>
+        <button onclick="window.location.href='apply.html?hostelId=68ed40ad323b624a32f6e05f'">Go to Real Form</button>
+    </div>
+
+    <script>
+        // Get hostel ID from URL or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const hostelId = urlParams.get('hostelId') || '68ed40ad323b624a32f6e05f';
+
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const logEntry = document.createElement('pre');
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEntry.style.borderLeft = type === 'error' ? '3px solid #dc3545' : '3px solid #28a745';
+            resultsDiv.appendChild(logEntry);
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = `<strong>${message}</strong>`;
+        }
+
+        async function testAPIConnection() {
+            log('Testing API health endpoint...');
+            updateStatus('Testing API Connection...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:5000/api/health');
+                const data = await response.json();
+                
+                log(`✅ API Health Check: ${JSON.stringify(data, null, 2)}`);
+                updateStatus('✅ API Connection Successful!', 'success');
+                return true;
+            } catch (error) {
+                log(`❌ API Connection Failed: ${error.message}`, 'error');
+                updateStatus('❌ API Connection Failed!', 'error');
+                return false;
+            }
+        }
+
+        async function testHostelLoad() {
+            log(`Testing hostel load for ID: ${hostelId}`);
+            updateStatus('Loading hostel data...', 'info');
+
+            try {
+                const url = `http://localhost:5000/api/hostels/${hostelId}`;
+                log(`Fetching from: ${url}`);
+                
+                const response = await fetch(url);
+                log(`Response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                log(`✅ Raw API Response:\n${JSON.stringify(data, null, 2)}`);
+
+                // Try to extract hostel data
+                let hostelData = null;
+                if (data.success && data.data) {
+                    hostelData = data.data;
+                    log('✅ Using data.success && data.data format');
+                } else if (data.data) {
+                    hostelData = data.data;
+                    log('✅ Using data.data format');
+                } else if (data._id) {
+                    hostelData = data;
+                    log('✅ Using direct object format');
+                }
+
+                if (hostelData && hostelData.name) {
+                    log(`✅ Hostel Found:\n` +
+                        `   Name: ${hostelData.name}\n` +
+                        `   Location: ${hostelData.location}\n` +
+                        `   Price: ₦${hostelData.price}\n` +
+                        `   Room Type: ${hostelData.roomType}`);
+                    updateStatus(`✅ Hostel Loaded: ${hostelData.name}`, 'success');
+                } else {
+                    throw new Error('Hostel data incomplete or missing');
+                }
+
+            } catch (error) {
+                log(`❌ Hostel Load Failed: ${error.message}\n${error.stack}`, 'error');
+                updateStatus('❌ Failed to Load Hostel!', 'error');
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', async () => {
+            log('🚀 Starting automatic tests...');
+            
+            // Test 1: API Connection
+            const apiOK = await testAPIConnection();
+            
+            if (apiOK) {
+                // Test 2: Load Hostel
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await testHostelLoad();
+            }
+
+            log('✅ All tests complete!');
+        });
+    </script>
+</body>
+</html>
