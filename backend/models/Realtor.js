@@ -100,7 +100,8 @@ realtorSchema.methods.comparePassword = async function(candidatePassword) {
 // Method to get public profile (without sensitive data)
 realtorSchema.methods.getPublicProfile = function() {
   return {
-    id: this._id,
+    _id: this._id,
+    id: this._id, // Include both for compatibility
     email: this.email,
     fullName: this.fullName,
     phoneNumber: this.phoneNumber,

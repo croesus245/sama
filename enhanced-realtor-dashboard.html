@@ -677,53 +677,56 @@ sessionStorage.setItem('validLogin', 'true');
                         }
                     }
                     
-                    // If no token/data AND we came from login, wait longer for mobile sync
+                    // If no token/data AND we came from login, wait briefly for storage sync
                     if (cameFromLogin && validLogin === 'true') {
-setTimeout(() => {
-                            // Check again after wait
-                            realtorToken = localStorage.getItem('realtorToken');
-                            const retryStoredData = localStorage.getItem('realtorData');
-if (!realtorToken || !retryStoredData) {
-                                // Still no data after wait - this is a storage issue
-                                console.error('❌ Still no authentication data after retry');
-                                sessionStorage.removeItem('validLogin');
-                                alert('⚠️ Login session not saved.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies and site data\n• Try a different browser (Chrome recommended)\n\nThen login again.');
-                                window.location.href = 'realtor-login.html';
-                                reject(new Error('Storage not persisting'));
-                            } else {
-                                // Found data after retry!
-                                try {
-                                    realtorData = JSON.parse(retryStoredData);
-                                    
-                                    // Validate the parsed data
-                                    // Be flexible - accept id, _id, or realtorId
-                                    const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
-                                    
-                                    if (!realtorData || !realtorId) {
-                                        console.error('Session data after retry:', realtorData);
-                                        throw new Error('Realtor ID missing from session data. Found fields: ' + Object.keys(realtorData || {}).join(', '));
-                                    }
-                                    
-                                    // Store the ID in a consistent format for later use
-                                    if (!realtorData._id && realtorData.id) {
-                                        realtorData._id = realtorData.id;
-                                    }
-
-sessionStorage.setItem('validLogin', 'true');
-                                    authCheckComplete = true;
-                                    resolve(true);
-                                } catch (error) {
-                                    console.error('❌ Invalid realtor data after retry:', error.message);
-                                    console.error('Raw stored data:', retryStoredData);
-                                    localStorage.removeItem('realtorToken');
-                                    localStorage.removeItem('realtorData');
+                        // Use requestAnimationFrame for better timing
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                // Check again after browser paint cycle
+                                realtorToken = localStorage.getItem('realtorToken');
+                                const retryStoredData = localStorage.getItem('realtorData');
+                                
+                                if (!realtorToken || !retryStoredData) {
+                                    // Still no data - this is a storage issue
+                                    console.error('❌ No authentication data after storage sync');
                                     sessionStorage.removeItem('validLogin');
-                                    alert('⚠️ Session data corrupted: ' + error.message + '\n\nPlease login again.');
+                                    alert('⚠️ Login session not saved.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies and site data\n• Try a different browser (Chrome recommended)\n\nThen login again.');
                                     window.location.href = 'realtor-login.html';
-                                    reject(new Error('Corrupted data after retry: ' + error.message));
+                                    reject(new Error('Storage not persisting'));
+                                } else {
+                                    // Found data!
+                                    try {
+                                        realtorData = JSON.parse(retryStoredData);
+                                        
+                                        // Validate the parsed data - now backend returns both _id and id
+                                        const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
+                                        
+                                        if (!realtorData || !realtorId) {
+                                            console.error('Session data:', realtorData);
+                                            throw new Error('Realtor ID missing from session data. Found fields: ' + Object.keys(realtorData || {}).join(', '));
+                                        }
+                                        
+                                        // Store the ID in consistent format
+                                        if (!realtorData._id && realtorData.id) {
+                                            realtorData._id = realtorData.id;
+                                        }
+
+                                        sessionStorage.setItem('validLogin', 'true');
+                                        authCheckComplete = true;
+                                        resolve(true);
+                                    } catch (error) {
+                                        console.error('❌ Invalid realtor data:', error.message);
+                                        console.error('Raw stored data:', retryStoredData);
+                                        localStorage.removeItem('realtorToken');
+                                        localStorage.removeItem('realtorData');
+                                        sessionStorage.removeItem('validLogin');
+                                        alert('⚠️ Session data corrupted: ' + error.message + '\n\nPlease login again.');
+                                        window.location.href = 'realtor-login.html';
+                                        reject(new Error('Corrupted data: ' + error.message));
+                                    }
                                 }
-                            }
-                        }, 10000); // Wait 10 full seconds for mobile (increased from 8s)
+                            });
+                        });
                     } else {
                         // Not from login page, or no validLogin flag - immediate redirect
                         console.error('❌ No authentication data and not coming from login');
@@ -863,8 +866,8 @@ updateStats();
         function showPendingBannerIfNeeded() {
             if (realtorProfile && realtorProfile.status === 'pending') {
                 document.getElementById('pendingBanner').style.display = 'block';
-} else if (realtorProfile) {
-);
+            } else if (realtorProfile) {
+                document.getElementById('pendingBanner').style.display = 'none';
             }
         }
         
