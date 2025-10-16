@@ -28,16 +28,12 @@ const CORE_ASSETS = [
 
 // Install event - cache core assets
 self.addEventListener('install', event => {
-  console.log('🔧 Service Worker installing...');
-  
-  event.waitUntil(
+event.waitUntil(
     caches.open(STATIC_CACHE).then(cache => {
-      console.log('📦 Caching core assets...');
-      return cache.addAll(CORE_ASSETS.map(url => {
+return cache.addAll(CORE_ASSETS.map(url => {
         return new Request(url, { mode: 'no-cors' });
       })).catch(error => {
-        console.warn('⚠️ Some assets failed to cache:', error);
-        // Continue anyway - cache what we can
+// Continue anyway - cache what we can
         return Promise.resolve();
       });
     })
@@ -49,16 +45,13 @@ self.addEventListener('install', event => {
 
 // Activate event - cleanup old caches
 self.addEventListener('activate', event => {
-  console.log('✅ Service Worker activating...');
-  
-  event.waitUntil(
+event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
           .filter(name => name.startsWith('mwg-hostels-') && name !== CACHE_NAME)
           .map(name => {
-            console.log('🗑️ Deleting old cache:', name);
-            return caches.delete(name);
+return caches.delete(name);
           })
       );
     }).then(() => {
@@ -114,8 +107,7 @@ async function handleFetch(request) {
     return await networkWithCacheFallback(request);
     
   } catch (error) {
-    console.warn('🚨 Fetch failed:', error);
-    return await getOfflineFallback(request);
+return await getOfflineFallback(request);
   }
 }
 
@@ -168,8 +160,7 @@ async function staleWhileRevalidate(request) {
         const responseToCache = networkResponse.clone();
         await cache.put(request, responseToCache);
       } catch (err) {
-        console.log('Cache put failed:', err);
-      }
+}
     }
     return networkResponse;
   }).catch(() => null);
@@ -188,8 +179,7 @@ async function networkFirstWithFallback(request) {
         const responseToCache = networkResponse.clone();
         await cache.put(request, responseToCache);
       } catch (err) {
-        console.log('Cache put failed:', err);
-      }
+}
     }
     
     return networkResponse;
@@ -325,9 +315,7 @@ function getOfflineHTML() {
 
 // Background Sync for form submissions
 self.addEventListener('sync', event => {
-  console.log('🔄 Background sync triggered:', event.tag);
-  
-  if (event.tag === 'background-registration') {
+if (event.tag === 'background-registration') {
     event.waitUntil(handleBackgroundRegistration());
   }
   
@@ -351,11 +339,9 @@ async function handleBackgroundRegistration() {
         
         if (response.ok) {
           await removePendingData('registrations', registration.id);
-          console.log('✅ Background registration successful');
-        }
+}
       } catch (error) {
-        console.warn('⚠️ Background registration failed:', error);
-      }
+}
     }
   } catch (error) {
     console.error('🚨 Background sync error:', error);
@@ -376,11 +362,9 @@ async function handleBackgroundContact() {
         
         if (response.ok) {
           await removePendingData('contacts', contact.id);
-          console.log('✅ Background contact successful');
-        }
+}
       } catch (error) {
-        console.warn('⚠️ Background contact failed:', error);
-      }
+}
     }
   } catch (error) {
     console.error('🚨 Background contact sync error:', error);
@@ -389,9 +373,7 @@ async function handleBackgroundContact() {
 
 // Push notifications
 self.addEventListener('push', event => {
-  console.log('📱 Push notification received');
-  
-  const options = {
+const options = {
     body: event.data ? event.data.text() : 'New update from MWG Hostels',
     icon: '/sama.png',
     badge: '/sama.png',
@@ -421,9 +403,7 @@ self.addEventListener('push', event => {
 
 // Notification click handling
 self.addEventListener('notificationclick', event => {
-  console.log('🔔 Notification clicked');
-  
-  event.notification.close();
+event.notification.close();
   
   if (event.action === 'explore') {
     event.waitUntil(
@@ -453,9 +433,7 @@ async function removePendingData(storeName, id) {
 
 // Cache cleanup on quota exceeded
 self.addEventListener('quotaexceeded', event => {
-  console.warn('⚠️ Storage quota exceeded, cleaning up...');
-  
-  event.waitUntil(
+event.waitUntil(
     caches.open(IMAGE_CACHE).then(cache => {
       return cache.keys().then(keys => {
         // Remove oldest images
@@ -475,5 +453,3 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
-
-console.log('🚀 MWG Hostels Service Worker loaded successfully');

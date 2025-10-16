@@ -49,17 +49,14 @@ async function apiFetch(url, options = {}) {
                 ...(options.headers || {})
             }
         };
-        
-        console.log(`🔌 API Request: ${url}`);
-        const response = await fetch(url, config);
+const response = await fetch(url, config);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log(`✅ API Response:`, data);
-        return data;
+return data;
         
     } catch (error) {
         console.error(`❌ API Error (${url}):`, error);
@@ -73,5 +70,4 @@ if (typeof window !== 'undefined') {
     window.apiFetch = apiFetch;
 }
 
-console.log(`📡 API Config loaded - Environment: ${API_CONFIG.isLocalhost ? 'LOCAL' : 'PRODUCTION'}`);
-console.log(`🌐 Base URL: ${API_CONFIG.getBaseURL()}`);
+}`);

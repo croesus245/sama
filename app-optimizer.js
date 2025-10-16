@@ -9,10 +9,7 @@ class AppOptimizer {
     // Initialize all optimizations
     init() {
         if (this.initialized) return;
-
-        console.log('🚀 Initializing App Optimizer...');
-
-        this.setupImageLazyLoading();
+this.setupImageLazyLoading();
         this.setupCacheManagement();
         this.setupServiceWorker();
         this.setupErrorRecovery();
@@ -21,8 +18,7 @@ class AppOptimizer {
         this.setupPrefetching();
 
         this.initialized = true;
-        console.log('✅ App Optimizer initialized');
-    }
+}
 
     // Lazy load images for better performance
     setupImageLazyLoading() {
@@ -83,8 +79,7 @@ class AppOptimizer {
                         const dataKey = key.replace('_timestamp', '');
                         localStorage.removeItem(dataKey);
                         localStorage.removeItem(key);
-                        console.log(`🗑️ Cleaned old cache: ${dataKey}`);
-                    }
+}
                 }
             }
         };
@@ -99,11 +94,9 @@ class AppOptimizer {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
                 .then(registration => {
-                    console.log('✅ Service Worker registered:', registration);
-                })
+})
                 .catch(error => {
-                    console.log('⚠️ Service Worker registration failed:', error);
-                });
+});
         }
     }
 
@@ -133,7 +126,7 @@ class AppOptimizer {
                 const longTaskObserver = new PerformanceObserver((list) => {
                     for (const entry of list.getEntries()) {
                         if (entry.duration > 50) {
-                            console.warn('⚠️ Long task detected:', entry.duration.toFixed(2) + 'ms');
++ 'ms');
                         }
                     }
                 });
@@ -143,15 +136,14 @@ class AppOptimizer {
                 const clsObserver = new PerformanceObserver((list) => {
                     for (const entry of list.getEntries()) {
                         if (!entry.hadRecentInput && entry.value > 0.1) {
-                            console.warn('⚠️ Layout shift detected:', entry.value.toFixed(4));
+);
                         }
                     }
                 });
                 clsObserver.observe({ entryTypes: ['layout-shift'] });
 
             } catch (e) {
-                console.log('Performance monitoring not fully supported');
-            }
+}
         }
     }
 
@@ -208,8 +200,7 @@ class AppOptimizer {
         try {
             localStorage.setItem(`cache_${key}`, JSON.stringify(item));
         } catch (e) {
-            console.warn('Cache storage failed:', e);
-        }
+}
     }
 
     // Get cached value if not expired
@@ -251,8 +242,7 @@ class AppOptimizer {
                 localStorage.removeItem(key);
             }
         });
-        console.log('✅ Cache cleared');
-    }
+}
 }
 
 // Initialize optimizer globally

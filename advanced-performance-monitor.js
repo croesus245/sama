@@ -418,9 +418,7 @@ class AdvancedPerformanceMonitor {
     }
     
     enableSlowConnectionMode() {
-        console.log('🐌 Enabling slow connection optimizations...');
-        
-        // Disable non-essential animations
+// Disable non-essential animations
         document.documentElement.style.setProperty('--animation-duration', '0s');
         
         // Reduce image quality
@@ -435,9 +433,7 @@ class AdvancedPerformanceMonitor {
     }
     
     enableDataSaverMode() {
-        console.log('💾 Enabling data saver mode...');
-        
-        // Defer non-critical resources
+// Defer non-critical resources
         this.deferNonCriticalResources();
         
         // Show data saver indicator
@@ -445,9 +441,7 @@ class AdvancedPerformanceMonitor {
     }
     
     enableHighQualityMode() {
-        console.log('🚀 Enabling high quality mode...');
-        
-        // Enable full animations
+// Enable full animations
         document.documentElement.style.removeProperty('--animation-duration');
         
         // Load high-quality images
@@ -464,9 +458,7 @@ class AdvancedPerformanceMonitor {
     }
     
     optimizeMemoryUsage() {
-        console.log('🧹 Optimizing memory usage...');
-        
-        // Clear old metrics
+// Clear old metrics
         this.metrics.userInteractions = this.metrics.userInteractions.slice(-20);
         this.metrics.networkRequests = this.metrics.networkRequests.slice(-10);
         
@@ -477,9 +469,7 @@ class AdvancedPerformanceMonitor {
     }
     
     optimizeRenderPerformance() {
-        console.log('⚡ Optimizing render performance...');
-        
-        // Reduce animation complexity
+// Reduce animation complexity
         document.querySelectorAll('.animate').forEach(el => {
             el.style.animation = 'none';
         });
@@ -489,9 +479,7 @@ class AdvancedPerformanceMonitor {
     }
     
     handleNetworkIssues(failedRequests) {
-        console.warn('🌐 Network issues detected, switching to offline mode...');
-        
-        // Enable offline mode
+// Enable offline mode
         document.dispatchEvent(new CustomEvent('networkIssues', {
             detail: { failedRequests }
         }));
@@ -501,9 +489,7 @@ class AdvancedPerformanceMonitor {
     }
     
     adaptToSlowNetwork() {
-        console.log('⏱️ Slow network detected, optimizing...');
-        
-        // Increase request timeouts
+// Increase request timeouts
         this.increaseTimeouts();
         
         // Show loading indicators
@@ -556,8 +542,7 @@ class AdvancedPerformanceMonitor {
             
             localStorage.setItem('mwg_performance_reports', JSON.stringify(reports));
         } catch (error) {
-            console.warn('Failed to store performance report:', error);
-        }
+}
     }
     
     getPerformanceInsights() {
@@ -626,9 +611,7 @@ class AdvancedPerformanceMonitor {
     }
     
     reportPerformanceIssue(metric, value) {
-        console.warn(`❌ Performance issue detected: ${metric} = ${value}`);
-        
-        // In production, send to analytics
+// In production, send to analytics
         if (typeof gtag === 'function') {
             gtag('event', 'performance_issue', {
                 'metric': metric,
@@ -654,9 +637,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (insights.length > 0) {
             console.group('📊 Performance Insights');
             insights.forEach(insight => {
-                console.log(`${insight.type.toUpperCase()}: ${insight.message}`);
-                console.log(`💡 Suggestion: ${insight.suggestion}`);
-            });
+}: ${insight.message}`);
+});
             console.groupEnd();
         }
     }, 5000);

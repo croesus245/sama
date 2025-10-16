@@ -624,63 +624,44 @@
             }
 
             try {
-                console.log('🔍 Loading hostel ID:', hostelId);
-                
-                // Check if API_CONFIG is loaded
+// Check if API_CONFIG is loaded
                 if (typeof API_CONFIG === 'undefined') {
-                    console.warn('⚠️ API_CONFIG not loaded, using fallback URL');
-                    var apiUrl = `http://localhost:5000/api/hostels/${hostelId}`;
+var apiUrl = `http://localhost:5000/api/hostels/${hostelId}`;
                 } else {
                     var apiUrl = API_CONFIG.endpoints.hostel(hostelId);
                 }
-                
-                console.log('📡 Fetching from:', apiUrl);
-                const response = await fetch(apiUrl);
-                
-                console.log('📥 Response status:', response.status);
-                
-                if (!response.ok) {
+const response = await fetch(apiUrl);
+if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                console.log('📦 Received data:', data);
-
-                // Handle different response structures
+// Handle different response structures
                 if (data.success && data.data) {
                     // Response format: { success: true, data: {...} }
                     hostelData = data.data;
-                    console.log('✅ Using data.data format');
-                } else if (data.success && data.hostel) {
+} else if (data.success && data.hostel) {
                     // Response format: { success: true, hostel: {...} }
                     hostelData = data.hostel;
-                    console.log('✅ Using data.hostel format');
-                } else if (data.data) {
+} else if (data.data) {
                     hostelData = data.data;
-                    console.log('✅ Using data format');
-                } else if (data.hostel) {
+} else if (data.hostel) {
                     hostelData = data.hostel;
-                    console.log('✅ Using hostel format');
-                } else if (data._id) {
+} else if (data._id) {
                     // Direct hostel object
                     hostelData = data;
-                    console.log('✅ Using direct object format');
-                } else {
+} else {
                     console.error('❌ Unknown data structure:', data);
                     throw new Error('Invalid hostel data structure');
                 }
-
-                console.log('🏠 Hostel data:', hostelData);
-
-                // Safely set hostel details
+// Safely set hostel details
                 if (hostelData && hostelData.name) {
                     document.getElementById('hostelName').textContent = hostelData.name;
                     document.getElementById('hostelLocation').textContent = hostelData.location || 'N/A';
                     document.getElementById('hostelPrice').textContent = hostelData.price ? `₦${hostelData.price.toLocaleString()}` : 'N/A';
                     document.getElementById('hostelRoomType').textContent = hostelData.roomType || 'Various';
                     document.getElementById('hostelSummary').style.display = 'grid';
-                    console.log('✅ Hostel details loaded successfully');
-                } else {
+} else {
                     console.error('❌ Hostel data missing name:', hostelData);
                     throw new Error('Hostel data is incomplete');
                 }
@@ -694,10 +675,7 @@
         // Handle form submission
         document.getElementById('applicationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            console.log('📝 Form submitted - Starting submission process...');
-
-            const formData = new FormData(e.target);
+const formData = new FormData(e.target);
             const applicationData = {
                 applicationId: `APP-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
                 hostelId: hostelId,
@@ -724,10 +702,7 @@
                     paymentMethod: formData.get('paymentMethod')
                 }
             };
-
-            console.log('📦 Application Data:', applicationData);
-
-            // Show loading
+// Show loading
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('errorMessage').style.display = 'none';
@@ -739,9 +714,7 @@
                 }
 
                 const apiUrl = API_CONFIG.endpoints.submitApplication();
-                console.log('🚀 Submitting to:', apiUrl);
-
-                const response = await fetch(apiUrl, {
+const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -749,22 +722,15 @@
                     body: JSON.stringify({ applicationData })
                 });
 
-                console.log('📡 Response status:', response.status);
-                console.log('📡 Response ok:', response.ok);
-
-                if (!response.ok) {
+if (!response.ok) {
                     const errorText = await response.text();
                     console.error('❌ Server error response:', errorText);
                     throw new Error(`Server returned ${response.status}: ${errorText}`);
                 }
 
                 const result = await response.json();
-                console.log('✅ Server response:', result);
-
-                if (result.success) {
-                    console.log('✅ Application submitted successfully!');
-                    
-                    // Show success message
+if (result.success) {
+// Show success message
                     document.getElementById('applicationId').textContent = result.data.applicationId;
                     document.getElementById('successHostelName').textContent = hostelData.name;
                     document.getElementById('successMessage').style.display = 'block';

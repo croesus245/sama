@@ -917,26 +917,21 @@
         
         // Modal Functions
         function openModal(modalId) {
-            console.log('openModal called with modalId:', modalId);
-            const modal = document.getElementById(modalId);
+const modal = document.getElementById(modalId);
             if (modal) {
-                console.log('Modal found, opening...');
-                modal.style.display = 'flex';
+modal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
-                console.log('Modal opened successfully');
-            } else {
+} else {
                 console.error('Modal not found:', modalId);
             }
         }
         
         function closeModal(modalId) {
-            console.log('closeModal called with modalId:', modalId);
-            const modal = document.getElementById(modalId);
+const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = '';
-                console.log('Modal closed successfully');
-            } else {
+} else {
                 console.error('Modal not found for closing:', modalId);
             }
         }
@@ -1083,16 +1078,14 @@
             if (typeof window.toggleTheme !== 'undefined') {
                 window.toggleTheme();
             } else {
-                console.log('Theme system not loaded');
-            }
+}
         }
     </script>
     
     <script>
         // Browse without registration function - direct access
         function browseWithoutRegistration() {
-            console.log('🏠 Browsing hostels - direct access');
-            // Direct navigation to browse page
+// Direct navigation to browse page
             window.location.href = 'demo.html';
         }
         
@@ -1254,8 +1247,7 @@
             const hostelsGrid = document.getElementById('hostelsGrid');
             
             if (!hostelsGrid) {
-                console.log('Hostels grid not found');
-                return;
+return;
             }
             
             // Show loading state
@@ -1272,10 +1264,7 @@
                 
                 // Filter to only show available hostels
                 const availableHostels = allHostelsData.filter(h => h.available === true);
-                
-                console.log(`✅ Loaded ${allHostelsData.length} total hostels, ${availableHostels.length} available`);
-                
-                // Update count
+// Update count
                 document.getElementById('hostelCount').textContent = 
                     `Showing ${availableHostels.length} ${availableHostels.length === 1 ? 'hostel' : 'hostels'}`;
                 
@@ -1514,15 +1503,12 @@
         
         // Refresh button for manual reload
         window.refreshHostels = loadAndDisplayHostels;
-        
-        console.log('✅ Hostel display system loaded - loading hostels from MongoDB API');
-    </script>
+</script>
 
     <script>
         window.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
-                console.warn('Image failed:', e.target.src);
-                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
             }
         }, true);
         

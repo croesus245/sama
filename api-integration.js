@@ -394,17 +394,12 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Initialize API integration when DOM is loaded
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🔌 MWG Hostels API Integration loaded');
-    
-    // Check backend connection
+// Check backend connection
     const isConnected = await window.MWGHostelsAPI.checkBackendConnection();
     
     if (isConnected) {
-        console.log('✅ Backend API connection successful');
-    } else {
-        console.warn('⚠️ Backend API not available. Some features may not work.');
-        
-        // Show user notification if in production
+} else {
+// Show user notification if in production
         if (window.location.hostname !== 'localhost') {
             setTimeout(() => {
                 showNotification('Some features may be temporarily unavailable. Please try again later.', 'warning');
@@ -417,11 +412,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const user = await window.MWGHostelsAPI.getCurrentUser();
             if (user?.success) {
-                console.log('👤 User authenticated:', user.data.user.firstName);
-            }
+}
         } catch (error) {
-            console.log('⚠️ Authentication check failed');
-        }
+}
     }
 });
 

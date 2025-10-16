@@ -27,7 +27,7 @@ async function fetchWithRetry(url, options = {}, retries = RETRY_CONFIG.maxRetri
         
         if (!response.ok && retries > 0 && response.status >= 500) {
             // Retry on server errors
-            console.warn(`⚠️ Request failed (${response.status}), retrying... (${retries} attempts left)`);
+, retrying... (${retries} attempts left)`);
             await new Promise(resolve => setTimeout(resolve, RETRY_CONFIG.retryDelay));
             return fetchWithRetry(url, options, retries - 1);
         }
@@ -37,7 +37,7 @@ async function fetchWithRetry(url, options = {}, retries = RETRY_CONFIG.maxRetri
         clearTimeout(timeoutId);
         
         if (retries > 0 && (error.name === 'AbortError' || error.message.includes('fetch'))) {
-            console.warn(`⚠️ Request timeout/error, retrying... (${retries} attempts left)`);
+`);
             await new Promise(resolve => setTimeout(resolve, RETRY_CONFIG.retryDelay));
             return fetchWithRetry(url, options, retries - 1);
         }
@@ -68,8 +68,7 @@ const HostelAPI = {
             if (window.appOptimizer) {
                 const cached = window.appOptimizer.cacheGet('hostels_all');
                 if (cached) {
-                    console.log('📦 Using cached hostels');
-                    return cached;
+return cached;
                 }
             }
 
@@ -92,8 +91,7 @@ const HostelAPI = {
             if (window.appOptimizer) {
                 const cached = localStorage.getItem('cache_hostels_all');
                 if (cached) {
-                    console.warn('⚠️ API failed, using stale cache');
-                    try {
+try {
                         const parsed = JSON.parse(cached);
                         return parsed.value;
                     } catch (e) {
@@ -115,8 +113,7 @@ const HostelAPI = {
             if (window.appOptimizer) {
                 const cached = window.appOptimizer.cacheGet(cacheKey);
                 if (cached) {
-                    console.log('📦 Using cached realtor hostels');
-                    return cached;
+return cached;
                 }
             }
 
@@ -291,8 +288,7 @@ const HostelAPI = {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log('✅ API Connection successful');
-            return data;
+return data;
         } catch (error) {
             console.error('❌ API Connection failed:', error);
             throw error;

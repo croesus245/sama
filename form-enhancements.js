@@ -237,9 +237,7 @@ class ErrorHandler {
     setupGlobalErrorHandling() {
         // Disabled aggressive global error handling that was causing spam
         // Error handling is now managed by fixed-error-handler.js
-        console.log('🔧 Global error handling disabled - using improved error system');
-        
-        // Only handle specific form-related errors
+// Only handle specific form-related errors
         document.addEventListener('submit', (event) => {
             const form = event.target;
             if (form.tagName === 'FORM') {
@@ -272,8 +270,7 @@ class ErrorHandler {
         );
         
         if (!isCritical) {
-            console.warn('Non-critical error suppressed:', error.message);
-            return;
+return;
         }
         
         let message = error.message;

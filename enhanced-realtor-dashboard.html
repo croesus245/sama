@@ -637,16 +637,7 @@
                     realtorToken = localStorage.getItem('realtorToken');
                     const storedData = localStorage.getItem('realtorData');
                     const validLogin = sessionStorage.getItem('validLogin');
-                    
-                    console.log('🔍 Auth Check:', {
-                        hasToken: !!realtorToken,
-                        hasData: !!storedData,
-                        validLogin: validLogin,
-                        tokenLength: realtorToken ? realtorToken.length : 0,
-                        referrer: document.referrer
-                    });
-                    
-                    // Check if we just came from login page
+// Check if we just came from login page
                     const referrer = document.referrer || '';
                     const cameFromLogin = referrer.includes('realtor-login.html');
                     
@@ -668,10 +659,8 @@
                             if (!realtorData._id && realtorData.id) {
                                 realtorData._id = realtorData.id;
                             }
-                            
-                            console.log('✅ Realtor authenticated:', realtorData.fullName || realtorData.email);
-                            console.log('🆔 Realtor ID:', realtorId);
-                            sessionStorage.setItem('validLogin', 'true');
+
+sessionStorage.setItem('validLogin', 'true');
                             authCheckComplete = true;
                             resolve(true);
                             return;
@@ -690,19 +679,11 @@
                     
                     // If no token/data AND we came from login, wait longer for mobile sync
                     if (cameFromLogin && validLogin === 'true') {
-                        console.log('⚠️ Missing data but came from login - waiting 10 seconds for mobile sync...');
-                        
-                        setTimeout(() => {
+setTimeout(() => {
                             // Check again after wait
                             realtorToken = localStorage.getItem('realtorToken');
                             const retryStoredData = localStorage.getItem('realtorData');
-                            
-                            console.log('🔄 Retry check after 10s:', {
-                                hasToken: !!realtorToken,
-                                hasData: !!retryStoredData
-                            });
-                            
-                            if (!realtorToken || !retryStoredData) {
+if (!realtorToken || !retryStoredData) {
                                 // Still no data after wait - this is a storage issue
                                 console.error('❌ Still no authentication data after retry');
                                 sessionStorage.removeItem('validLogin');
@@ -727,10 +708,8 @@
                                     if (!realtorData._id && realtorData.id) {
                                         realtorData._id = realtorData.id;
                                     }
-                                    
-                                    console.log('✅ Realtor authenticated after retry:', realtorData.fullName || realtorData.email);
-                                    console.log('🆔 Realtor ID:', realtorId);
-                                    sessionStorage.setItem('validLogin', 'true');
+
+sessionStorage.setItem('validLogin', 'true');
                                     authCheckComplete = true;
                                     resolve(true);
                                 } catch (error) {
@@ -748,8 +727,7 @@
                     } else {
                         // Not from login page, or no validLogin flag - immediate redirect
                         console.error('❌ No authentication data and not coming from login');
-                        console.log('Redirecting to login page...');
-                        sessionStorage.removeItem('validLogin');
+sessionStorage.removeItem('validLogin');
                         window.location.href = 'realtor-login.html';
                         reject(new Error('Not authenticated'));
                     }
@@ -780,14 +758,9 @@
                     console.error('❌ HostelAPI not loaded');
                     throw new Error('HostelAPI module not available');
                 }
-                
-                console.log('🔄 Loading hostels from API...');
-                console.log('🔑 Filtering for Realtor ID:', REALTOR_ID);
-                
-                const allHostels = await HostelAPI.getAllHostels();
-                console.log(`📊 Total hostels in database: ${allHostels.length}`);
-                
-                // Filter to show only this realtor's hostels
+
+const allHostels = await HostelAPI.getAllHostels();
+// Filter to show only this realtor's hostels
                 hostels = allHostels.filter(h => {
                     // Check both possible ID formats
                     const hostelRealtorId = h.realtorId || h.realtor?._id || h.realtor;
@@ -797,24 +770,14 @@
                     const realtorIdStr = String(REALTOR_ID || '');
                     
                     // Debug: Log all comparisons
-                    console.log(`🔍 Comparing:`, {
-                        hostelName: h.name,
-                        hostelRealtorId: hostelIdStr,
-                        loggedInRealtorId: realtorIdStr,
-                        match: hostelIdStr === realtorIdStr
-                    });
-                    
-                    const matches = hostelIdStr === realtorIdStr;
+const matches = hostelIdStr === realtorIdStr;
                     
                     if (matches) {
-                        console.log('✅ Match found:', h.name, '- Realtor ID:', hostelRealtorId);
-                    }
+}
                     
                     return matches;
                 });
-                
-                console.log(`✅ Loaded ${hostels.length} hostels for this realtor`);
-                return hostels;
+return hostels;
             } catch (error) {
                 console.error('❌ Error loading hostels:', error);
                 notifications.show('⚠️ Could not load hostels from server. Please check if the API is running.', 'error');
@@ -828,12 +791,9 @@
         
         // Initialize dashboard
         async function initializeDashboard() {
-            console.log('🚀 Starting dashboard initialization...');
-            
-            try {
+try {
                 // Wait for authentication to complete first
-                console.log('⏳ Waiting for authentication check...');
-                await checkAuthentication();
+await checkAuthentication();
                 
                 // Check if authentication actually succeeded
                 if (!realtorData) {
@@ -841,29 +801,21 @@
                 }
                 
                 // Authentication successful - set up realtor data
-                console.log('✅ Authentication complete, initializing dashboard...');
-                console.log('📋 Realtor data:', realtorData);
-                
-                // Be flexible with ID field - accept id, _id, or realtorId
+
+// Be flexible with ID field - accept id, _id, or realtorId
                 REALTOR_ID = realtorData._id || realtorData.id || realtorData.realtorId;
                 
                 if (!REALTOR_ID) {
                     console.error('Available fields in realtorData:', Object.keys(realtorData));
                     throw new Error('Realtor ID not found in authenticated data. Available fields: ' + Object.keys(realtorData).join(', '));
                 }
-                
-                console.log('🔑 Using Realtor ID:', REALTOR_ID);
-                
-                realtorProfile = {
+realtorProfile = {
                     name: realtorData.fullName || 'Realtor',
                     whatsapp: realtorData.whatsapp || '2348145653433',
                     email: realtorData.email || '',
                     status: realtorData.status || 'pending'
                 };
-                
-                console.log('👤 Realtor Profile:', realtorProfile);
-                
-                // Now load dashboard UI
+// Now load dashboard UI
                 loadRealtorProfile();
                 updateCurrentDate();
                 showPendingBannerIfNeeded();
@@ -875,18 +827,13 @@
             }
             
                 // Load hostels from API
-                console.log('📊 Loading hostels from API...');
-                await loadHostelsFromAPI();
+await loadHostelsFromAPI();
                 
                 // Update UI
-                console.log('🎨 Updating dashboard UI...');
-                updateStats();
+updateStats();
                 renderHostels();
                 setupEventListeners();
-                
-                console.log('✅ Dashboard initialization complete!');
-                
-            } catch (error) {
+} catch (error) {
                 console.error('❌ Dashboard initialization error:', error);
                 console.error('Error details:', {
                     message: error.message,
@@ -916,9 +863,8 @@
         function showPendingBannerIfNeeded() {
             if (realtorProfile && realtorProfile.status === 'pending') {
                 document.getElementById('pendingBanner').style.display = 'block';
-                console.log('⏳ Realtor status: PENDING - Showing approval banner');
-            } else if (realtorProfile) {
-                console.log('✅ Realtor status:', realtorProfile.status.toUpperCase());
+} else if (realtorProfile) {
+);
             }
         }
         
@@ -930,10 +876,7 @@
                 // Clear authentication data
                 localStorage.removeItem('realtorToken');
                 localStorage.removeItem('realtorData');
-                
-                console.log('👋 Logged out successfully');
-                
-                // Redirect to login page
+// Redirect to login page
                 window.location.href = 'realtor-login-new.html';
             }
         }
@@ -1210,10 +1153,7 @@
                 realtorName: realtorProfile.name,
                 realtorEmail: realtorProfile.email
             };
-            
-            console.log('📤 Creating hostel with data:', newHostelData);
-            
-            // Show loading state
+// Show loading state
             const submitButton = event.target.querySelector('button[type="submit"]');
             const originalText = submitButton.textContent;
             submitButton.textContent = 'Creating...';
@@ -1222,9 +1162,7 @@
             // Send to API
             HostelAPI.createHostel(newHostelData)
                 .then(async (createdHostel) => {
-                    console.log('✅ Hostel created:', createdHostel);
-                    
-                    // Reload hostels from API
+// Reload hostels from API
                     await loadHostelsFromAPI();
                     
                     // Update UI
@@ -1301,10 +1239,7 @@
                 realtorName: realtorProfile.name,
                 realtorEmail: realtorProfile.email
             };
-            
-            console.log('📤 Updating hostel with data:', updatedData);
-            
-            // Show loading state
+// Show loading state
             const submitButton = event.target.querySelector('button[type="submit"]');
             const originalText = submitButton.textContent;
             submitButton.textContent = 'Updating...';
@@ -1313,9 +1248,7 @@
             // Send to API
             HostelAPI.updateHostel(hostelId, updatedData)
                 .then(async (updatedHostel) => {
-                    console.log('✅ Hostel updated:', updatedHostel);
-                    
-                    // Reload hostels from API
+// Reload hostels from API
                     await loadHostelsFromAPI();
                     
                     // Update UI
@@ -1365,9 +1298,7 @@
                 // Send delete request to API
                 HostelAPI.deleteHostel(hostelId)
                     .then(async () => {
-                        console.log('✅ Hostel deleted');
-                        
-                        // Reload hostels from API
+// Reload hostels from API
                         await loadHostelsFromAPI();
                         
                         // Update UI
@@ -1407,9 +1338,7 @@
                 // Send delete request to API
                 HostelAPI.deleteHostel(hostelId)
                     .then(async () => {
-                        console.log('✅ Hostel deleted:', hostelId);
-                        
-                        // Reload hostels from API
+// Reload hostels from API
                         await loadHostelsFromAPI();
                         
                         // Update UI
@@ -1842,8 +1771,7 @@
     <script>
         window.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
-                console.warn('Image failed:', e.target.src);
-                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
             }
         }, true);
         
@@ -1869,8 +1797,6 @@
         // window.addEventListener('DOMContentLoaded', () => {
         //     initializeDashboard();
         // });
-        
-        console.log('✅ Enhanced Realtor Dashboard Loaded - DOMContentLoaded handler registered on line 1451');
-    </script>
+</script>
 </body>
 </html>

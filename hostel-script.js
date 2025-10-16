@@ -1,6 +1,4 @@
 // MWG Hostel Finder - Main JavaScript
-console.log('🏠 MWG Hostel Finder - Initializing...');
-
 // Global state
 const state = {
     hostels: [],
@@ -19,17 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize Application
 function initializeApp() {
-    console.log('🚀 Initializing MWG Hostel Finder...');
-    
-    // Initialize components
+// Initialize components
     initializeNavigation();
     initializeFAB();
     initializeRegistrationForm();
     initializeFilterTabs();
     loadHostels();
     updateLiveStats();
-    
-    console.log('✅ App initialized successfully');
 }
 
 // Navigation Functionality
@@ -59,8 +53,6 @@ function initializeNavigation() {
             });
         });
     }
-    
-    console.log('✅ Navigation initialized');
 }
 
 // Floating Action Button
@@ -97,15 +89,11 @@ function initializeFAB() {
             }
         });
     }
-    
-    console.log('✅ FAB initialized');
 }
 
 // Handle FAB Actions
 function handleFABAction(action) {
-    console.log(`🎯 FAB action: ${action}`);
-    
-    switch (action) {
+switch (action) {
         case 'need-room':
             scrollToSection('register');
             showNotification('Register to find your perfect hostel!', 'info');
@@ -114,28 +102,22 @@ function handleFABAction(action) {
             window.open('realtor-login.html', '_blank');
             break;
         default:
-            console.warn('Unknown FAB action:', action);
-    }
+}
 }
 
 // Registration Form - Updated for Open Access
 function initializeRegistrationForm() {
     // Student registration no longer required - platform has open access
-    console.log('✅ Platform open access - no student registration needed');
-    
-    // Check if any realtor forms need initialization
+// Check if any realtor forms need initialization
     const realtorForm = document.getElementById('realtorRegistrationForm');
     if (realtorForm) {
-        console.log('🏢 Initializing realtor registration form...');
-        // Realtor registration still available
+// Realtor registration still available
     }
 }
 
 // Handle Registration
 function handleRegistration(form) {
-    console.log('📝 Processing registration...');
-    
-    try {
+try {
         // Collect form data
         const formData = new FormData(form);
         const data = {
@@ -155,10 +137,7 @@ function handleRegistration(form) {
             agreeTerms: formData.get('agreeTerms'),
             allowNotifications: formData.get('allowNotifications')
         };
-        
-        console.log('📊 Registration data:', data);
-        
-        // Validation
+// Validation
         if (!validateRegistrationData(data)) {
             return;
         }
@@ -190,9 +169,7 @@ function handleRegistration(form) {
             
             // Close registration modal
             closeRegistrationModal();
-            
-            console.log('✅ Registration successful');
-        }, 2000);
+}, 2000);
         
     } catch (error) {
         console.error('❌ Registration error:', error);
@@ -203,8 +180,7 @@ function handleRegistration(form) {
 // Validate Registration Data - Updated for Open Access
 function validateRegistrationData(data) {
     // Platform now has open access - minimal validation needed
-    console.log('✅ Platform open access - minimal validation applied');
-    return true;
+return true;
 }
 
 // Filter Tabs
@@ -218,8 +194,6 @@ function initializeFilterTabs() {
             filterHostels(filter);
         });
     });
-    
-    console.log('✅ Filter tabs initialized');
 }
 
 // Set Active Filter
@@ -236,9 +210,7 @@ function setActiveFilter(filter) {
 
 // Load Hostels from Realtor Listings
 function loadHostels() {
-    console.log('🏠 Loading hostels from realtor listings...');
-    
-    // Load hostels from localStorage (uploaded by realtors)
+// Load hostels from localStorage (uploaded by realtors)
     // Check both 'realtorHostels' (new format) and 'realtorListings' (old format)
     const savedHostels = localStorage.getItem('realtorHostels');
     const savedListings = localStorage.getItem('realtorListings');
@@ -248,9 +220,7 @@ function loadHostels() {
     if (savedHostels) {
         try {
             const hostels = JSON.parse(savedHostels);
-            console.log('📋 Found hostels in new format:', hostels.length);
-            
-            // Convert to display format
+// Convert to display format
             realtorHostels = hostels.map(hostel => ({
                 id: hostel.id,
                 name: hostel.name,
@@ -286,9 +256,7 @@ function loadHostels() {
     else if (savedListings) {
         try {
             const allListings = JSON.parse(savedListings);
-            console.log('📋 Found hostels in old format:', allListings.length);
-            
-            // Convert realtor listings to hostel format
+// Convert realtor listings to hostel format
             realtorHostels = allListings.map(listing => ({
                 id: listing.id,
                 name: listing.name,
@@ -322,10 +290,8 @@ function loadHostels() {
     
     // If no realtor hostels available, show empty state
     if (realtorHostels.length === 0) {
-        console.log('📭 No realtor hostels found - showing empty state');
-    } else {
-        console.log(`✅ Loaded ${realtorHostels.length} realtor hostels`);
-    }
+} else {
+}
     
     state.hostels = realtorHostels;
     state.filteredHostels = realtorHostels;
@@ -358,8 +324,6 @@ function updateLiveStats() {
             cardElement.innerHTML = `<i class="fas fa-home"></i> ${count} Available`;
         }
     });
-    
-    console.log(`📊 Updated stats: ${totalHostels} total hostels`);
 }
 
 // Render Hostels
@@ -421,9 +385,7 @@ function updateGateCounts() {
 
 // Filter Hostels
 function filterHostels(location) {
-    console.log(`🔍 Filtering hostels by: ${location}`);
-    
-    if (location === 'all') {
+if (location === 'all') {
         state.filteredHostels = state.hostels;
     } else {
         state.filteredHostels = state.hostels.filter(hostel => hostel.location === location);
@@ -434,9 +396,7 @@ function filterHostels(location) {
 
 // Filter Hostels by Location (called from location cards)
 function filterHostelsByLocation(location) {
-    console.log(`📍 Location card clicked: ${location}`);
-    
-    // Update filter tab
+// Update filter tab
     setActiveFilter(location);
     
     // Filter and render
@@ -454,10 +414,7 @@ function filterHostelsByLocation(location) {
 function viewHostelDetails(hostelId) {
     const hostel = state.hostels.find(h => h.id === hostelId);
     if (!hostel) return;
-    
-    console.log(`👁️ Viewing details for: ${hostel.name}`);
-    
-    showModal('Hostel Details', `
+showModal('Hostel Details', `
         <div class="hostel-details">
             <div class="hostel-images-gallery">
                 ${hostel.images && hostel.images.length > 1 ? 
@@ -569,20 +526,15 @@ function viewHostelDetails(hostelId) {
 }
 
 function contactRealtor(hostelId) {
-    console.log('🔍 contactRealtor called with ID:', hostelId);
-    console.log('🔍 Current state.hostels:', state.hostels?.length || 0, 'hostels');
-    
-    const hostel = state.hostels.find(h => h.id === hostelId);
+
+const hostel = state.hostels.find(h => h.id === hostelId);
     if (!hostel) {
         console.error('❌ Hostel not found for ID:', hostelId);
-        console.log('Available hostel IDs:', state.hostels.map(h => h.id));
+);
         showNotification('Hostel not found. Please try again.', 'error');
         return;
     }
-    
-    console.log(`📞 Showing inquiry form for: ${hostel.name}`);
-    
-    // Show inquiry form instead of direct contact
+// Show inquiry form instead of direct contact
     showModal('Contact Realtor', `
         <div class="inquiry-form">
             <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -694,10 +646,7 @@ function submitInquiry(event, hostelId) {
         const existingInquiries = JSON.parse(localStorage.getItem('studentInquiries') || '[]');
         existingInquiries.push(inquiryData);
         localStorage.setItem('studentInquiries', JSON.stringify(existingInquiries));
-        
-        console.log('✅ Inquiry saved:', inquiryData);
-        
-        // Show success message with contact details
+// Show success message with contact details
         const phoneNumber = hostel?.realtorContact || '+234 806 992 8533';
         const whatsappNumber = hostel?.whatsapp || phoneNumber;
         const defaultMessage = `Hi! I just submitted an inquiry for "${hostel?.name}" through MWG Hostels. My name is ${inquiryData.studentName}. ${inquiryData.inquiryMessage || 'I\'m interested in learning more about this accommodation.'}`;
@@ -772,8 +721,7 @@ window.contactRealtor = contactRealtor;
 
 // Debug function for testing
 function testContactButton() {
-    console.log('🧪 Test contact button clicked');
-    alert('Contact button is working! contactRealtor function is accessible.');
+alert('Contact button is working! contactRealtor function is accessible.');
 }
 window.testContactButton = testContactButton;
 
@@ -786,7 +734,7 @@ function scrollToSection(sectionId) {
 }
 
 function showNotification(message, type = 'info') {
-    console.log(`📢 Notification (${type}): ${message}`);
+: ${message}`);
     
     // Remove existing notifications
     document.querySelectorAll('.notification').forEach(n => n.remove());
@@ -1352,20 +1300,17 @@ function showRegistrationRequiredModal(action) {
 
 // Open Access Functions - No registration required
 function showRegistrationModal() {
-    console.log('🎯 Platform open access - no registration needed');
-    // Show notification that registration is not required
+// Show notification that registration is not required
     showNotification('No registration required! Browse all hostels freely.', 'success');
 }
 
 function closeRegistrationModal() {
-    console.log('✅ Platform open access active');
-    // No action needed since no modal to close
+// No action needed since no modal to close
 }
 
 // Hostel Modal Functions
 function closeHostelModal() {
-    console.log('🔒 Closing hostel modal...');
-    const modal = document.getElementById('hostelModal');
+const modal = document.getElementById('hostelModal');
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
@@ -1374,9 +1319,7 @@ function closeHostelModal() {
 
 // Gate Hostel Functions
 function showCampusHostels(location) {
-    console.log(`🏫 Showing hostels for ${location} gate...`);
-    
-    // Update location filter
+// Update location filter
     const locationFilter = document.getElementById('locationFilter');
     if (locationFilter) {
         locationFilter.value = location;
@@ -1397,9 +1340,7 @@ function showCampusHostels(location) {
 
 // Filter Functions
 function clearFilters() {
-    console.log('🧹 Clearing all filters...');
-    
-    // Reset all filter dropdowns
+// Reset all filter dropdowns
     const filters = ['locationFilter', 'priceFilter'];
     filters.forEach(filterId => {
         const filter = document.getElementById(filterId);
@@ -1414,9 +1355,7 @@ function clearFilters() {
 }
 
 function loadMoreHostels() {
-    console.log('📦 Checking for more hostels...');
-    
-    // In the real system, this would fetch more hostels from the API
+// In the real system, this would fetch more hostels from the API
     // For now, we just reload the current listings
     loadHostels();
     
@@ -1429,8 +1368,7 @@ function loadMoreHostels() {
 
 // Profile Photo Functions
 function handleProfilePhotoUpload(event) {
-    console.log('📷 Handling profile photo upload...');
-    const file = event.target.files[0];
+const file = event.target.files[0];
     if (!file) return;
     
     // Validate file
@@ -1463,8 +1401,7 @@ function handleProfilePhotoUpload(event) {
 }
 
 function removeProfilePhoto() {
-    console.log('🗑️ Removing profile photo...');
-    const photoPreview = document.getElementById('photoPreview');
+const photoPreview = document.getElementById('photoPreview');
     const uploadContent = document.querySelector('.file-upload-content');
     const fileInput = document.getElementById('profilePhoto');
     
@@ -1477,9 +1414,7 @@ function removeProfilePhoto() {
 
 // Enhanced Filter Function
 function filterHostels() {
-    console.log('🔍 Applying filters...');
-    
-    const locationFilter = document.getElementById('locationFilter')?.value || '';
+const locationFilter = document.getElementById('locationFilter')?.value || '';
     const priceFilter = document.getElementById('priceFilter')?.value || '';
     
     let filtered = [...state.hostels];
@@ -1504,8 +1439,6 @@ function filterHostels() {
     
     state.filteredHostels = filtered;
     renderHostels(filtered);
-    
-    console.log(`📊 Filtered to ${filtered.length} hostels`);
 }
 
 // Handle accommodation preference change
@@ -1522,9 +1455,7 @@ function handleAccommodationChange() {
 
 // ROOMMATE FEATURE - NEW FUNCTIONALITY
 function showRoommateModal() {
-    console.log('👥 Opening roommate modal...');
-    
-    const modalHTML = `
+const modalHTML = `
         <div class="modal active" id="roommateModal">
             <div class="modal-content modal-large">
                 <div class="modal-header">
@@ -1567,8 +1498,7 @@ function closeRoommateModal() {
 }
 
 function showRoommateSearch() {
-    console.log('🔍 Showing roommate search...');
-    closeRoommateModal();
+closeRoommateModal();
     
     const modalHTML = `
         <div class="modal active" id="roommateSearchModal">
@@ -1626,8 +1556,7 @@ function closeRoommateSearchModal() {
 }
 
 function showRoommatePost() {
-    console.log('📝 Showing roommate post form...');
-    closeRoommateModal();
+closeRoommateModal();
     
     const modalHTML = `
         <div class="modal active" id="roommatePostModal">
@@ -1704,9 +1633,7 @@ function closeRoommatePostModal() {
 
 function handleRoommatePost(event) {
     event.preventDefault();
-    console.log('📤 Posting roommate request...');
-    
-    const form = event.target;
+const form = event.target;
     const formData = new FormData(form);
     
     const roommateData = {
@@ -1733,9 +1660,7 @@ function handleRoommatePost(event) {
 }
 
 function loadRoommateRequests() {
-    console.log('📋 Loading roommate requests...');
-    
-    // Load from localStorage
+// Load from localStorage
     const saved = localStorage.getItem('roommateRequests');
     if (saved) {
         state.roommateRequests = JSON.parse(saved);
@@ -1835,9 +1760,7 @@ function renderRoommateResults(requests) {
 }
 
 function searchRoommates() {
-    console.log('🔍 Searching roommates...');
-    
-    const locationFilter = document.getElementById('roommateLocationFilter')?.value || '';
+const locationFilter = document.getElementById('roommateLocationFilter')?.value || '';
     const budgetFilter = document.getElementById('roommateBudgetFilter')?.value || '';
     
     let filtered = [...state.roommateRequests];
@@ -1862,13 +1785,11 @@ function searchRoommates() {
 }
 
 function contactRoommate(phone, address) {
-    console.log(`📞 Calling roommate at ${phone}...`);
-    window.open(`tel:${phone}`, '_self');
+window.open(`tel:${phone}`, '_self');
 }
 
 function whatsappRoommate(phone, address) {
-    console.log(`💬 WhatsApp message to roommate...`);
-    const message = `Hi! I saw your roommate post for ${address}. I'm interested in sharing the room. Can we discuss?`;
+const message = `Hi! I saw your roommate post for ${address}. I'm interested in sharing the room. Can we discuss?`;
     window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -1949,7 +1870,7 @@ function closeFABMenu() {
 
 // Utility Functions
 function showNotification(message, type = 'info') {
-    console.log(`📢 Notification (${type}): ${message}`);
+: ${message}`);
     
     // Remove existing notifications
     document.querySelectorAll('.notification').forEach(n => n.remove());
@@ -2154,14 +2075,10 @@ additionalStyles.textContent = `
     }
 `;
 document.head.appendChild(additionalStyles);
-
-console.log('✅ MWG Hostel Finder JavaScript loaded successfully');
-
 // Auto-refresh hostels when localStorage changes (new listings added)
 window.addEventListener('storage', function(e) {
     if (e.key === 'realtorListings') {
-        console.log('🔄 Detected new realtor listings, refreshing...');
-        loadHostels();
+loadHostels();
         showNotification('New hostel listings added! Page refreshed.', 'success');
     }
 });
@@ -2170,15 +2087,13 @@ window.addEventListener('storage', function(e) {
 window.addEventListener('focus', function() {
     // Only refresh if there were no hostels before
     if (state.hostels.length === 0) {
-        console.log('🔄 Page focus detected, checking for new listings...');
-        loadHostels();
+loadHostels();
     }
 });
 
 // Add a manual refresh function for the page
 function refreshHostelListings() {
-    console.log('🔄 Manually refreshing hostel listings...');
-    loadHostels();
+loadHostels();
     showNotification('Hostel listings refreshed!', 'success');
 }
 
@@ -2202,14 +2117,11 @@ setInterval(() => {
     const newCount = state.hostels.length;
     
     if (newCount > currentCount) {
-        console.log(`📈 New listings detected: ${newCount - currentCount} added`);
-        showNotification(`${newCount - currentCount} new hostel${newCount - currentCount > 1 ? 's' : ''} added!`, 'success');
+showNotification(`${newCount - currentCount} new hostel${newCount - currentCount > 1 ? 's' : ''} added!`, 'success');
     }
 }, 30000); // Check every 30 seconds
 
 // 🔧 COMPREHENSIVE INITIALIZATION AND DEBUG SYSTEM
-console.log('🚀 Initializing MWG Hostels Platform...');
-
 // Ensure global functions are available
 window.contactRealtor = contactRealtor;
 window.submitInquiry = submitInquiry;
@@ -2217,13 +2129,13 @@ window.testContactButton = testContactButton;
 
 // Debug function to check system status
 function checkSystemStatus() {
-    console.log('📋 SYSTEM STATUS CHECK:');
-    console.log('- contactRealtor function:', typeof contactRealtor);
-    console.log('- submitInquiry function:', typeof submitInquiry);
-    console.log('- showModal function:', typeof showModal);
-    console.log('- closeModal function:', typeof closeModal);
-    console.log('- hostels loaded:', state.hostels.length);
-    console.log('- hostel container:', document.getElementById('hostelsGrid') ? 'found' : 'not found');
+
+
+
+
+
+
+? 'found' : 'not found');
     
     return {
         contactFunction: typeof contactRealtor !== 'undefined',
@@ -2237,11 +2149,7 @@ window.checkSystemStatus = checkSystemStatus;
 
 // Run system check on load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM loaded, running system check...');
-    setTimeout(() => {
+setTimeout(() => {
         const status = checkSystemStatus();
-        console.log('✅ System check complete:', status);
-    }, 1000);
+}, 1000);
 });
-
-console.log('✅ MWG Hostels Platform initialization complete!');

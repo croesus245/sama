@@ -68,10 +68,7 @@ router.post('/submit', async (req, res) => {
     
     // Save application
     await application.save();
-    
-    console.log('✅ Application submitted:', application.applicationId);
-    
-    // Send success response
+// Send success response
     res.status(201).json({
       success: true,
       message: 'Application submitted successfully',

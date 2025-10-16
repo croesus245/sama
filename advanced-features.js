@@ -62,8 +62,7 @@ class ErrorHandler {
     static reportError(errorInfo) {
         // In a real application, send to error reporting service
         // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorInfo) });
-        console.log('📊 Error reported:', errorInfo);
-    }
+}
     
     static showUserFriendlyError(message = 'Something went wrong. Please try again.') {
         showNotification(message, 'error');
@@ -89,7 +88,7 @@ class PerformanceMonitor {
         
         // Log slow operations
         if (measure.duration > 1000) {
-            console.warn(`⚠️ Slow operation: ${label} took ${measure.duration.toFixed(2)}ms`);
+}ms`);
         }
     }
 }
@@ -140,8 +139,7 @@ class LazyImageLoader {
     onImageError(img) {
         img.classList.add('error');
         img.src = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80';
-        console.warn('🖼️ Image failed to load:', img.src);
-    }
+}
 }
 
 // Enhanced Form Validation
@@ -448,8 +446,7 @@ class Analytics {
         AdvancedState.performance.interactions.push(data);
         
         // In production, send to analytics service
-        console.log('📊 Analytics:', data);
-    }
+}
     
     static trackPageView() {
         this.track('page_view', {
@@ -503,10 +500,7 @@ function initializeAdvancedFeatures() {
                 Analytics.trackInteraction(event.target, 'click');
             }
         });
-        
-        console.log('✅ Advanced features initialized successfully');
-        
-    } catch (error) {
+} catch (error) {
         ErrorHandler.log(error, 'Advanced features initialization');
     }
 }
@@ -590,10 +584,7 @@ const Analytics = {
             url: window.location.href,
             userAgent: navigator.userAgent
         };
-        
-        console.log('📊 Analytics Event:', eventName, data);
-        
-        // Store in local storage for debugging
+// Store in local storage for debugging
         const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
         events.push(event);
         

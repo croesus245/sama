@@ -41,13 +41,11 @@ mongoose.connect(process.env.MONGODB_URI, {
   socketTimeoutMS: 45000,
 })
   .then(() => {
-    console.log('✅ Connected to MongoDB Atlas');
-    console.log('📊 Database: mwg-hostels');
-  })
+
+})
   .catch((error) => {
     console.error('❌ MongoDB connection error:', error.message);
-    console.log('⚠️ Server will continue running with limited functionality');
-  });
+});
 
 // Handle MongoDB connection events
 mongoose.connection.on('error', (err) => {
@@ -55,7 +53,6 @@ mongoose.connection.on('error', (err) => {
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('⚠️ MongoDB disconnected. Attempting to reconnect...');
 });
 
 // Import routes
@@ -126,10 +123,9 @@ app.get('/api', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌐 API URL: http://localhost:${PORT}/api`);
-  console.log(`📋 Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`🏠 Hostels API: http://localhost:${PORT}/api/hostels`);
+
+
+
 });
 
 module.exports = app;
