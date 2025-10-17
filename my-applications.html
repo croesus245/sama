@@ -70,7 +70,7 @@
             padding: 15px 20px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            font-size: 1em;
+            font-size: 16px; /* 16px minimum prevents iOS auto-zoom */
             min-width: 300px;
             transition: all 0.3s ease;
         }
@@ -82,12 +82,13 @@
         }
 
         .email-form button {
-            padding: 15px 40px;
+            padding: 16px 40px; /* 48px minimum for Apple touch target guidelines */
+            min-height: 48px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1em;
+            font-size: 16px; /* Consistent 16px to prevent iOS zoom */
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -107,6 +108,7 @@
 
         .stat-card {
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 25px;
@@ -138,6 +140,7 @@
 
         .application-card {
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
@@ -293,6 +296,7 @@
 
         .empty-state {
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 60px;
@@ -321,6 +325,7 @@
 
         .back-button {
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 12px 25px;
