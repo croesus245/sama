@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Apply for Hostel - MWG Hostels</title>
     <link rel="stylesheet" href="hostel-style.css">
     <link rel="stylesheet" href="glass-morphism-global.css">
@@ -24,6 +27,7 @@
             max-width: 800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -315,8 +319,21 @@
             .form-field input,
             .form-field select,
             .form-field textarea {
-                font-size: 16px; /* Prevents zoom on iOS */
-                padding: 12px;
+                font-size: 16px !important; /* Prevents zoom on iOS */
+                padding: 14px;
+                min-height: 48px; /* Better touch target for mobile */
+                border-width: 1px; /* Optimize for mobile */
+                -webkit-appearance: none; /* Remove iOS default styling */
+                appearance: none; /* Standard property */
+                touch-action: manipulation; /* Prevent double-tap zoom */
+            }
+
+            /* Fix select dropdowns on mobile */
+            select {
+                background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+                padding-right: 40px;
             }
 
             .hostel-summary {
@@ -326,8 +343,11 @@
             .btn {
                 width: 100%;
                 margin: 10px 0;
-                padding: 15px;
-                font-size: 1em;
+                padding: 16px;
+                font-size: 16px !important; /* Prevents zoom on iOS */
+                min-height: 48px; /* Touch-friendly minimum */
+                touch-action: manipulation; /* Prevents double-tap zoom */
+                -webkit-tap-highlight-color: rgba(0,0,0,0.1); /* Better tap feedback */
             }
 
             .btn-secondary {
@@ -370,11 +390,42 @@
 
             /* Improve checkbox visibility on mobile */
             .checkbox-group {
-                padding: 15px;
+                padding: 20px;
+                margin-top: 15px;
             }
 
             .checkbox-group input[type="checkbox"] {
-                width: 20px;
+                width: 24px;
+                height: 24px;
+                cursor: pointer;
+                touch-action: manipulation;
+            }
+
+            .checkbox-group label {
+                font-size: 0.95em;
+                line-height: 1.6;
+                cursor: pointer;
+            }
+        }
+
+        /* iOS-specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Touch device optimization */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            input:focus, select:focus, textarea:focus {
+                font-size: 16px !important;
+            }
+        }
                 height: 20px;
             }
 
@@ -609,59 +660,101 @@
 
     <script src="api-config.js"></script>
     <script>
+        // Mobile debugging helper
+        const mobileLog = (message, data = null) => {
+            console.log(`📱 [MOBILE] ${message}`, data || '');
+            // Also show critical errors on screen for mobile debugging
+            if (message.includes('ERROR') || message.includes('Failed')) {
+                const debugDiv = document.getElementById('errorMessage');
+                if (debugDiv) {
+                    debugDiv.textContent += `\n${message}`;
+                    debugDiv.style.display = 'block';
+                }
+            }
+        };
+
+        mobileLog('Script loaded - Starting initialization...');
+        mobileLog('Window width: ' + window.innerWidth + 'px');
+        mobileLog('User Agent: ' + navigator.userAgent);
+        
         // Get hostel ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const hostelId = urlParams.get('hostelId');
+
+        mobileLog('Hostel ID from URL:', hostelId);
 
         let hostelData = null;
 
         // Load hostel details
         async function loadHostelDetails() {
+            mobileLog('loadHostelDetails() called');
+            
             if (!hostelId) {
-                showError('No hostel selected. Please go back and select a hostel.');
+                mobileLog('ERROR: No hostel ID found in URL');
+                showError('No hostel selected. Please go back and select a hostel from the list.');
                 document.getElementById('applicationForm').style.display = 'none';
                 return;
             }
 
             try {
-// Check if API_CONFIG is loaded
+                mobileLog('Loading hostel details for ID:', hostelId);
+                
+                // Check if API_CONFIG is loaded
                 if (typeof API_CONFIG === 'undefined') {
-var apiUrl = `http://localhost:5000/api/hostels/${hostelId}`;
+                    mobileLog('⚠️ API_CONFIG not loaded yet, using fallback URL');
+                    var apiUrl = `https://sama-production-9e28.up.railway.app/api/hostels/${hostelId}`;
                 } else {
                     var apiUrl = API_CONFIG.endpoints.hostel(hostelId);
+                    mobileLog('✅ API_CONFIG loaded, using URL:', apiUrl);
                 }
-const response = await fetch(apiUrl);
-if (!response.ok) {
+                
+                console.log('📡 Fetching from:', apiUrl);
+                const response = await fetch(apiUrl);
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
-// Handle different response structures
+                console.log('📦 Received data:', data);
+
+                // Handle different response structures
                 if (data.success && data.data) {
                     // Response format: { success: true, data: {...} }
                     hostelData = data.data;
-} else if (data.success && data.hostel) {
+                    console.log('✅ Using data.data format');
+                } else if (data.success && data.hostel) {
                     // Response format: { success: true, hostel: {...} }
                     hostelData = data.hostel;
-} else if (data.data) {
+                    console.log('✅ Using data.hostel format');
+                } else if (data.data) {
                     hostelData = data.data;
-} else if (data.hostel) {
+                    console.log('✅ Using data format');
+                } else if (data.hostel) {
                     hostelData = data.hostel;
-} else if (data._id) {
+                    console.log('✅ Using hostel format');
+                } else if (data._id) {
                     // Direct hostel object
                     hostelData = data;
-} else {
+                    console.log('✅ Using direct object format');
+                } else {
                     console.error('❌ Unknown data structure:', data);
                     throw new Error('Invalid hostel data structure');
                 }
-// Safely set hostel details
+
+                console.log('🏠 Hostel data:', hostelData);
+
+                // Safely set hostel details
                 if (hostelData && hostelData.name) {
                     document.getElementById('hostelName').textContent = hostelData.name;
                     document.getElementById('hostelLocation').textContent = hostelData.location || 'N/A';
                     document.getElementById('hostelPrice').textContent = hostelData.price ? `₦${hostelData.price.toLocaleString()}` : 'N/A';
                     document.getElementById('hostelRoomType').textContent = hostelData.roomType || 'Various';
                     document.getElementById('hostelSummary').style.display = 'grid';
-} else {
+                    console.log('✅ Hostel details loaded successfully');
+                } else {
                     console.error('❌ Hostel data missing name:', hostelData);
                     throw new Error('Hostel data is incomplete');
                 }
@@ -675,7 +768,10 @@ if (!response.ok) {
         // Handle form submission
         document.getElementById('applicationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-const formData = new FormData(e.target);
+
+            console.log('📝 Form submitted - Starting submission process...');
+
+            const formData = new FormData(e.target);
             const applicationData = {
                 applicationId: `APP-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
                 hostelId: hostelId,
@@ -702,7 +798,10 @@ const formData = new FormData(e.target);
                     paymentMethod: formData.get('paymentMethod')
                 }
             };
-// Show loading
+
+            console.log('📦 Application Data:', applicationData);
+
+            // Show loading
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('errorMessage').style.display = 'none';
@@ -714,7 +813,9 @@ const formData = new FormData(e.target);
                 }
 
                 const apiUrl = API_CONFIG.endpoints.submitApplication();
-const response = await fetch(apiUrl, {
+                console.log('🚀 Submitting to:', apiUrl);
+
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -722,15 +823,22 @@ const response = await fetch(apiUrl, {
                     body: JSON.stringify({ applicationData })
                 });
 
-if (!response.ok) {
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response ok:', response.ok);
+
+                if (!response.ok) {
                     const errorText = await response.text();
                     console.error('❌ Server error response:', errorText);
                     throw new Error(`Server returned ${response.status}: ${errorText}`);
                 }
 
                 const result = await response.json();
-if (result.success) {
-// Show success message
+                console.log('✅ Server response:', result);
+
+                if (result.success) {
+                    console.log('✅ Application submitted successfully!');
+                    
+                    // Show success message
                     document.getElementById('applicationId').textContent = result.data.applicationId;
                     document.getElementById('successHostelName').textContent = hostelData.name;
                     document.getElementById('successMessage').style.display = 'block';
@@ -792,8 +900,17 @@ I'm interested in securing accommodation. Please let me know the next steps!`;
             moveInDateInput.min = today;
         }
 
-        // Load hostel details on page load
-        loadHostelDetails();
+        // Load hostel details on page load - with better error handling for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 Page loaded on mobile - initializing...');
+            loadHostelDetails();
+        });
+        
+        // Fallback: If DOM already loaded (for fast connections)
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('⚡ DOM already loaded - initializing immediately...');
+            setTimeout(loadHostelDetails, 100); // Small delay to ensure api-config.js loads
+        }
     </script>
 </body>
 </html>
