@@ -1847,21 +1847,7 @@ return hostels;
     </script>
     
     <!-- Fixed Password System removed - security risk (exposes password in console) -->
-    <script>
-        // CRITICAL FIX: Don't call requireRealtorAuth() immediately!
-        // It races with the async checkAuthentication() in initializeDashboard()
-        // which has a 3-second wait for mobile localStorage sync.
-        
-        // The proper auth check is done in initializeDashboard() on line 1451
-        // requireRealtorAuth(); // ❌ REMOVED - Causes immediate redirect before token syncs
-        
-        // Don't update UI yet - realtorData isn't loaded until after checkAuthentication()
-        // updateRealtorDashboardUI(); // ❌ REMOVED - realtorData is null at this point
-        
-        // ❌ REMOVED DUPLICATE: initializeDashboard() is already registered on line 1451
-        // window.addEventListener('DOMContentLoaded', () => {
-        //     initializeDashboard();
-        // });
-</script>
+    <!-- Dashboard initialization is handled by initializeDashboard() called on DOMContentLoaded -->
+    
 </body>
 </html>
