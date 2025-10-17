@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Enhanced Realtor Dashboard - MWG Hostels</title>
     <link rel="icon" type="image/png" href="MWG logo@300x.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -626,29 +629,52 @@
     <!-- Scripts -->
     <script src="advanced-features.js"></script>
     <script>
+        // Mobile debugging helper
+        const dashboardLog = (message, data = null) => {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`🏢 [DASHBOARD ${timestamp}] ${message}`, data || '');
+        };
+
+        dashboardLog('Dashboard page loaded');
+        dashboardLog('Window width: ' + window.innerWidth + 'px');
+        dashboardLog('User Agent: ' + navigator.userAgent);
+        
         // Authentication Check - Redirect if not logged in
         let realtorData = null;
         let realtorToken = null;
         let authCheckComplete = false;
         
         function checkAuthentication() {
+            dashboardLog('checkAuthentication() called');
+            
             return new Promise((resolve, reject) => {
                 try {
                     realtorToken = localStorage.getItem('realtorToken');
                     const storedData = localStorage.getItem('realtorData');
                     const validLogin = sessionStorage.getItem('validLogin');
-// Check if we just came from login page
+                    
+                    dashboardLog('Auth check - Token exists:', !!realtorToken);
+                    dashboardLog('Auth check - Data exists:', !!storedData);
+                    dashboardLog('Auth check - Valid login flag:', validLogin);
+                    
+                    // Check if we just came from login page
                     const referrer = document.referrer || '';
                     const cameFromLogin = referrer.includes('realtor-login.html');
+                    
+                    dashboardLog('Came from login page:', cameFromLogin);
                     
                     // If we have both token and data, authenticate immediately
                     if (realtorToken && storedData) {
                         try {
                             realtorData = JSON.parse(storedData);
                             
+                            dashboardLog('Parsed realtor data keys:', Object.keys(realtorData));
+                            
                             // Validate the parsed data has required fields
                             // Be flexible - accept id, _id, or realtorId
                             const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
+                            
+                            dashboardLog('Found realtor ID:', realtorId);
                             
                             if (!realtorData || !realtorId) {
                                 console.error('Session data:', realtorData);
@@ -658,13 +684,16 @@
                             // Store the ID in a consistent format for later use
                             if (!realtorData._id && realtorData.id) {
                                 realtorData._id = realtorData.id;
+                                dashboardLog('Normalized ID field to _id');
                             }
 
-sessionStorage.setItem('validLogin', 'true');
+                            sessionStorage.setItem('validLogin', 'true');
                             authCheckComplete = true;
+                            dashboardLog('✅ Authentication successful!');
                             resolve(true);
                             return;
                         } catch (error) {
+                            dashboardLog('❌ ERROR parsing realtor data:', error.message);
                             console.error('❌ Invalid realtor data:', error.message);
                             console.error('Raw stored data:', storedData);
                             localStorage.removeItem('realtorToken');
@@ -679,6 +708,8 @@ sessionStorage.setItem('validLogin', 'true');
                     
                     // If no token/data AND we came from login, wait briefly for storage sync
                     if (cameFromLogin && validLogin === 'true') {
+                        dashboardLog('⏳ Waiting for storage sync after login...');
+                        
                         // Use requestAnimationFrame for better timing
                         requestAnimationFrame(() => {
                             requestAnimationFrame(() => {
@@ -686,8 +717,12 @@ sessionStorage.setItem('validLogin', 'true');
                                 realtorToken = localStorage.getItem('realtorToken');
                                 const retryStoredData = localStorage.getItem('realtorData');
                                 
+                                dashboardLog('After sync - Token:', !!realtorToken);
+                                dashboardLog('After sync - Data:', !!retryStoredData);
+                                
                                 if (!realtorToken || !retryStoredData) {
                                     // Still no data - this is a storage issue
+                                    dashboardLog('❌ ERROR: No data after storage sync');
                                     console.error('❌ No authentication data after storage sync');
                                     sessionStorage.removeItem('validLogin');
                                     alert('⚠️ Login session not saved.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies and site data\n• Try a different browser (Chrome recommended)\n\nThen login again.');
@@ -695,11 +730,14 @@ sessionStorage.setItem('validLogin', 'true');
                                     reject(new Error('Storage not persisting'));
                                 } else {
                                     // Found data!
+                                    dashboardLog('✅ Storage sync successful!');
                                     try {
                                         realtorData = JSON.parse(retryStoredData);
                                         
                                         // Validate the parsed data - now backend returns both _id and id
                                         const realtorId = realtorData._id || realtorData.id || realtorData.realtorId;
+                                        
+                                        dashboardLog('Realtor ID after sync:', realtorId);
                                         
                                         if (!realtorData || !realtorId) {
                                             console.error('Session data:', realtorData);
@@ -794,49 +832,73 @@ return hostels;
         
         // Initialize dashboard
         async function initializeDashboard() {
-try {
+            dashboardLog('initializeDashboard() called');
+            
+            try {
+                dashboardLog('Step 1: Checking authentication...');
+                
                 // Wait for authentication to complete first
-await checkAuthentication();
+                await checkAuthentication();
+                
+                dashboardLog('Step 2: Authentication complete');
                 
                 // Check if authentication actually succeeded
                 if (!realtorData) {
+                    dashboardLog('❌ ERROR: No realtor data after auth check');
                     throw new Error('Authentication completed but no realtor data found');
                 }
                 
+                dashboardLog('Step 3: Setting up realtor profile...');
+                
                 // Authentication successful - set up realtor data
-
-// Be flexible with ID field - accept id, _id, or realtorId
+                // Be flexible with ID field - accept id, _id, or realtorId
                 REALTOR_ID = realtorData._id || realtorData.id || realtorData.realtorId;
+                
+                dashboardLog('Realtor ID:', REALTOR_ID);
                 
                 if (!REALTOR_ID) {
                     console.error('Available fields in realtorData:', Object.keys(realtorData));
+                    dashboardLog('❌ ERROR: No realtor ID found');
                     throw new Error('Realtor ID not found in authenticated data. Available fields: ' + Object.keys(realtorData).join(', '));
                 }
-realtorProfile = {
+                
+                realtorProfile = {
                     name: realtorData.fullName || 'Realtor',
                     whatsapp: realtorData.whatsapp || '2348145653433',
                     email: realtorData.email || '',
                     status: realtorData.status || 'pending'
                 };
-// Now load dashboard UI
+                
+                dashboardLog('Realtor profile:', realtorProfile);
+                dashboardLog('Step 4: Loading dashboard UI...');
+                
+                // Now load dashboard UI
                 loadRealtorProfile();
                 updateCurrentDate();
                 showPendingBannerIfNeeded();
             
-            // Show loading state
-            const hostelListEl = document.getElementById('hostelList');
-            if (hostelListEl) {
-                hostelListEl.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1e40af;"></i><p style="margin-top: 1rem;">Loading hostels...</p></div>';
-            }
-            
+                // Show loading state
+                const hostelListEl = document.getElementById('hostelList');
+                if (hostelListEl) {
+                    hostelListEl.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1e40af;"></i><p style="margin-top: 1rem;">Loading hostels...</p></div>';
+                }
+                
+                dashboardLog('Step 5: Loading hostels from API...');
+                
                 // Load hostels from API
-await loadHostelsFromAPI();
+                await loadHostelsFromAPI();
+                
+                dashboardLog('Step 6: Updating UI...');
                 
                 // Update UI
-updateStats();
+                updateStats();
                 renderHostels();
                 setupEventListeners();
-} catch (error) {
+                
+                dashboardLog('✅ Dashboard initialization complete!');
+                
+            } catch (error) {
+                dashboardLog('❌ FATAL ERROR during initialization:', error.message);
                 console.error('❌ Dashboard initialization error:', error);
                 console.error('Error details:', {
                     message: error.message,
@@ -854,6 +916,8 @@ updateStats();
                 localStorage.removeItem('realtorToken');
                 localStorage.removeItem('realtorData');
                 sessionStorage.removeItem('validLogin');
+                
+                dashboardLog('Redirecting to login page...');
                 
                 // Redirect to login
                 setTimeout(() => {
