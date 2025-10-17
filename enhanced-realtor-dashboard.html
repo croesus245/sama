@@ -1832,13 +1832,12 @@ return hostels;
         }
     </script>
     
-    <!-- Theme System -->
-    <script src="theme-toggle.js"></script>
+    <!-- Theme toggle.js removed - file doesn't exist (404 error) -->
 
     <script>
         window.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
-e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
+                e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jpg';
             }
         }, true);
         
@@ -1847,8 +1846,7 @@ e.target.src = e.target.src.includes('default') ? '' : 'assets/default-hostel.jp
         });
     </script>
     
-    <!-- Load Fixed Password System -->
-    <script src="realtor-fixed-password-system.js"></script>
+    <!-- Fixed Password System removed - security risk (exposes password in console) -->
     <script>
         // CRITICAL FIX: Don't call requireRealtorAuth() immediately!
         // It races with the async checkAuthentication() in initializeDashboard()
