@@ -635,6 +635,33 @@
             console.log(`🏢 [DASHBOARD ${timestamp}] ${message}`, data || '');
         };
 
+        // Utility functions
+        const Utils = {
+            // Format date as "Monday, Jan 15, 2025"
+            formatDate: (date) => {
+                const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                return date.toLocaleDateString('en-US', options);
+            },
+            
+            // Format currency as "₦150,000"
+            formatCurrency: (amount) => {
+                return new Intl.NumberFormat('en-NG', {
+                    style: 'currency',
+                    currency: 'NGN',
+                    minimumFractionDigits: 0
+                }).format(amount);
+            },
+            
+            // Debounce function calls (e.g., for search input)
+            debounce: (func, delay) => {
+                let timeoutId;
+                return function (...args) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func.apply(this, args), delay);
+                };
+            }
+        };
+
         dashboardLog('Dashboard page loaded');
         dashboardLog('Window width: ' + window.innerWidth + 'px');
         dashboardLog('User Agent: ' + navigator.userAgent);
