@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="glass-morphism-global.css">
     <link rel="stylesheet" href="realtor-style.css">
     <link rel="stylesheet" href="advanced-styles.css">
+    <link rel="stylesheet" href="dashboard-modals.css">
     <!-- API Connector -->
     <script src="hostel-api.js"></script>
     <!-- Cloudinary Upload Widget -->
@@ -287,13 +288,13 @@
     
     <div class="dashboard-container">
         <!-- Pending Approval Banner -->
-        <div id="pendingBanner" style="display: none; background: linear-gradient(135deg, #f59e0b, #f97316); color: white; padding: 1rem 2rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <i class="fas fa-hourglass-half" style="font-size: 1.5rem;"></i>
+        <div id="pendingBanner">
+            <div class="pending-banner-content">
+                <div class="pending-banner-left">
+                    <i class="fas fa-hourglass-half pending-banner-icon"></i>
                     <div>
-                        <div style="font-weight: 700; font-size: 1.125rem;">⏳ Account Pending Approval</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">Your account is awaiting admin verification. You can add hostels, but they won't be visible to students until approved.</div>
+                        <div class="pending-banner-title">⏳ Account Pending Approval</div>
+                        <div class="pending-banner-description">Your account is awaiting admin verification. You can add hostels, but they won't be visible to students until approved.</div>
                     </div>
                 </div>
             </div>
@@ -309,11 +310,11 @@
                 <div class="text-right">
                     <div class="text-lg font-semibold">Welcome back, <span id="realtorName">Realtor</span>!</div>
                     <div class="text-sm opacity-75" id="currentDate"></div>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: flex-end;">
-                        <button onclick="showProfileModal()" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 0.875rem;">
+                    <div class="pending-banner-actions">
+                        <button onclick="showProfileModal()" class="btn-profile">
                             <i class="fas fa-user-circle mr-1"></i> Update Profile
                         </button>
-                        <button onclick="handleLogout()" style="padding: 0.5rem 1rem; background: rgba(220, 38, 38, 0.9); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 0.875rem;">
+                        <button onclick="handleLogout()" class="btn-logout">
                             <i class="fas fa-sign-out-alt mr-1"></i> Logout
                         </button>
                     </div>
@@ -384,7 +385,7 @@
                         <div class="filter-tab" data-filter="pending">Pending Applications</div>
                     </div>
                 </div>
-                <button class="btn-primary" onclick="showAddHostelModal()" style="padding: 0.75rem 1.5rem; background: #1e40af; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                <button class="btn-primary btn-add-hostel" onclick="showAddHostelModal()">
                     <i class="fas fa-plus"></i> Add New Hostel
                 </button>
             </div>
@@ -404,93 +405,93 @@
         </div>
         
         <!-- Add Hostel Modal -->
-        <div id="addHostelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
-            <div style="background: white; max-width: 600px; margin: 2rem auto; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e40af;">Add New Hostel</h2>
-                    <button onclick="closeAddHostelModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+        <div id="addHostelModal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add New Hostel</h2>
+                    <button onclick="closeAddHostelModal()" class="modal-close">&times;</button>
                 </div>
                 
                 <form id="addHostelForm" onsubmit="return handleAddHostel(event)">
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Name *</label>
-                        <input type="text" id="hostelName" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Name *</label>
+                        <input type="text" id="hostelName" required class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Location (Gate Area) *</label>
-                        <select id="hostelLocation" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; background: white; cursor: pointer;">
+                    <div class="form-group">
+                        <label class="form-label">Location (Gate Area) *</label>
+                        <select id="hostelLocation" required class="form-select">
                             <option value="">-- Select Gate Area --</option>
                             <option value="West Gate">West Gate</option>
                             <option value="South Gate">South Gate</option>
                             <option value="North Gate">North Gate</option>
                         </select>
-                        <small style="color: #6b7280; font-size: 0.875rem;">Choose the nearest gate to your hostel</small>
+                        <small class="form-hint">Choose the nearest gate to your hostel</small>
                     </div>
 
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Detailed Description *</label>
+                    <div class="form-group">
+                        <label class="form-label">Detailed Description *</label>
                         <textarea id="hostelDescription" required placeholder="Describe your hostel: rooms available, amenities, nearby landmarks, transport access, etc." 
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
-                        <small style="color: #6b7280; font-size: 0.875rem;">Provide detailed information to help students make informed decisions (min 50 characters)</small>
+                            class="form-textarea"></textarea>
+                        <small class="form-hint">Provide detailed information to help students make informed decisions (min 50 characters)</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Price (₦/year) *</label>
-                        <input type="number" id="hostelPrice" required placeholder="150000" min="0" step="1000" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Annual rent in Naira</small>
+                    <div class="form-group">
+                        <label class="form-label">Price (₦/year) *</label>
+                        <input type="number" id="hostelPrice" required placeholder="150000" min="0" step="1000" class="form-input">
+                        <small class="form-hint">Annual rent in Naira</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5) *</label>
-                        <button type="button" onclick="openHostelImagesWidget()" style="width: 100%; padding: 0.75rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Images (up to 5) *</label>
+                        <button type="button" onclick="openHostelImagesWidget()" class="btn-upload btn-upload-images">
                             <i class="fas fa-images"></i> Upload Hostel Images (<span id="hostelImageCount">0</span>/5)
                         </button>
-                        <div id="hostelImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;"></div>
+                        <div id="hostelImagesPreview" class="images-preview-grid"></div>
                         <input type="hidden" id="hostelImageUrls">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Upload at least 1 image (up to 5 total) to showcase your hostel</small>
+                        <small class="form-hint">Upload at least 1 image (up to 5 total) to showcase your hostel</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Video Tour (optional)</label>
-                        <button type="button" onclick="openHostelVideoWidget()" style="width: 100%; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Video Tour (optional)</label>
+                        <button type="button" onclick="openHostelVideoWidget()" class="btn-upload btn-upload-video">
                             <i class="fas fa-video"></i> <span id="hostelVideoStatus">Upload Video Tour</span>
                         </button>
-                        <div id="hostelVideoPreview" style="margin-top: 0.5rem; display: none;">
-                            <video id="hostelPreviewVideo" controls style="width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <div id="hostelVideoPreview" class="video-preview-container">
+                            <video id="hostelPreviewVideo" controls class="video-preview">
                                 <source src="" type="video/mp4">
                             </video>
-                            <button type="button" onclick="removeHostelVideo()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <button type="button" onclick="removeHostelVideo()" class="btn-remove-video">
                                 <i class="fas fa-trash"></i> Remove Video
                             </button>
                         </div>
                         <input type="hidden" id="hostelVideoUrl">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
+                        <small class="form-hint">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Features (comma-separated)</label>
-                        <input type="text" id="hostelFeatures" placeholder="WiFi, Security, Water Supply" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Features (comma-separated)</label>
+                        <input type="text" id="hostelFeatures" placeholder="WiFi, Security, Water Supply" class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">WhatsApp Number *</label>
-                        <input type="tel" id="hostelWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Format: 2348145653433 (country code + number, no spaces)</small>
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp Number *</label>
+                        <input type="tel" id="hostelWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" class="form-input">
+                        <small class="form-hint">Format: 2348145653433 (country code + number, no spaces)</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="hostelAvailable" checked style="width: 1.25rem; height: 1.25rem;">
-                            <span style="font-weight: 600; color: #374151;">Available for Booking</span>
+                    <div class="form-group">
+                        <label class="form-label-inline">
+                            <input type="checkbox" id="hostelAvailable" checked class="form-checkbox">
+                            <span class="form-checkbox-label">Available for Booking</span>
                         </label>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                        <button type="submit" style="flex: 1; padding: 0.75rem; background: #1e40af; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-submit">
                             <i class="fas fa-plus mr-1"></i> Add Hostel
                         </button>
-                        <button type="button" onclick="closeAddHostelModal()" style="flex: 1; padding: 0.75rem; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        <button type="button" onclick="closeAddHostelModal()" class="btn-cancel btn-cancel-full">
                             Cancel
                         </button>
                     </div>
@@ -499,84 +500,84 @@
         </div>
         
         <!-- Edit Hostel Modal -->
-        <div id="editHostelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
-            <div style="background: white; max-width: 600px; margin: 2rem auto; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e40af;">Edit Hostel</h2>
-                    <button onclick="closeEditHostelModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+        <div id="editHostelModal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 class="modal-title">Edit Hostel</h2>
+                    <button onclick="closeEditHostelModal()" class="modal-close">&times;</button>
                 </div>
                 
                 <form id="editHostelForm" onsubmit="return handleEditHostel(event)">
                     <input type="hidden" id="editHostelId">
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Name *</label>
-                        <input type="text" id="editHostelName" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Name *</label>
+                        <input type="text" id="editHostelName" required class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Location *</label>
-                        <input type="text" id="editHostelLocation" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Location *</label>
+                        <input type="text" id="editHostelLocation" required class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Price (₦) *</label>
-                        <input type="number" id="editHostelPrice" required min="0" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Price (₦) *</label>
+                        <input type="number" id="editHostelPrice" required min="0" class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Images (up to 5)</label>
-                        <button type="button" onclick="openEditHostelImagesWidget()" style="width: 100%; padding: 0.75rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Images (up to 5)</label>
+                        <button type="button" onclick="openEditHostelImagesWidget()" class="btn-upload btn-upload-images">
                             <i class="fas fa-images"></i> Upload Hostel Images (<span id="editHostelImageCount">0</span>/5)
                         </button>
-                        <div id="editHostelImagesPreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;"></div>
+                        <div id="editHostelImagesPreview" class="images-preview-grid"></div>
                         <input type="hidden" id="editHostelImageUrls">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Upload up to 5 images to showcase your hostel</small>
+                        <small class="form-hint">Upload up to 5 images to showcase your hostel</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Hostel Video Tour (optional)</label>
-                        <button type="button" onclick="openEditHostelVideoWidget()" style="width: 100%; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Hostel Video Tour (optional)</label>
+                        <button type="button" onclick="openEditHostelVideoWidget()" class="btn-upload btn-upload-video">
                             <i class="fas fa-video"></i> <span id="editHostelVideoStatus">Upload Video Tour</span>
                         </button>
-                        <div id="editHostelVideoPreview" style="margin-top: 0.5rem; display: none;">
-                            <video id="editHostelPreviewVideo" controls style="width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <div id="editHostelVideoPreview" class="video-preview-container">
+                            <video id="editHostelPreviewVideo" controls class="video-preview">
                                 <source src="" type="video/mp4">
                             </video>
-                            <button type="button" onclick="removeEditHostelVideo()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <button type="button" onclick="removeEditHostelVideo()" class="btn-remove-video">
                                 <i class="fas fa-trash"></i> Remove Video
                             </button>
                         </div>
                         <input type="hidden" id="editHostelVideoUrl">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
+                        <small class="form-hint">Max 2 minutes, 50MB. MP4, MOV, AVI, WebM supported</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Features (comma-separated)</label>
-                        <input type="text" id="editHostelFeatures" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Features (comma-separated)</label>
+                        <input type="text" id="editHostelFeatures" class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">WhatsApp Number *</label>
-                        <input type="tel" id="editHostelWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                        <small style="color: #6b7280; font-size: 0.875rem;">Format: 2348145653433 (country code + number, no spaces)</small>
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp Number *</label>
+                        <input type="tel" id="editHostelWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" class="form-input">
+                        <small class="form-hint">Format: 2348145653433 (country code + number, no spaces)</small>
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="editHostelAvailable" style="width: 1.25rem; height: 1.25rem;">
-                            <span style="font-weight: 600; color: #374151;">Available for Booking</span>
+                    <div class="form-group">
+                        <label class="form-label-inline">
+                            <input type="checkbox" id="editHostelAvailable" class="form-checkbox">
+                            <span class="form-checkbox-label">Available for Booking</span>
                         </label>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                        <button type="submit" style="flex: 1; padding: 0.75rem; background: #1e40af; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-submit">
                             <i class="fas fa-save mr-1"></i> Save Changes
                         </button>
-                        <button type="button" onclick="deleteHostel()" style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        <button type="button" onclick="deleteHostel()" class="btn-delete">
                             <i class="fas fa-trash mr-1"></i> Delete
                         </button>
-                        <button type="button" onclick="closeEditHostelModal()" style="padding: 0.75rem 1rem; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        <button type="button" onclick="closeEditHostelModal()" class="btn-cancel">
                             Cancel
                         </button>
                     </div>
@@ -585,25 +586,25 @@
         </div>
         
         <!-- Realtor Profile Modal -->
-        <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
-            <div style="background: white; max-width: 500px; margin: 2rem auto; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e40af;">
+        <div id="profileModal" class="modal-overlay">
+            <div class="modal-container modal-container-small">
+                <div class="modal-header">
+                    <h2 class="modal-title">
                         <i class="fas fa-user-circle mr-2"></i>Realtor Profile
                     </h2>
-                    <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+                    <button onclick="closeProfileModal()" class="modal-close">&times;</button>
                 </div>
                 
                 <form id="profileForm" onsubmit="return handleProfileUpdate(event)">
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Your Name *</label>
-                        <input type="text" id="profileName" required placeholder="Your full name" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Your Name *</label>
+                        <input type="text" id="profileName" required placeholder="Your full name" class="form-input">
                     </div>
                     
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Default WhatsApp Number *</label>
-                        <input type="tel" id="profileWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                        <small style="color: #6b7280; font-size: 0.875rem;">This will be used as default for new hostels. Format: 2348145653433</small>
+                    <div class="form-group">
+                        <label class="form-label">Default WhatsApp Number *</label>
+                        <input type="tel" id="profileWhatsApp" required placeholder="2348145653433" pattern="[0-9]{13}" class="form-input">
+                        <small class="form-hint">This will be used as default for new hostels. Format: 2348145653433</small>
                     </div>
                     
                     <div style="background: #eff6ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #1e40af;">
@@ -613,11 +614,11 @@
                         </p>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                        <button type="submit" style="flex: 1; padding: 0.75rem; background: #1e40af; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-submit">
                             <i class="fas fa-save mr-1"></i> Save Profile
                         </button>
-                        <button type="button" onclick="closeProfileModal()" style="padding: 0.75rem 1rem; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        <button type="button" onclick="closeProfileModal()" class="btn-cancel">
                             Cancel
                         </button>
                     </div>
