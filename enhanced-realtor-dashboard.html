@@ -767,8 +767,11 @@
                         });
                     } else {
                         // Not from login page, or no validLogin flag - immediate redirect
-                        console.error('❌ No authentication data and not coming from login');
-sessionStorage.removeItem('validLogin');
+                        dashboardLog('❌ No authentication data - redirecting to login');
+                        console.log('❌ No authentication data and not coming from login');
+                        sessionStorage.removeItem('validLogin');
+                        
+                        // Silent redirect for better UX (no alert needed)
                         window.location.href = 'realtor-login.html';
                         reject(new Error('Not authenticated'));
                     }
@@ -907,7 +910,18 @@ return hostels;
                     realtorToken: realtorToken ? 'EXISTS' : 'MISSING'
                 });
                 
-                // More specific error message
+                // Check if this is just "Not authenticated" (user accessing dashboard without login)
+                if (error.message === 'Not authenticated') {
+                    // Silent redirect - no alert needed
+                    dashboardLog('Not authenticated - silently redirecting to login');
+                    localStorage.removeItem('realtorToken');
+                    localStorage.removeItem('realtorData');
+                    sessionStorage.removeItem('validLogin');
+                    window.location.href = 'realtor-login.html';
+                    return;
+                }
+                
+                // For other errors, show detailed message
                 const errorMsg = `Failed to initialize dashboard.\n\nError: ${error.message}\n\nThis usually means:\n• Session data is corrupted\n• Authentication timed out\n• Browser storage was cleared\n\nPlease login again to create a fresh session.`;
                 
                 alert(errorMsg);
