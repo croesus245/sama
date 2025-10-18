@@ -276,6 +276,9 @@
     </div>
 
     <script>
+        // Mobile device detection (CRITICAL for storage sync timing)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
         // Auto-detect environment
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:5000/api'
@@ -288,8 +291,11 @@
                 logDiv.style.display = 'block';
                 logDiv.innerHTML += `<div><strong>[${new Date().toLocaleTimeString()}]</strong> ${msg}</div>`;
             }
-            console.log('[Realtor Login]', msg); // Still log to console for developers
+            console.log(`[Realtor Login ${isMobile ? '📱' : '💻'}]`, msg); // Still log to console for developers
         }
+        
+        // Log device type on page load
+        debugLog(`Device detected: ${isMobile ? 'MOBILE 📱' : 'DESKTOP 💻'}`);
 
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', () => {
@@ -410,43 +416,44 @@
                         // Set valid login flag BEFORE redirect
                         sessionStorage.setItem('validLogin', 'true');
                         
-                        // Show success message
+                        // Show success message (mobile-aware)
+                        let successMsg;
                         if (data.data.needsApproval) {
-                            showAlert('Your account is pending admin approval. Redirecting...', 'warning');
+                            successMsg = 'Your account is pending admin approval. Redirecting...';
                         } else {
-                            showAlert('✅ Login successful! Redirecting to dashboard...', 'success');
+                            successMsg = isMobile 
+                                ? '✅ Login successful! Syncing data...' 
+                                : '✅ Login successful! Redirecting...';
                         }
+                        showAlert(successMsg, data.data.needsApproval ? 'warning' : 'success');
                         
-                        // Use requestAnimationFrame to ensure storage write completes
-                        // This is faster than setTimeout and syncs with browser rendering
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                // Final verification before redirect
-                                const finalToken = localStorage.getItem('realtorToken');
-                                const finalData = localStorage.getItem('realtorData');
-                                const finalFlag = sessionStorage.getItem('validLogin');
-                                
-                                debugLog('Final check before redirect:', {
-                                    token: finalToken ? 'EXISTS' : 'MISSING',
-                                    data: finalData ? 'EXISTS' : 'MISSING',
-                                    flag: finalFlag
-                                });
-                                
-                                if (!finalToken || !finalData) {
-                                    debugLog('ERROR: Data lost before redirect!', true);
-                                    showAlert('❌ Storage error! Data did not persist.\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies/site data in browser settings\n• Try Chrome or Firefox browser', 'error');
-                                    submitBtn.disabled = false;
-                                    submitBtn.innerHTML = 'Login to Dashboard';
-                                    return;
-                                }
-                                
-                                debugLog('✅ Final check passed! Redirecting now...');
-                                // Add small delay for success message visibility (1 second)
-                                setTimeout(() => {
-                                    window.location.href = 'enhanced-realtor-dashboard.html';
-                                }, 1000);
-                            });
-                        });
+                        // CRITICAL FIX: Mobile browsers need 3s for localStorage to persist
+                        // Desktop can use fast 500ms redirect
+                        const syncDelay = isMobile ? 3000 : 500;
+                        debugLog(`Using ${syncDelay}ms sync delay for ${isMobile ? 'mobile' : 'desktop'} device`);
+                        
+                        // Wait for storage to sync (especially important on mobile)
+                        setTimeout(() => {
+                            // Final verification before redirect
+                            const finalToken = localStorage.getItem('realtorToken');
+                            const finalData = localStorage.getItem('realtorData');
+                            const finalFlag = sessionStorage.getItem('validLogin');
+                            
+                            debugLog('Final check before redirect - Token: ' + (finalToken ? 'EXISTS ✓' : 'MISSING ✗'));
+                            debugLog('Final check before redirect - Data: ' + (finalData ? 'EXISTS ✓' : 'MISSING ✗'));
+                            debugLog('Final check before redirect - Flag: ' + finalFlag);
+                            
+                            if (!finalToken || !finalData) {
+                                debugLog('ERROR: Data lost before redirect!', true);
+                                showAlert('❌ Storage sync failed!\n\nYour browser may be blocking storage.\n\nPlease:\n• Disable Private/Incognito mode\n• Enable cookies/site data in Settings\n• Try Chrome or Firefox browser\n\nThen try logging in again.', 'error');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Login to Dashboard';
+                                return;
+                            }
+                            
+                            debugLog('✅ Final check passed! Redirecting to dashboard now...');
+                            window.location.href = 'enhanced-realtor-dashboard.html';
+                        }, syncDelay);
                         
                     } catch (storageError) {
                         debugLog('ERROR: localStorage exception: ' + storageError.message, true);
