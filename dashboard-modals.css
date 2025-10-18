@@ -315,6 +315,21 @@
     background: rgba(185, 28, 28, 1);
 }
 
+/* Info Box */
+.info-box {
+    background: #eff6ff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #1e40af;
+}
+
+.info-box p {
+    font-size: 0.875rem;
+    color: #1e40af;
+    margin: 0;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .modal-container {
