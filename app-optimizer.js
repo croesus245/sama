@@ -245,8 +245,9 @@ this.setupImageLazyLoading();
 }
 }
 
-// Initialize optimizer globally
+// Initialize optimizer globally and attach to window
 const appOptimizer = new AppOptimizer();
+window.appOptimizer = appOptimizer; // Make it accessible globally
 
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
