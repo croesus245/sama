@@ -2,9 +2,29 @@
 // Handles all API calls to the backend with retry logic and error handling
 
 // Auto-detect environment and use appropriate API URL
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5000/api'  // Local development
-    : 'https://sama-production-9e28.up.railway.app/api';  // Production (Railway)
+// This now intelligently detects if running on localhost, local IP, or production
+const getAPIBaseURL = () => {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    // If localhost or 127.0.0.1, use localhost:5000
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return `${protocol}//localhost:5000/api`;
+    }
+    
+    // If accessing from a local IP (192.168.x.x, 10.x.x.x, etc), use same IP for API
+    if (hostname.match(/^(192\.168|10\.|172\.)/)) {
+        return `${protocol}//${hostname}:5000/api`;
+    }
+    
+    // Otherwise, use production Railway backend
+    return 'https://sama-production-9e28.up.railway.app/api';
+};
+
+const API_BASE_URL = getAPIBaseURL();
+
+// Log API URL for debugging
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 // Retry configuration
 const RETRY_CONFIG = {
@@ -21,13 +41,15 @@ async function fetchWithRetry(url, options = {}, retries = RETRY_CONFIG.maxRetri
     try {
         const response = await fetch(url, {
             ...options,
-            signal: controller.signal
+            signal: controller.signal,
+            mode: 'cors',
+            credentials: 'omit'
         });
         clearTimeout(timeoutId);
         
         if (!response.ok && retries > 0 && response.status >= 500) {
             // Retry on server errors
-, retrying... (${retries} attempts left)`);
+            console.log(`⚠️ Server error (${response.status}), retrying... (${retries} attempts left)`);
             await new Promise(resolve => setTimeout(resolve, RETRY_CONFIG.retryDelay));
             return fetchWithRetry(url, options, retries - 1);
         }
@@ -37,7 +59,7 @@ async function fetchWithRetry(url, options = {}, retries = RETRY_CONFIG.maxRetri
         clearTimeout(timeoutId);
         
         if (retries > 0 && (error.name === 'AbortError' || error.message.includes('fetch'))) {
-`);
+            console.log(`⚠️ Network timeout, retrying... (${retries} attempts left)`);
             await new Promise(resolve => setTimeout(resolve, RETRY_CONFIG.retryDelay));
             return fetchWithRetry(url, options, retries - 1);
         }

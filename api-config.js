@@ -2,14 +2,25 @@
 const API_CONFIG = {
     // Detect environment
     isLocalhost: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
+    isLocalIP: window.location.hostname.match(/^(192\.168|10\.|172\.)/),
     
     // API Base URLs
     local: 'http://localhost:5000',
+    localIP: () => {
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        return `${protocol}//${hostname}:5000`;
+    },
     production: 'https://sama-production-9e28.up.railway.app',
     
     // Get the correct API URL
     getBaseURL() {
-        return this.isLocalhost ? this.local : this.production;
+        if (this.isLocalhost) {
+            return this.local;
+        } else if (this.isLocalIP) {
+            return this.localIP();
+        }
+        return this.production;
     },
     
     // Build complete API endpoint
@@ -47,16 +58,19 @@ async function apiFetch(url, options = {}) {
             headers: {
                 ...defaultHeaders,
                 ...(options.headers || {})
-            }
+            },
+            mode: 'cors',
+            credentials: 'omit'
         };
-const response = await fetch(url, config);
+        
+        const response = await fetch(url, config);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-return data;
+        return data;
         
     } catch (error) {
         console.error(`❌ API Error (${url}):`, error);
@@ -69,5 +83,3 @@ if (typeof window !== 'undefined') {
     window.API_CONFIG = API_CONFIG;
     window.apiFetch = apiFetch;
 }
-
-}`);
