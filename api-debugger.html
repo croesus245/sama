@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Debugger - MWG Hostels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            font-size: 18px;
+            color: #1e40af;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e40af;
+        }
+        
+        .info-box code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #dc2626;
+        }
+        
+        .test-button {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+            transition: all 0.3s;
+        }
+        
+        .test-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .test-button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .result.success {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #047857;
+        }
+        
+        .result.error {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        
+        .result.info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .status-indicator.ok {
+            background: #10b981;
+        }
+        
+        .status-indicator.error {
+            background: #ef4444;
+        }
+        
+        .status-indicator.pending {
+            background: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .device-info {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        
+        .device-info div {
+            margin: 8px 0;
+        }
+        
+        .device-info strong {
+            display: inline-block;
+            width: 120px;
+            color: #374151;
+        }
+        
+        .device-info code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #dc2626;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 API Connection Debugger</h1>
+            <p>Test your MWG Hostels backend connection</p>
+        </div>
+        
+        <div class="content">
+            <!-- Device Information Section -->
+            <div class="section">
+                <h2>📱 Your Device Information</h2>
+                <div class="device-info">
+                    <div>
+                        <strong>Device Type:</strong>
+                        <code id="deviceType">Detecting...</code>
+                    </div>
+                    <div>
+                        <strong>Your IP (Hostname):</strong>
+                        <code id="yourIP">Detecting...</code>
+                    </div>
+                    <div>
+                        <strong>Page URL:</strong>
+                        <code id="pageURL">Detecting...</code>
+                    </div>
+                    <div>
+                        <strong>API will use:</strong>
+                        <code id="apiURL">Detecting...</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs for different tests -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(event, 'quick')">Quick Test</button>
+                <button class="tab" onclick="switchTab(event, 'detailed')">Detailed</button>
+                <button class="tab" onclick="switchTab(event, 'guide')">Guide</button>
+            </div>
+            
+            <!-- Quick Test Tab -->
+            <div id="quick" class="tab-content active">
+                <div class="section">
+                    <h2>🚀 Quick Tests</h2>
+                    
+                    <div class="info-box">
+                        <strong>Test your API connection with one click:</strong>
+                        This will test if your backend server is reachable and working.
+                    </div>
+                    
+                    <button class="test-button" onclick="testAPIConnection()">
+                        ✓ Test API Connection
+                    </button>
+                    
+                    <button class="test-button" onclick="testHostelLoad()">
+                        📊 Test Load Hostels
+                    </button>
+                    
+                    <button class="test-button" onclick="testAllEndpoints()">
+                        🔗 Test All Endpoints
+                    </button>
+                    
+                    <button class="test-button" onclick="clearResults()">
+                        🗑️ Clear Results
+                    </button>
+                    
+                    <div id="quickResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Detailed Tab -->
+            <div id="detailed" class="tab-content">
+                <div class="section">
+                    <h2>🔬 Detailed Diagnostics</h2>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #374151;">1. Backend Server Status</h3>
+                    <button class="test-button" onclick="testBackendServer()">
+                        Test Backend
+                    </button>
+                    <div id="backendResult" class="result" style="display: none;"></div>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #374151;">2. Database Connection</h3>
+                    <button class="test-button" onclick="testDatabaseConnection()">
+                        Test Database
+                    </button>
+                    <div id="databaseResult" class="result" style="display: none;"></div>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #374151;">3. Network Configuration</h3>
+                    <button class="test-button" onclick="testNetworkConfig()">
+                        Test Network
+                    </button>
+                    <div id="networkResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Guide Tab -->
+            <div id="guide" class="tab-content">
+                <div class="section">
+                    <h2>📖 How to Fix Issues</h2>
+                    
+                    <div class="info-box">
+                        <strong>Issue: "Unable to Load Hostels" on Phone</strong>
+                        Your phone is trying to connect to localhost which doesn't work. It should use your laptop's IP address instead.
+                    </div>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #374151;">Solution:</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>Find your laptop's IP:</strong>
+                            <div style="background: #f3f4f6; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">
+                                ipconfig
+                            </div>
+                            Look for "IPv4 Address" (e.g., 192.168.1.100)
+                        </li>
+                        <li><strong>Start backend:</strong>
+                            <div style="background: #f3f4f6; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">
+                                cd backend<br>node simple-server.js
+                            </div>
+                        </li>
+                        <li><strong>Start frontend:</strong>
+                            <div style="background: #f3f4f6; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">
+                                python -m http.server 8000
+                            </div>
+                        </li>
+                        <li><strong>On your phone, go to:</strong>
+                            <div style="background: #f3f4f6; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">
+                                http://YOUR_IP:8000
+                            </div>
+                        </li>
+                    </ol>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #374151;">The Fix:</h3>
+                    <p style="line-height: 1.6; margin-bottom: 10px;">
+                        The API configuration has been updated to automatically detect your device's IP address:
+                    </p>
+                    <ul style="margin-left: 20px;">
+                        <li>✅ <strong>From Laptop:</strong> Uses http://localhost:5000</li>
+                        <li>✅ <strong>From Phone:</strong> Uses http://192.168.x.x:5000 (your IP)</li>
+                        <li>✅ <strong>From Mobile Data:</strong> Uses production Railway backend</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize device info on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDeviceInfo();
+            console.log('🔧 API Debugger loaded');
+        });
+        
+        // Update device information display
+        function updateDeviceInfo() {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            const pathname = window.location.pathname;
+            const port = window.location.port ? `:${window.location.port}` : '';
+            
+            // Detect device type
+            const ua = navigator.userAgent;
+            let deviceType = 'Desktop';
+            if (/iPhone|iPad|iPod/.test(ua)) deviceType = 'iOS Device';
+            if (/Android/.test(ua)) deviceType = 'Android Device';
+            
+            // Detect API URL
+            let apiURL = 'https://sama-production-9e28.up.railway.app/api';
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                apiURL = 'http://localhost:5000/api';
+            } else if (hostname.match(/^(192\.168|10\.|172\.)/)) {
+                apiURL = `http://${hostname}:5000/api`;
+            }
+            
+            document.getElementById('deviceType').textContent = deviceType;
+            document.getElementById('yourIP').textContent = hostname || 'Unknown';
+            document.getElementById('pageURL').textContent = `${protocol}//${hostname}${port}${pathname}`;
+            document.getElementById('apiURL').textContent = apiURL;
+        }
+        
+        // Switch between tabs
+        function switchTab(e, tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+        
+        // Test API connection
+        async function testAPIConnection() {
+            const result = document.getElementById('quickResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> Testing API connection...';
+            result.className = 'result info';
+            
+            try {
+                const apiUrl = getAPIBaseURL();
+                const response = await fetch(`${apiUrl}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `<span class="status-indicator ok"></span>✅ API Connection Successful!\n\nBackend is running and responding correctly.\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `<span class="status-indicator error"></span>❌ API Connection Failed\n\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `<span class="status-indicator error"></span>❌ Connection Error\n\nCould not reach the API endpoint.\n\nError: ${error.message}\n\nMake sure:\n1. Backend server is running (node simple-server.js)\n2. You're on the same WiFi network\n3. Your IP address is correct`;
+            }
+        }
+        
+        // Test loading hostels
+        async function testHostelLoad() {
+            const result = document.getElementById('quickResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> Loading hostels...';
+            result.className = 'result info';
+            
+            try {
+                const apiUrl = getAPIBaseURL();
+                const response = await fetch(`${apiUrl}/hostels`);
+                const data = await response.json();
+                
+                if (response.ok && data.data) {
+                    result.className = 'result success';
+                    result.innerHTML = `<span class="status-indicator ok"></span>✅ Hostels Loaded Successfully!\n\nFound ${data.data.length} hostels:\n${JSON.stringify(data.data.slice(0, 3), null, 2)}\n\n... and ${Math.max(0, data.data.length - 3)} more`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `<span class="status-indicator error"></span>❌ Failed to Load Hostels\n\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `<span class="status-indicator error"></span>❌ Error Loading Hostels\n\nError: ${error.message}`;
+            }
+        }
+        
+        // Test all endpoints
+        async function testAllEndpoints() {
+            const result = document.getElementById('quickResult');
+            result.style.display = 'block';
+            result.className = 'result info';
+            result.innerHTML = '<span class="loading"></span> Testing all endpoints...\n\nPlease wait...';
+            
+            const apiUrl = getAPIBaseURL();
+            const endpoints = {
+                'Health': '/health',
+                'Hostels': '/hostels',
+                'Applications': '/applications'
+            };
+            
+            let results = {};
+            
+            for (const [name, endpoint] of Object.entries(endpoints)) {
+                try {
+                    const response = await fetch(`${apiUrl}${endpoint}`);
+                    results[name] = {
+                        status: response.status,
+                        ok: response.ok,
+                        endpoint: `${apiUrl}${endpoint}`
+                    };
+                } catch (error) {
+                    results[name] = {
+                        status: 'ERROR',
+                        ok: false,
+                        error: error.message
+                    };
+                }
+            }
+            
+            result.className = 'result info';
+            result.innerHTML = `<span class="status-indicator ok"></span>Test Results:\n\n${JSON.stringify(results, null, 2)}`;
+        }
+        
+        // Test backend server
+        async function testBackendServer() {
+            const result = document.getElementById('backendResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> Testing backend...';
+            result.className = 'result info';
+            
+            try {
+                const apiUrl = getAPIBaseURL();
+                const response = await fetch(`${apiUrl}/health`);
+                const data = await response.json();
+                
+                result.className = response.ok ? 'result success' : 'result error';
+                result.innerHTML = `Status: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `Error: ${error.message}\n\nBackend server might not be running.`;
+            }
+        }
+        
+        // Test database connection
+        async function testDatabaseConnection() {
+            const result = document.getElementById('databaseResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> Testing database...';
+            result.className = 'result info';
+            
+            try {
+                const apiUrl = getAPIBaseURL();
+                const response = await fetch(`${apiUrl}/hostels`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `Database Connection: OK\n\nHostels in database: ${data.data.length}`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `Database Connection: FAILED\n\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        // Test network configuration
+        function testNetworkConfig() {
+            const result = document.getElementById('networkResult');
+            result.style.display = 'block';
+            result.className = 'result info';
+            
+            const hostname = window.location.hostname;
+            const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+            const isLocalIP = hostname.match(/^(192\.168|10\.|172\.)/);
+            
+            let config = `Network Configuration:\n\n`;
+            config += `Hostname: ${hostname}\n`;
+            config += `Is Localhost: ${isLocalhost}\n`;
+            config += `Is Local IP: ${!!isLocalIP}\n\n`;
+            
+            if (isLocalhost) {
+                config += `Configuration: LOCAL DEVELOPMENT\n`;
+                config += `API will use: http://localhost:5000/api\n`;
+                config += `This configuration works on your laptop only.`;
+            } else if (isLocalIP) {
+                config += `Configuration: LOCAL NETWORK\n`;
+                config += `API will use: http://${hostname}:5000/api\n`;
+                config += `This configuration works on your WiFi network.`;
+            } else {
+                config += `Configuration: PRODUCTION\n`;
+                config += `API will use: https://sama-production-9e28.up.railway.app/api\n`;
+                config += `This configuration works with deployed backend.`;
+            }
+            
+            result.innerHTML = config;
+        }
+        
+        // Clear results
+        function clearResults() {
+            document.getElementById('quickResult').style.display = 'none';
+        }
+        
+        // Get API base URL (same logic as in hostel-api.js)
+        function getAPIBaseURL() {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return `${protocol}//localhost:5000/api`;
+            }
+            
+            if (hostname.match(/^(192\.168|10\.|172\.)/)) {
+                return `${protocol}//${hostname}:5000/api`;
+            }
+            
+            return 'https://sama-production-9e28.up.railway.app/api';
+        }
+    </script>
+</body>
+</html>
