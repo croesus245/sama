@@ -181,9 +181,9 @@ class NotificationSystem {
     }
 }
 
-// Global Notification System
-if (typeof notifications === 'undefined') {
-    var notifications = new NotificationSystem();
+// Global Notification System - Use window.notifications from fixed-error-handler.js
+if (typeof window.notifications === 'undefined') {
+    window.notifications = new NotificationSystem();
 }
 
 // Loading Manager
@@ -282,8 +282,8 @@ return;
         }
         
         // Use improved notification system if available
-        if (typeof notifications !== 'undefined' && notifications.error) {
-            notifications.error(message);
+        if (typeof window.notifications !== 'undefined' && window.notifications.error) {
+            window.notifications.error(message);
         } else {
             console.error('Critical Error:', message);
         }
@@ -300,11 +300,11 @@ return;
         
         // Show appropriate error message
         if (error.validation) {
-            notifications.error('Please fix the form errors and try again.');
+            window.notifications.error('Please fix the form errors and try again.');
         } else if (error.network) {
-            notifications.error('Network error. Please check your connection and try again.');
+            window.notifications.error('Network error. Please check your connection and try again.');
         } else {
-            notifications.error('An error occurred while submitting the form. Please try again.');
+            window.notifications.error('An error occurred while submitting the form. Please try again.');
         }
     }
 }
@@ -366,7 +366,7 @@ function enhanceForm(form, validationRules) {
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             // Success
-            notifications.success('Form submitted successfully!');
+            window.notifications.success('Form submitted successfully!');
             
             // Reset form if needed
             if (form.dataset.resetOnSuccess !== 'false') {
@@ -425,7 +425,7 @@ function enhanceFileUpload(input, options = {}) {
         });
         
         if (errors.length > 0) {
-            notifications.error(errors[0]);
+            window.notifications.error(errors[0]);
             input.value = '';
             return;
         }
@@ -531,12 +531,12 @@ function monitorConnection() {
     
     window.addEventListener('online', () => {
         hideOfflineIndicator();
-        notifications.success('Connection restored!');
+        window.notifications.success('Connection restored!');
     });
     
     window.addEventListener('offline', () => {
         showOfflineIndicator();
-        notifications.warning('You are now offline');
+        window.notifications.warning('You are now offline');
     });
     
     // Check initial connection status
@@ -652,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Export for use in other scripts
 window.FormValidator = FormValidator;
 window.formValidator = formValidator;
-window.notifications = notifications;
+// notifications already exported as window.notifications above
 window.loadingManager = loadingManager;
 window.errorHandler = errorHandler;
 window.enhanceForm = enhanceForm;
