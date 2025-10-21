@@ -112,9 +112,9 @@ const criticalCSS = `
 `;
 
 // Inject critical CSS
-const style = document.createElement('style');
-style.textContent = criticalCSS;
-document.head.appendChild(style);
+const productionStyle = document.createElement('style');
+productionStyle.textContent = criticalCSS;
+document.head.appendChild(productionStyle);
 
 // Preload key resources
 const preloadResources = [

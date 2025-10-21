@@ -831,9 +831,9 @@ function closeModal(modalId = null) {
 
 // Add CSS animations
 if (!document.getElementById('hostel-script-styles')) {
-    const style = document.createElement('style');
-    style.id = 'hostel-script-styles';
-    style.textContent = `
+    const hostelScriptStyle = document.createElement('style');
+    hostelScriptStyle.id = 'hostel-script-styles';
+    hostelScriptStyle.textContent = `
     @keyframes slideInRight {
         from {
             opacity: 0;
@@ -1045,7 +1045,7 @@ if (!document.getElementById('hostel-script-styles')) {
         color: var(--gray-700);
     }
 `;
-    document.head.appendChild(style);
+    document.head.appendChild(hostelScriptStyle);
 }
 
 // ===========================================

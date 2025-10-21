@@ -198,12 +198,16 @@ class ImprovedNotifications {
     }
 }
 
-// Initialize improved notifications
-const notifications = new ImprovedNotifications();
+// Initialize improved notifications (only if not already defined)
+if (typeof window.notifications === 'undefined') {
+    window.notifications = new ImprovedNotifications();
+}
 
 // Override existing notification functions to use improved system
 window.showNotification = function(message, type = 'info', duration = 5000) {
-    notifications.show(message, type, duration);
+    if (typeof window.notifications !== 'undefined' && window.notifications.show) {
+        window.notifications.show(message, type, duration);
+    }
 };
 
 // Improved showModal function that doesn't throw errors
