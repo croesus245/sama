@@ -119,7 +119,6 @@ document.head.appendChild(productionStyle);
 // Preload key resources
 const preloadResources = [
     { href: '/sama.png', as: 'image' },
-    { href: '/theme-system.css', as: 'style' },
     { href: '/api-integration.js', as: 'script' }
 ];
 
