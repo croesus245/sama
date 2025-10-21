@@ -332,6 +332,17 @@
                 touch-action: manipulation; /* Prevent double-tap zoom */
             }
 
+            /* Restore checkbox appearance */
+            input[type="checkbox"] {
+                -webkit-appearance: checkbox !important;
+                appearance: checkbox !important;
+                width: 20px !important;
+                height: 20px !important;
+                padding: 0 !important;
+                min-height: auto !important;
+                cursor: pointer !important;
+            }
+
             /* Fix select dropdowns on mobile */
             select {
                 background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');

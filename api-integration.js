@@ -16,14 +16,15 @@ class MWGHostelsAPI {
         
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return 'http://localhost:5000/api';
-        } else if (hostname.includes('mwgbysama.vercel.app') || hostname.includes('vercel.app')) {
-            // Production API URL - Railway backend
+        } else if (hostname.includes('mwgbysama.vercel.app')) {
+            // Production API URL - Railway backend for MWG Hostels
             return 'https://sama-production-9e28.up.railway.app/api';
         } else if (hostname.includes('vercel.app') || hostname.includes('netlify.app')) {
-            return 'https://mwg-hostels-api.herokuapp.com/api';
+            // Other Vercel/Netlify deploys - use Railway as default now
+            return 'https://sama-production-9e28.up.railway.app/api';
         } else {
-            // For custom domain
-            return 'https://api.mwghostels.com/api';
+            // For custom domain or other deployments
+            return 'https://sama-production-9e28.up.railway.app/api';
         }
     }
 
