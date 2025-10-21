@@ -1,0 +1,15 @@
+Force Vercel Redeploy
+=====================
+
+This file forces Vercel to clear cache and redeploy all commits.
+
+Time: 2025-10-21 - After duplicate variable fixes
+Status: Triggering redeploy of commits ddea09d, b708cf2, 17a2191
+
+The console errors show production is still serving old cached code:
+- SyntaxError: Identifier 'notifications' has already been declared
+- SyntaxError: Identifier 'style' has already been declared
+- TypeError: this.loadHighQualityImages is not a function
+
+These should all be fixed in commits already in GitHub.
+This file triggers a new build/deploy cycle.
