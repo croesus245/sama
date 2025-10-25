@@ -9,15 +9,18 @@ const getAPIBaseURL = () => {
     
     // If localhost or 127.0.0.1, use localhost:5000
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        console.log('📍 Detected LOCAL development environment');
         return `${protocol}//localhost:5000/api`;
     }
     
     // If accessing from a local IP (192.168.x.x, 10.x.x.x, etc), use same IP for API
     if (hostname.match(/^(192\.168|10\.|172\.)/)) {
+        console.log('📍 Detected LOCAL IP environment');
         return `${protocol}//${hostname}:5000/api`;
     }
     
     // Otherwise, use production Railway backend
+    console.log('📍 Detected PRODUCTION environment');
     return 'https://sama-production-9e28.up.railway.app/api';
 };
 
@@ -25,6 +28,8 @@ const API_BASE_URL = getAPIBaseURL();
 
 // Log API URL for debugging
 console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('🌐 Hostname:', window.location.hostname);
+console.log('🌍 Origin:', window.location.origin);
 
 // Retry configuration
 const RETRY_CONFIG = {

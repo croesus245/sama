@@ -1,4 +1,6 @@
 // API Configuration - Handles both local and production environments
+// UPDATED: October 25, 2025 - Production deployment config
+
 const API_CONFIG = {
     // Detect environment
     isLocalhost: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
@@ -11,6 +13,7 @@ const API_CONFIG = {
         const hostname = window.location.hostname;
         return `${protocol}//${hostname}:5000`;
     },
+    // Production Railway backend - UPDATED URL
     production: 'https://sama-production-9e28.up.railway.app',
     
     // Get the correct API URL
@@ -41,11 +44,17 @@ const API_CONFIG = {
         studentApplications: (email) => API_CONFIG.endpoint(`/api/applications/student/${encodeURIComponent(email)}`),
         realtorAuth: () => API_CONFIG.endpoint('/api/realtor-auth'),
         realtorLogin: () => API_CONFIG.endpoint('/api/realtor-auth/login'),
-        realtorRegister: () => API_CONFIG.endpoint('/api/realtor-auth/register')
+        realtorRegister: () => API_CONFIG.endpoint('/api/realtor-auth/register'),
+        realtorVerify: () => API_CONFIG.endpoint('/api/realtor-auth/verify'),
+        realtorProfile: () => API_CONFIG.endpoint('/api/realtor-auth/profile'),
+        studentRegister: () => API_CONFIG.endpoint('/api/students/register'),
+        studentLogin: () => API_CONFIG.endpoint('/api/students/login'),
+        uploadImage: () => API_CONFIG.endpoint('/api/upload/image'),
+        uploadMultiple: () => API_CONFIG.endpoint('/api/upload/multiple')
     }
 };
 
-// Fetch wrapper with better error handling
+// Fetch wrapper with better error handling and timeout
 async function apiFetch(url, options = {}) {
     try {
         // Add default headers
@@ -60,13 +69,23 @@ async function apiFetch(url, options = {}) {
                 ...(options.headers || {})
             },
             mode: 'cors',
-            credentials: 'omit'
+            credentials: 'omit',
+            timeout: 30000 // 30 second timeout
         };
         
-        const response = await fetch(url, config);
+        // Create abort controller for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        
+        const response = await fetch(url, {
+            ...config,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
@@ -82,4 +101,11 @@ async function apiFetch(url, options = {}) {
 if (typeof window !== 'undefined') {
     window.API_CONFIG = API_CONFIG;
     window.apiFetch = apiFetch;
+    
+    // Log configuration on page load (for debugging)
+    console.log('🔗 API Configuration loaded:', {
+        baseURL: API_CONFIG.getBaseURL(),
+        environment: API_CONFIG.isLocalhost ? 'LOCAL' : 'PRODUCTION',
+        hostname: window.location.hostname
+    });
 }

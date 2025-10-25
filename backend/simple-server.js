@@ -34,18 +34,21 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Database connection with better error handling
-mongoose.connect(process.env.MONGODB_URI, {
+const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mwg_hostels';
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })
   .then(() => {
-
-})
+    console.log('✅ MongoDB connected successfully');
+  })
   .catch((error) => {
     console.error('❌ MongoDB connection error:', error.message);
-});
+    console.warn('⚠️  Continuing without database - using in-memory storage');
+  });
 
 // Handle MongoDB connection events
 mongoose.connection.on('error', (err) => {
@@ -55,21 +58,73 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
 });
 
-// Import routes
+// Import routes - with fallback error handlers
 const hostelRoutes = require('./routes/hostels');
 const realtorAuthRoutes = require('./routes/realtorAuth');
-const adminPanelRoutes = require('./routes/adminPanel');
 const studentAuthRoutes = require('./routes/studentAuth');
 const uploadRoutes = require('./routes/upload');
 const applicationRoutes = require('./routes/applications');
 
-// Routes
-app.use('/api/hostels', hostelRoutes);
-app.use('/api/realtor-auth', realtorAuthRoutes);
-app.use('/api/admin-panel', adminPanelRoutes);
-app.use('/api/students', studentAuthRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/applications', applicationRoutes);
+// Routes with error handlers
+app.use('/api/hostels', (req, res, next) => {
+  try {
+    return hostelRoutes(req, res, next);
+  } catch (error) {
+    console.error('Hostel route error:', error);
+    res.status(500).json({ success: false, message: 'Hostel service error', error: error.message });
+  }
+});
+
+app.use('/api/realtor-auth', (req, res, next) => {
+  try {
+    return realtorAuthRoutes(req, res, next);
+  } catch (error) {
+    console.error('Realtor auth route error:', error);
+    res.status(500).json({ status: 'error', message: 'Auth service error', error: error.message });
+  }
+});
+
+app.use('/api/students', (req, res, next) => {
+  try {
+    return studentAuthRoutes(req, res, next);
+  } catch (error) {
+    console.error('Student auth route error:', error);
+    res.status(500).json({ success: false, message: 'Student service error', error: error.message });
+  }
+});
+
+app.use('/api/upload', (req, res, next) => {
+  try {
+    return uploadRoutes(req, res, next);
+  } catch (error) {
+    console.error('Upload route error:', error);
+    res.status(500).json({ success: false, message: 'Upload service error', error: error.message });
+  }
+});
+
+app.use('/api/applications', (req, res, next) => {
+  try {
+    return applicationRoutes(req, res, next);
+  } catch (error) {
+    console.error('Application route error:', error);
+    res.status(500).json({ success: false, message: 'Application service error', error: error.message });
+  }
+});
+
+// Optional: Admin routes (if adminPanel exists)
+try {
+  const adminPanelRoutes = require('./routes/adminPanel');
+  app.use('/api/admin-panel', (req, res, next) => {
+    try {
+      return adminPanelRoutes(req, res, next);
+    } catch (error) {
+      console.error('Admin route error:', error);
+      res.status(500).json({ status: 'error', message: 'Admin service error', error: error.message });
+    }
+  });
+} catch (e) {
+  console.warn('Admin routes not found, skipping...');
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -120,12 +175,34 @@ app.get('/api', (req, res) => {
   });
 });
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: 'Endpoint not found',
+    path: req.path,
+    method: req.method
+  });
+});
+
+// Global error handler (catch all)
+app.use((error, req, res, next) => {
+  console.error('Global error handler:', error);
+  res.status(error.status || 500).json({
+    status: 'error',
+    message: error.message || 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? error : undefined
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-
-
-
+  console.log(`🚀 MWG Hostels API Server running on port ${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 API URL: http://localhost:${PORT}/api`);
+  console.log(`📋 Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`📚 API Docs: http://localhost:${PORT}/api`);
 });
 
 module.exports = app;
