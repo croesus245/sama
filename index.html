@@ -468,14 +468,7 @@
                     <i class="fas fa-home"></i>
                     Browse Hostels Now
                 </a>
-                <a href="student-register.html" class="cta-button secondary">
-                    <i class="fas fa-user-plus"></i>
-                    Student Registration
-                </a>
-                <a href="realtor-register.html" class="cta-button tertiary">
-                    <i class="fas fa-building"></i>
-                    Realtor Registration
-                </a>
+                <!-- Student registration and realtor registration removed - site is hostel-only -->
             </div>
             
             <!-- Feature Cards -->
@@ -488,13 +481,7 @@
                     <p class="feature-text">Find verified, affordable accommodation near FUTA campus gates</p>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="feature-title">Roommate Matching</h3>
-                    <p class="feature-text">Connect with compatible roommates for shared living spaces</p>
-                </div>
+                <!-- Roommate Matching removed - hostel-only site -->
                 
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -627,173 +614,7 @@
         }
     </style>
 
-    <!-- Realtor Registration Modal -->
-    <div id="realtorModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-building"></i> Realtor Registration</h2>
-                <span class="close" onclick="closeModal('realtorModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="realtorRegistrationForm">
-                    <div class="form-group">
-                        <label for="businessName">Business Name *</label>
-                        <input type="text" id="businessName" name="businessName" required placeholder="e.g., ABC Property Management Ltd">
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contactFirstName">Contact First Name *</label>
-                            <input type="text" id="contactFirstName" name="contactFirstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contactLastName">Contact Last Name *</label>
-                            <input type="text" id="contactLastName" name="contactLastName" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="realtorEmail">Business Email *</label>
-                        <input type="email" id="realtorEmail" name="email" required placeholder="contact@businessname.com">
-                        <small class="form-help">Use your official business email address</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="businessPhone">Business Phone *</label>
-                        <input type="tel" id="businessPhone" name="phone" required placeholder="+234 xxx xxx xxxx">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="businessAddress">Business Address *</label>
-                        <textarea id="businessAddress" name="businessAddress" required rows="2" placeholder="Complete business address including city and state"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="businessType">Business Type *</label>
-                        <select id="businessType" name="businessType" required>
-                            <option value="">Select Business Type</option>
-                            <option value="property_management">Property Management Company</option>
-                            <option value="real_estate_agency">Real Estate Agency</option>
-                            <option value="individual_landlord">Individual Landlord</option>
-                            <option value="hostel_owner">Hostel Owner</option>
-                            <option value="accommodation_provider">Accommodation Provider</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="yearsInBusiness">Years in Business *</label>
-                        <select id="yearsInBusiness" name="yearsInBusiness" required>
-                            <option value="">Select Years</option>
-                            <option value="less_than_1">Less than 1 year</option>
-                            <option value="1_2">1-2 years</option>
-                            <option value="3_5">3-5 years</option>
-                            <option value="6_10">6-10 years</option>
-                            <option value="more_than_10">More than 10 years</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="websiteUrl">Business Website (Optional)</label>
-                        <input type="url" id="websiteUrl" name="websiteUrl" placeholder="https://www.businessname.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="realtorPassword">Password *</label>
-                        <input type="password" id="realtorPassword" name="password" required>
-                        <div class="password-requirements">
-                            <div class="requirement" id="realtor-length-req">
-                                <i class="fas fa-times"></i> At least 8 characters
-                            </div>
-                            <div class="requirement" id="realtor-uppercase-req">
-                                <i class="fas fa-times"></i> One uppercase letter
-                            </div>
-                            <div class="requirement" id="realtor-lowercase-req">
-                                <i class="fas fa-times"></i> One lowercase letter
-                            </div>
-                            <div class="requirement" id="realtor-number-req">
-                                <i class="fas fa-times"></i> One number
-                            </div>
-                            <div class="requirement" id="realtor-special-req">
-                                <i class="fas fa-times"></i> One special character
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password *</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" required>
-                        <div class="password-match" id="realtor-password-match">
-                            <i class="fas fa-times"></i> Passwords do not match
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="agreeRealtorTerms" name="agreeTerms" required>
-                            I agree to the <a href="#" onclick="showRealtorTerms()" class="realtor-terms-link">Realtor Terms & Conditions</a> and verify that my business is legally registered
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary full-width">
-                        <i class="fas fa-building"></i> Submit for Verification
-                    </button>
-                    
-                    <div class="verification-info">
-                        <h5><i class="fas fa-clock"></i> What happens next?</h5>
-                        <ul>
-                            <li><i class="fas fa-check"></i> Your application will be reviewed within 24-48 hours</li>
-                            <li><i class="fas fa-check"></i> We'll verify your business registration and documents</li>
-                            <li><i class="fas fa-check"></i> You'll receive an email notification when approved</li>
-                            <li><i class="fas fa-check"></i> Once approved, you can login and start listing properties</li>
-                        </ul>
-                    </div>
-                </form>
-                
-                <div class="modal-footer">
-                    <p>Already have an approved account? <a href="#" onclick="switchToLogin()">Login here</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
-                <span class="close" onclick="closeModal('loginModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail">Email Address</label>
-                        <input type="email" id="loginEmail" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" name="password" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="rememberMe" name="rememberMe">
-                            Remember me
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary full-width">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                </form>
-                
-                <div class="modal-footer">
-                    <p><a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
-                    <p class="info-text">Login is optional - browse hostels anytime without an account</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Realtor registration and login removed - site simplified to hostel browsing and direct contact -->
 
     <!-- Quick Access Section -->
     <section class="quick-access-section">
@@ -813,14 +634,7 @@
                     </button>
                 </div>
                 
-                <div class="access-card">
-                    <i class="fas fa-users fa-3x access-card-icon"></i>
-                    <h3>Find Roommates</h3>
-                    <p>Connect with compatible roommates for shared living</p>
-                    <a href="roommate-finder.html" class="btn btn-primary">
-                        <i class="fas fa-arrow-right"></i> Find Roommates
-                    </a>
-                </div>
+                <!-- Removed roommate access card -->
                 
                 <div class="access-card">
                     <i class="fas fa-clipboard-list fa-3x access-card-icon"></i>
@@ -837,11 +651,8 @@
                     <p>Property owners and realtors - contact us to get your account credentials</p>
                     <div class="button-group">
                         <button class="btn btn-primary" onclick="contactForRealtorAccess()">
-                            <i class="fas fa-user-plus"></i> Apply Now
+                            <i class="fas fa-user-plus"></i> Contact Us
                         </button>
-                        <a href="realtor-login.html" class="btn btn-secondary">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
                     </div>
                 </div>
             </div>
@@ -870,8 +681,8 @@
                     <h4>Platform</h4>
                     <ul>
                         <li><button class="link-btn" data-action="browse-hostels">Browse Hostels</button></li>
-                        <li><button class="link-btn" data-action="find-roommates">Find Roommates</button></li>
-                        <li><a href="realtor-login.html">Realtor Portal</a></li>
+                        <!-- Roommate feature removed - site is hostel-only -->
+                        <li><button class="link-btn" onclick="contactForRealtorAccess()">Realtor Contact</button></li>
                         <li><a href="demo.html#about">About SAMA</a></li>
                     </ul>
                 </div>
@@ -1269,8 +1080,10 @@ return;
                             <h3 style="margin-bottom: 0.5rem;">No Hostels Available Yet</h3>
                             <p>Realtors will add verified hostel listings soon. Check back later!</p>
                             <p style="margin-top: 1rem;">
-                                <strong>Are you a realtor?</strong> 
-                                <a href="realtor-login.html" style="color: #1e40af;">Login here</a> to add your hostels.
+                                <strong>Are you a property owner?</strong>
+                                <button onclick="contactForRealtorAccess()" style="background: transparent; border: none; color: #1e40af; font-weight: 700; cursor: pointer; margin-left: 0.5rem;">
+                                    Contact us to add hostels
+                                </button>
                             </p>
                         </div>
                     `;
