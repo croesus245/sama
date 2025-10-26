@@ -993,8 +993,10 @@ return hostels;
                 // Clear authentication data
                 localStorage.removeItem('realtorToken');
                 localStorage.removeItem('realtorData');
-// Redirect to login page
-                window.location.href = 'realtor-login-new.html';
+                sessionStorage.removeItem('validLogin');
+                
+                // Redirect to login page
+                window.location.href = 'realtor-login.html';
             }
         }
         

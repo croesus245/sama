@@ -278,11 +278,16 @@
     <script>
         // Mobile device detection (CRITICAL for storage sync timing)
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isPrivateMode = false; // Will be checked later
         
         // Auto-detect environment
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:5000/api'
             : 'https://sama-production-9e28.up.railway.app/api';
+        
+        console.log('🔐 REALTOR LOGIN INIT');
+        console.log('Device:', isMobile ? '📱 MOBILE' : '💻 DESKTOP');
+        console.log('API URL:', API_BASE_URL);
 
         // Debug log helper (only shows on errors)
         function debugLog(msg, isError = false) {
@@ -300,6 +305,17 @@
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', () => {
             try {
+                // CRITICAL: Test if localStorage is available (private mode blocks it)
+                try {
+                    const testKey = '__localStorage_test__';
+                    localStorage.setItem(testKey, 'test');
+                    localStorage.removeItem(testKey);
+                } catch (e) {
+                    debugLog('⚠️ localStorage NOT available (Private mode?)', true);
+                    showAlert('❌ Private/Incognito Mode Detected\n\nThis app needs cookies enabled.\n\nPlease:\n1. Disable Private browsing\n2. Close this tab and open the link normally\n3. Then try logging in again', 'error');
+                    return;
+                }
+                
                 const token = localStorage.getItem('realtorToken');
                 const validLogin = sessionStorage.getItem('validLogin');
                 debugLog('Token on load: ' + (token ? 'EXISTS' : 'NONE') + ' | Valid: ' + validLogin);
