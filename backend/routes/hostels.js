@@ -34,15 +34,16 @@ router.get('/', async (req, res) => {
       .sort({ createdAt: -1 })
       .populate('realtorId', 'status');
     
-    // Filter to only show hostels from ACTIVE realtors (for public view)
-    // Note: This allows realtors to see their own hostels even if pending
+    // Filter to show hostels from ACTIVE and PENDING realtors
+    // This allows new/pending realtors to have their hostels visible while awaiting approval
     const filteredHostels = hostels.filter(hostel => {
       // If realtorId is not populated (old data), show it
       if (!hostel.realtorId || typeof hostel.realtorId === 'string') {
         return true;
       }
-      // Otherwise, check if realtor is active
-      return hostel.realtorId.status === 'active';
+      // Show hostels from both active and pending realtors
+      // Don't show hostels from suspended realtors
+      return hostel.realtorId.status === 'active' || hostel.realtorId.status === 'pending';
     });
     
     res.json({
