@@ -20,6 +20,9 @@ const adminRoutes = require('./routes/admin');
 const uploadRoutes = require('./routes/upload');
 const paymentRoutes = require('./routes/payments');
 
+// Import models
+const Hostel = require('./models/Hostel');
+
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
@@ -94,15 +97,48 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        message: 'MWG Hostels API is running',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development',
-        version: '1.0.0'
-    });
+app.get('/api/health', async (req, res) => {
+    try {
+        const mongooseConnected = mongoose.connection.readyState === 1;
+        let hostelCount = 0;
+        
+        if (mongooseConnected) {
+            try {
+                hostelCount = await Hostel.countDocuments();
+            } catch (e) {
+                console.error('Error counting hostels:', e.message);
+            }
+        }
+        
+        res.status(200).json({
+            status: 'success',
+            message: 'MWG Hostels API is running',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            environment: process.env.NODE_ENV || 'development',
+            version: '1.0.0',
+            database: {
+                connected: mongooseConnected,
+                status: mongooseConnected ? 'Connected' : 'Disconnected',
+                hostelCount: hostelCount
+            },
+            cors: {
+                whitelist: [
+                    'http://localhost:8000',
+                    'http://localhost:3000',
+                    'https://mwgbysama.vercel.app',
+                    'https://mwghostels.vercel.app',
+                    'https://www.mwghostels.com'
+                ]
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Health check failed',
+            error: error.message
+        });
+    }
 });
 
 // API Info endpoint

@@ -10,6 +10,7 @@ const { auth, requireActive } = require('../middleware/auth');
 // ============================================
 router.get('/', async (req, res) => {
   try {
+    console.log('📍 /api/hostels endpoint called');
     const { available, minPrice, maxPrice, location } = req.query;
     
     // Build filter
@@ -29,10 +30,14 @@ router.get('/', async (req, res) => {
       filter.location = { $regex: location, $options: 'i' };
     }
     
+    console.log('🔍 Query filter:', filter);
+    
     // Find all hostels, then populate realtor data to check status
     const hostels = await Hostel.find(filter)
       .sort({ createdAt: -1 })
       .populate('realtorId', 'status');
+    
+    console.log(`✅ Found ${hostels.length} total hostels`);
     
     // Filter to show hostels from ACTIVE and PENDING realtors
     // This allows new/pending realtors to have their hostels visible while awaiting approval
@@ -46,13 +51,15 @@ router.get('/', async (req, res) => {
       return hostel.realtorId.status === 'active' || hostel.realtorId.status === 'pending';
     });
     
+    console.log(`✅ After status filter: ${filteredHostels.length} hostels`);
+    
     res.json({
       success: true,
       count: filteredHostels.length,
       data: filteredHostels
     });
   } catch (error) {
-    console.error('Error fetching hostels:', error);
+    console.error('❌ Error fetching hostels:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching hostels',
