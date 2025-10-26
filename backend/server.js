@@ -35,8 +35,11 @@ app.use(cors({
     origin: [
         'http://localhost:8000',
         'http://localhost:3000',
+        'https://mwgbysama.vercel.app',
         'https://mwghostels.vercel.app',
-        'https://www.mwghostels.com'
+        'https://www.mwghostels.com',
+        'http://192.168.0.0/8',
+        'http://10.0.0.0/8'
     ],
     credentials: true,
     optionsSuccessStatus: 200
@@ -140,6 +143,7 @@ const io = require('socket.io')(server, {
         origin: [
             'http://localhost:8000',
             'http://localhost:3000',
+            'https://mwgbysama.vercel.app',
             'https://mwghostels.vercel.app'
         ],
         methods: ['GET', 'POST']

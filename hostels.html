@@ -520,16 +520,25 @@
         async function loadAllHostels() {
             try {
                 console.log('🔄 Loading hostels from API...');
+                console.log('📍 API Base URL:', API_BASE_URL);
+                console.log('🌐 Hostname:', window.location.hostname);
+                console.log('🌍 Protocol:', window.location.protocol);
+                
                 allHostels = await HostelAPI.getAllHostels();
                 console.log(`✅ Loaded ${allHostels.length} hostels`);
+                console.log('📊 Hostels data:', allHostels);
                 
                 // Update gate counts
                 updateGateCounts();
             } catch (error) {
                 console.error('❌ Error loading hostels:', error);
-                document.getElementById('northCount').textContent = 'Error loading';
-                document.getElementById('southCount').textContent = 'Error loading';
-                document.getElementById('westCount').textContent = 'Error loading';
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                
+                const errorText = `Error: ${error.message}`;
+                document.getElementById('northCount').textContent = errorText;
+                document.getElementById('southCount').textContent = errorText;
+                document.getElementById('westCount').textContent = errorText;
             }
         }
 
