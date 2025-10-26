@@ -953,7 +953,8 @@ const modal = document.getElementById(modalId);
             const selectedLocation = document.getElementById('locationFilter').value;
             const hostelsGrid = document.getElementById('hostelsGrid');
             
-            let filteredHostels = allHostelsData.filter(h => h.available === true);
+            // Show all hostels regardless of availability
+            let filteredHostels = allHostelsData; // Show ALL hostels
             
             if (selectedLocation !== 'all') {
                 filteredHostels = filteredHostels.filter(h => h.location === selectedLocation);
@@ -961,7 +962,7 @@ const modal = document.getElementById(modalId);
             
             // Update count
             document.getElementById('hostelCount').textContent = 
-                `Showing ${filteredHostels.length} of ${allHostelsData.filter(h => h.available).length} hostels`;
+                `Showing ${filteredHostels.length} of ${allHostelsData.length} hostels`;
             
             // Display filtered hostels
             displayHostels(filteredHostels);
@@ -1070,9 +1071,11 @@ return;
                 // Get all hostels from API
                 allHostelsData = await HostelAPI.getAllHostels();
                 
-                // Filter to only show available hostels
-                const availableHostels = allHostelsData.filter(h => h.available === true);
-// Update count
+                // Show all hostels (available and unavailable)
+                // Realtors can toggle availability, but students should see all listings
+                const availableHostels = allHostelsData; // Show ALL hostels
+                
+                // Update count
                 document.getElementById('hostelCount').textContent = 
                     `Showing ${availableHostels.length} ${availableHostels.length === 1 ? 'hostel' : 'hostels'}`;
                 
