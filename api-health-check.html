@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Health Check - MWG Hostels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background: #f5f5f5;
+            border-left: 4px solid #ddd;
+        }
+        
+        .test-item.loading {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        .test-item.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        
+        .test-item.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .status-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+        
+        .test-info {
+            flex: 1;
+        }
+        
+        .test-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .test-result {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .result-text {
+            display: none;
+        }
+        
+        .test-item.success .result-text,
+        .test-item.error .result-text {
+            display: block;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .summary-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #2196f3;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 API Health Check</h1>
+        <p class="subtitle">Testing MWG Hostels Backend Connectivity</p>
+        
+        <div id="testResults"></div>
+        
+        <button onclick="runTests()">🔄 Run Tests</button>
+        
+        <div class="summary" id="summary" style="display:none;">
+            <div class="summary-text" id="summaryText"></div>
+            <p id="summaryDetails"></p>
+        </div>
+        
+        <div class="help-text">
+            <strong>What this test does:</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>✅ Checks if the API is accessible</li>
+                <li>✅ Verifies MongoDB is connected</li>
+                <li>✅ Tests hostels endpoint</li>
+                <li>✅ Measures response time</li>
+            </ul>
+            <p style="margin-top: 15px;">
+                <strong>If tests fail:</strong> The backend might not be deployed to Railway yet. 
+                Contact the administrator to deploy to production.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://sama-production-9e28.up.railway.app/api';
+        
+        const tests = [
+            {
+                name: 'Backend Server',
+                url: `${API_BASE}/health`,
+                method: 'GET'
+            },
+            {
+                name: 'Database Connection',
+                url: `${API_BASE}/health`,
+                method: 'GET',
+                check: (data) => data.database === 'connected'
+            },
+            {
+                name: 'Hostels Endpoint',
+                url: `${API_BASE}/hostels`,
+                method: 'GET'
+            },
+            {
+                name: 'API Response Speed',
+                url: `${API_BASE}/health`,
+                method: 'GET',
+                measure: true
+            }
+        ];
+
+        async function runTests() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+
+            let passed = 0;
+            let failed = 0;
+
+            for (let test of tests) {
+                const testItem = createTestItem(test.name, 'loading');
+                resultsDiv.appendChild(testItem);
+
+                try {
+                    const startTime = performance.now();
+                    const response = await fetch(test.url, {
+                        method: test.method,
+                        mode: 'cors',
+                        credentials: 'omit'
+                    });
+                    const endTime = performance.now();
+                    const time = Math.round(endTime - startTime);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (test.check && !test.check(data)) {
+                        throw new Error('Check failed');
+                    }
+
+                    let resultText = `✅ Success (${time}ms)`;
+                    if (test.measure) {
+                        resultText = `⚡ ${time}ms ${time < 500 ? '(Fast)' : time < 1000 ? '(Good)' : '(Slow)'}`;
+                    }
+
+                    updateTestItem(testItem, 'success', resultText);
+                    passed++;
+                } catch (error) {
+                    updateTestItem(testItem, 'error', `❌ ${error.message}`);
+                    failed++;
+                }
+            }
+
+            // Show summary
+            showSummary(passed, failed);
+        }
+
+        function createTestItem(name, status) {
+            const div = document.createElement('div');
+            div.className = `test-item ${status}`;
+            div.innerHTML = `
+                <div class="status-icon">
+                    <span class="spinner" style="display:${status === 'loading' ? 'inline-block' : 'none'}"></span>
+                </div>
+                <div class="test-info">
+                    <div class="test-name">${name}</div>
+                    <div class="test-result">
+                        <span style="display:${status === 'loading' ? 'block' : 'none'}">Testing...</span>
+                        <span class="result-text"></span>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function updateTestItem(item, status, result) {
+            item.className = `test-item ${status}`;
+            item.querySelector('.spinner').style.display = 'none';
+            item.querySelector('.result-text').textContent = result;
+        }
+
+        function showSummary(passed, failed) {
+            const summary = document.getElementById('summary');
+            const total = passed + failed;
+            const percent = Math.round((passed / total) * 100);
+
+            document.getElementById('summaryText').textContent = 
+                percent === 100 ? '✅ All Tests Passed!' : `⚠️ ${percent}% Passed`;
+            
+            document.getElementById('summaryDetails').textContent = 
+                `${passed}/${total} tests successful`;
+
+            summary.style.display = 'block';
+
+            if (percent !== 100) {
+                document.getElementById('summaryDetails').innerHTML += 
+                    '<br><strong>Next steps:</strong> Ensure the backend is deployed to Railway production.';
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 500);
+        });
+    </script>
+</body>
+</html>
